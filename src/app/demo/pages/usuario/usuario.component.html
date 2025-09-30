@@ -1,1 +1,43 @@
-<p>usuario componente nuevo!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h3>
+        <i class="fa fa-users"></i>
+        &nbsp;Lista de usuarios
+      </h3>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nombre de usuario</th>
+              <th>Rol</th>
+              <th>Fecha de creación</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of usuarioList">
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.rol }}</td>
+              <td>{{ usuario.fechaCreacion | date:'yyyy-MM-dd HH:mm' }}</td>
+            <td>
+                <i class="fa" [ngClass]="usuario.activo ? 'fa-check text-success' : 'fa-times text-danger'"></i>
+            </td>
+            <td>
+                <button type="button" 
+                class="btn btn btn-outline-primary" 
+                title="Editar usuario"
+                (click)="clickBotonEditar(usuario)"><i class="fa fa-edit"></i></button>
+            </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
