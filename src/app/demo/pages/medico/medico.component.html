@@ -1,10 +1,16 @@
 <div class="container">
   <div class="card">
     <div class="card-header">
-      <h3>
-        <i class="fa fa-user-md"></i>
-        &nbsp;Lista de médicos
-      </h3>
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>
+          <i class="fa fa-user-md"></i>
+          &nbsp;Lista de médicos
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoMedico()">
+          <i class="fa fa-plus"></i>
+          Nuevo medico
+        </button>
+      </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -33,11 +39,38 @@
               <td>{{ medico.registroProfesional }}</td>
               <td>{{ medico.especializacion.nombre }}</td>
               <td>
-                <button type="button" class="btn btn btn-outline-primary" title="Editar médico"><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn btn btn-outline-primary" title="Editar médico"
+                (click)="editarModalMedico(medico)"><i class="fa fa-edit"></i></button>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para nuevo medico -->
+<div class="modal fade" id="modalCrearMedico" tabindex="-1" aria-labelledby="modalCrearMedicoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearMedicoLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+           
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedico()">{{ titleBoton }}</button>
       </div>
     </div>
   </div>
