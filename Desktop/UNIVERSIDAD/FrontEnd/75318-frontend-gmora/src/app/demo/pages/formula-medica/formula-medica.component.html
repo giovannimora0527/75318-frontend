@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Fórmulas Médicas</h4>
+  <button class="btn btn-primary" (click)="abrirNuevaFormula()">Nueva Fórmula</button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Fecha</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Diagnóstico</th>
+        <th>Medicamento</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of formulas">
+        <td>{{ f.fecha }}</td>
+        <td>{{ f.idPaciente }}</td>
+        <td>{{ f.idMedico }}</td>
+        <td>{{ f.diagnostico }}</td>
+        <td>{{ f.medicamento }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditarFormula(f)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="!formulas || formulas.length === 0">
+        <td colspan="6" class="text-center text-muted">No hay fórmulas registradas</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalFormula" tabindex="-1" aria-labelledby="modalFormulaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalFormulaLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarFormula()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">ID Paciente</label>
+              <input type="number" class="form-control" formControlName="idPaciente" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">ID Médico</label>
+              <input type="number" class="form-control" formControlName="idMedico" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Fecha</label>
+              <input type="date" class="form-control" formControlName="fecha" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Diagnóstico</label>
+              <input type="text" class="form-control" formControlName="diagnostico" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Medicamento</label>
+            <input type="text" class="form-control" formControlName="medicamento" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Dosis</label>
+            <input type="text" class="form-control" formControlName="dosis" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Duración</label>
+            <input type="text" class="form-control" formControlName="duracion" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Indicaciones</label>
+            <textarea class="form-control" formControlName="indicaciones" rows="3"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

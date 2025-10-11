@@ -1,0 +1,9 @@
+export interface Medicamento {
+  id?: number;
+  nombre: string;
+  descripcion?: string;
+  presentacion?: string;
+  fechaCompra?: string; 
+  fechaVence?: string;  
+}
+
