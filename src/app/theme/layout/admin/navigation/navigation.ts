@@ -44,6 +44,46 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/paciente',
         icon: 'feather icon-user-check',
         classes: 'nav-item'
+      },
+      {
+        id: 'citas',
+        title: 'Citas',
+        type: 'item',
+        url: '/inicio/citas',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'medicamentos',
+        title: 'Medicamentos',
+        type: 'item',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formulas-medicas',
+        title: 'Formulas Medicas',
+        type: 'item',
+        url: '/inicio/formulas-medicas',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historias-medicas',
+        title: 'Historias Medicas',
+        type: 'item',
+        url: '/inicio/historias-medicas',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'especializacion',
+        title: 'Gestión de especializaciones',
+        type: 'item',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
       }
     ]
   },
