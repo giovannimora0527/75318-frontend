@@ -11,9 +11,9 @@ export interface NavigationItem {
   external?: boolean;
   target?: boolean;
   breadcrumbs?: boolean;
-
   children?: NavigationItem[];
 }
+
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
@@ -43,6 +43,22 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/inicio/paciente',
         icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'citas',
+        title: 'Gestión de Citas',
+        type: 'item',
+        url: '/inicio/citas',
+        icon: 'feather icon-calendar',
+        classes: 'nav-item'
+      },
+      {
+        id: 'recetas',
+        title: 'Gestión de Recetas',
+        type: 'item',
+        url: '/inicio/recetas',
+        icon: 'feather icon-file-text',
         classes: 'nav-item'
       }
     ]
