@@ -1,0 +1,71 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Gestión de Especializaciones</h4>
+  <button class="btn btn-primary" (click)="abrirNuevaEspecializacion()">Nueva Especialización</button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of especializaciones">
+        <td>{{ e.nombre }}</td>
+        <td>{{ e.descripcion || '-' }}</td>
+        <td>{{ e.estado }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditarEspecializacion(e)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="!especializaciones || especializaciones.length === 0">
+        <td colspan="4" class="text-center text-muted">No hay especializaciones registradas</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEspecializacion" tabindex="-1" aria-labelledby="modalEspecializacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalEspecializacionLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarEspecializacion()">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" formControlName="descripcion" rows="3"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select class="form-select" formControlName="estado">
+              <option value="Activa">Activa</option>
+              <option value="Inactiva">Inactiva</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

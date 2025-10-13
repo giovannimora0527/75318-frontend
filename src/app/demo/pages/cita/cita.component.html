@@ -1,0 +1,107 @@
+-><div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Gestión de Citas</h4>
+  <button class="btn btn-primary" (click)="abrirNuevaCita()">Nueva Cita</button>
+</div>
+
+<!-- Tabla -->
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Motivo</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Estado</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of citas">
+        <td>{{ c.fecha }}</td>
+        <td>{{ c.hora }}</td>
+        <td>{{ c.motivo }}</td>
+        <td>{{ c.idPaciente }}</td>
+        <td>{{ c.idMedico }}</td>
+        <td>{{ c.estado }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditarCita(c)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="!citas || citas.length === 0">
+        <td colspan="7" class="text-center text-muted">No hay citas registradas</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="modalCita"
+  tabindex="-1"
+  aria-labelledby="modalCitaLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCitaLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarCita()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Fecha</label>
+              <input type="date" class="form-control" formControlName="fecha" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Hora</label>
+              <input type="time" class="form-control" formControlName="hora" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Motivo</label>
+            <input type="text" class="form-control" formControlName="motivo" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Observaciones</label>
+            <textarea class="form-control" formControlName="observaciones" rows="2"></textarea>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">ID Paciente</label>
+              <input type="number" class="form-control" formControlName="idPaciente" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">ID Médico</label>
+              <input type="number" class="form-control" formControlName="idMedico" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select class="form-select" formControlName="estado">
+              <option value="Programada">Programada</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Completada">Completada</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
