@@ -9,4 +9,5 @@ export class Medico {
     telefono!: string;
     registroProfesional!: string;
     especializacion!: Especializacion;
+    especializacionId?: number;
 }

@@ -5,6 +5,11 @@ import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
+import { CitasComponent } from './demo/pages/citas/citas.component';
+import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
+import { FormulasMedicasComponent } from './demo/pages/formulas-medicas/formulas-medicas.component';
+import { HistoriasMedicasComponent } from './demo/pages/historias-medicas/historias-medicas.component';
+import { MedicamentosComponent } from './demo/pages/medicamentos/medicamentos.component';
 
 import { UsuariosComponent } from './pages/usuarios/usuarios.component';
 import { MedicosComponent } from './pages/medicos/medicos.component';
@@ -26,6 +31,7 @@ export const routes: Routes = [
     path: 'inicio',
     component: AdminComponent,
     data: { title: 'Inicio' },
+<<<<<<< HEAD
     children: [
       { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' } },
@@ -39,6 +45,17 @@ export const routes: Routes = [
       { path: 'formulas-medicas', component: FormulasMedicasComponent, data: { title: 'Fórmulas Médicas' } },
       { path: 'historias-medicas', component: HistoriasMedicasComponent, data: { title: 'Historias Médicas' } },
       { path: 'especializaciones', component: EspecializacionesComponent, data: { title: 'Especializaciones' } }
+=======
+    children: [      
+       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
+       { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
+       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
+       { path: 'citas', component: CitasComponent, data: { title: 'Citas' }},
+       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},
+       { path: 'formulas-medicas', component: FormulasMedicasComponent, data: { title: 'Formulas-Medicas' }},
+       { path: 'historias-medicas', component: HistoriasMedicasComponent, data: { title: 'Historias-Medicas' }},
+       { path: 'medicamentos', component: MedicamentosComponent, data: { title: 'Medicamentos' }}
+>>>>>>> origin/940985_josuegutierrez
     ]
   },
   { path: '**', redirectTo: 'inicio' }
