@@ -1,37 +1,32 @@
 // angular import
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-// project import
-import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { NavSearchComponent } from './nav-search/nav-search.component';
-
-//
+// librería para pantalla completa
 import screenfull from 'screenfull';
 
 @Component({
   selector: 'app-nav-left',
-  imports: [SharedModule],
   templateUrl: './nav-left.component.html',
   styleUrls: ['./nav-left.component.scss']
 })
 export class NavLeftComponent implements OnInit, OnDestroy {
   screenFull = true;
 
-  // life cycle hook
+  // ✅ handler fijo para evitar bucles infinitos
+  private screenfullHandler = () => {
+    this.screenFull = screenfull.isFullscreen;
+  };
+
   ngOnInit() {
     if (screenfull.isEnabled) {
-      this.screenFull = screenfull.isFullscreen; // Initialize based on current fullscreen state
-      screenfull.on('change', () => {
-        this.screenFull = screenfull.isFullscreen;
-      });
+      this.screenFull = screenfull.isFullscreen;
+      screenfull.on('change', this.screenfullHandler);
     }
   }
 
   ngOnDestroy() {
     if (screenfull.isEnabled) {
-      screenfull.off('change', () => {
-        this.screenFull = screenfull.isFullscreen;
-      });
+      screenfull.off('change', this.screenfullHandler);
     }
   }
 
@@ -43,3 +38,4 @@ export class NavLeftComponent implements OnInit, OnDestroy {
     }
   }
 }
+

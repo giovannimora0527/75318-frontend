@@ -1,19 +1,21 @@
-<header>
-  <div class="m-header" [style.display]="this.headerStyle">
-    <a class="mobile-menu" id="mobile-collapse1" href="javascript:" (click)="this.NavCollapsedMob.emit()"><span></span></a>
-    <a [routerLink]="['/dashboard/default']" class="b-brand">
-      <div class="b-bg">
-        <i class="feather icon-trending-up"></i>
-      </div>
-      <span class="b-title">Datta Able</span>
-    </a>
+<nav class="navbar pcoded-navbar">
+  <div class="navbar-wrapper">
+    <div class="navbar-content scroll-div">
+      <ul class="nav pcoded-inner-navbar">
+        <!-- Lado izquierdo -->
+        <li class="nav-item">
+          <app-nav-left></app-nav-left>
+        </li>
+
+        <!-- Espaciador -->
+        <li class="nav-item flex-grow-1"></li>
+
+        <!-- Lado derecho -->
+        <li class="nav-item">
+          <app-nav-right></app-nav-right>
+        </li>
+      </ul>
+    </div>
   </div>
-  <a class="mobile-menu" [ngClass]="{ on: this.menuClass }" id="mobile-header" href="javascript:" (click)="toggleMobOption()">
-    <i class="feather icon-more-horizontal"></i>
-  </a>
-  <div class="collapse navbar-collapse px-4" [style.display]="this.collapseStyle">
-    <app-nav-left class="me-auto" [style.display]="this.headerStyle" />
-    <app-nav-right class="ms-auto" />
-  </div>
-</header>
-<div class="pc-menu-overlay" (click)="closeMenu()" (keydown)="handleKeyDown($event)" tabindex="0"></div>
+</nav>
+
