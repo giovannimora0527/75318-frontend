@@ -1,91 +1,82 @@
 export interface NavigationItem {
-  id: string;
-  title: string;
-  type: 'item' | 'collapse' | 'group';
+  id?: string;
+  title?: string;
+  type: 'group' | 'collapse' | 'item'; // <-- Agregamos 'collapse'
   translate?: string;
   icon?: string;
   hidden?: boolean;
   url?: string;
-  classes?: string;
-  exactMatch?: boolean;
-  external?: boolean;
-  target?: boolean;
+  classes?: string; // <-- NUEVO
+  target?: boolean; // <-- NUEVO
+  external?: boolean; // <-- NUEVO
   breadcrumbs?: boolean;
-
   children?: NavigationItem[];
 }
+
 export const NavigationItems: NavigationItem[] = [
   {
-    id: 'navigation',
-    title: 'Inicio',
+    id: 'gestion',
+    title: 'Gestión Clínica',
     type: 'group',
-    icon: 'icon-navigation',
+    icon: 'feather icon-layers',
     children: [
       {
-        id: 'usuario',
-        title: 'Gestión de Usuarios',
+        id: 'usuarios',
+        title: 'Usuarios',
         type: 'item',
         url: '/inicio/usuario',
-        icon: 'feather icon-user',
-        classes: 'nav-item'
+        icon: 'feather icon-users',
+        classes: '',
       },
       {
-        id: 'medico',
-        title: 'Gestión de Medicos',
+        id: 'medicos',
+        title: 'Médicos',
         type: 'item',
         url: '/inicio/medico',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
+        icon: 'feather icon-user',
+        classes: '',
       },
       {
-        id: 'paciente',
-        title: 'Gestión de Pacientes',
+        id: 'pacientes',
+        title: 'Pacientes',
         type: 'item',
         url: '/inicio/paciente',
         icon: 'feather icon-user-check',
-        classes: 'nav-item'
+        classes: '',
       },
       {
         id: 'citas',
         title: 'Citas',
         type: 'item',
         url: '/inicio/citas',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
+        icon: 'feather icon-calendar',
+        classes: '',
       },
       {
         id: 'medicamentos',
         title: 'Medicamentos',
         type: 'item',
         url: '/inicio/medicamentos',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
+        icon: 'feather icon-layers',
+        classes: '',
       },
       {
         id: 'formulas-medicas',
-        title: 'Formulas Medicas',
+        title: 'Fórmulas Médicas',
         type: 'item',
         url: '/inicio/formulas-medicas',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
+        icon: 'feather icon-file-text',
+        classes: '',
       },
       {
         id: 'historias-medicas',
-        title: 'Historias Medicas',
+        title: 'Historias Médicas',
         type: 'item',
         url: '/inicio/historias-medicas',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
-      },
-      {
-        id: 'especializacion',
-        title: 'Gestión de especializaciones',
-        type: 'item',
-        url: '/inicio/especializacion',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
+        icon: 'feather icon-book-open',
+        classes: '',
       }
     ]
-  },
-  /* ---------- Nuevos menus aqui -------------  */
+  }
 ];
+

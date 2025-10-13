@@ -1,32 +1,31 @@
-// angular import
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
-// librería para pantalla completa
 import screenfull from 'screenfull';
+import { CommonModule } from '@angular/common'; // 👈 Asegúrate de importar esto
 
 @Component({
   selector: 'app-nav-left',
+  standalone: true, // 👈 Usa standalone si tu proyecto lo permite
+  imports: [CommonModule], // 👈 Necesario para usar ngClass
   templateUrl: './nav-left.component.html',
   styleUrls: ['./nav-left.component.scss']
 })
 export class NavLeftComponent implements OnInit, OnDestroy {
-  screenFull = true;
-
-  // ✅ handler fijo para evitar bucles infinitos
-  private screenfullHandler = () => {
-    this.screenFull = screenfull.isFullscreen;
-  };
+  screenFull = false;
 
   ngOnInit() {
     if (screenfull.isEnabled) {
       this.screenFull = screenfull.isFullscreen;
-      screenfull.on('change', this.screenfullHandler);
+      screenfull.on('change', () => {
+        this.screenFull = screenfull.isFullscreen;
+      });
     }
   }
 
   ngOnDestroy() {
     if (screenfull.isEnabled) {
-      screenfull.off('change', this.screenfullHandler);
+      screenfull.off('change', () => {
+        this.screenFull = screenfull.isFullscreen;
+      });
     }
   }
 
@@ -38,4 +37,5 @@ export class NavLeftComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 
