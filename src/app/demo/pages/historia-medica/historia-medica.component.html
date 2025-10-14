@@ -3,12 +3,12 @@
     <div class="card-header">
       <div class="d-flex justify-content-between align-items-center">
         <h3>
-          <i class="fa fa-file-prescription"></i>
-          &nbsp;Lista de Fórmulas Médicas
+          <i class="fa fa-notes-medical"></i>
+          &nbsp;Lista de Historias Médicas
         </h3>
-        <button class="btn btn-outline-primary" (click)="abrirNuevaFormula()">
+        <button class="btn btn-outline-primary" (click)="abrirNuevaHistoria()">
           <i class="fa fa-plus"></i>
-          Nueva Fórmula
+          Nueva Historia
         </button>
       </div>
     </div>
@@ -18,25 +18,23 @@
           <thead>
             <tr>
               <th>Id</th>
-              <th>Fecha</th>
+              <th>Fecha Creación</th>
               <th>Paciente</th>
-              <th>Médico</th>
-              <th>Diagnóstico</th>
-              <th>Indicaciones</th>
+              <th>Alergias</th>
+              <th>Enfermedades Crónicas</th>
               <th>Acción</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let formula of formulaList">
-              <td>{{ formula.id }}</td>
-              <td>{{ formula.fecha }}</td>
-              <td>{{ formula.paciente?.nombres }} {{ formula.paciente?.apellidos }}</td>
-              <td>{{ formula.medico?.nombres }} {{ formula.medico?.apellidos }}</td>
-              <td>{{ formula.diagnostico }}</td>
-              <td>{{ formula.indicaciones }}</td>
+            <tr *ngFor="let historia of historiaList">
+              <td>{{ historia.id }}</td>
+              <td>{{ historia.fechaCreacion }}</td>
+              <td>{{ historia.paciente?.nombres }} {{ historia.paciente?.apellidos }}</td>
+              <td>{{ historia.alergias || 'Ninguna' }}</td>
+              <td>{{ historia.enfermedadesCronicas || 'Ninguna' }}</td>
               <td>
-                <button type="button" class="btn btn-outline-primary" title="Editar fórmula"
-                  (click)="editarFormula(formula)">
+                <button type="button" class="btn btn-outline-primary" title="Editar historia"
+                  (click)="editarHistoria(historia)">
                   <i class="fa fa-edit"></i>
                 </button>
               </td>
@@ -48,12 +46,12 @@
   </div>
 </div>
 
-<!-- Modal para crear/editar fórmula médica -->
-<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaLabel" aria-hidden="true">
+<!-- Modal para crear/editar historia médica -->
+<div class="modal fade" id="modalCrearHistoria" tabindex="-1" aria-labelledby="modalCrearHistoriaLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modalCrearFormulaLabel">
+        <h1 class="modal-title fs-5" id="modalCrearHistoriaLabel">
           {{ titleModal }}
         </h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -61,14 +59,15 @@
       <div class="modal-body">
         <div class="row">
           <div class="col">
-            <p>Formulario de fórmula médica pendiente de implementar</p>
+            <p>Formulario de historia médica pendiente de implementar</p>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarFormula()">{{ titleBoton }}</button>
+        <button type="button" class="btn btn-primary" (click)="guardarHistoria()">{{ titleBoton }}</button>
       </div>
     </div>
   </div>
 </div>
+

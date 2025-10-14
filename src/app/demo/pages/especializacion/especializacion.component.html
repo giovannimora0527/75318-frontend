@@ -1,1 +1,77 @@
-<p>especializacion works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>
+          <i class="fa fa-user-graduate"></i>
+          &nbsp;Lista de Especializaciones
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevaEspecializacion()">
+          <i class="fa fa-plus"></i>
+          Nueva Especialización
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Duración (años)</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let especializacion of especializacionList">
+              <td>{{ especializacion.id }}</td>
+              <td>{{ especializacion.nombre }}</td>
+              <td>{{ especializacion.descripcion }}</td>
+              <td>{{ especializacion.duracionAnios }}</td>
+              <td>
+                <span class="badge" [ngClass]="{'bg-success': especializacion.activa, 'bg-secondary': !especializacion.activa}">
+                  {{ especializacion.activa ? 'Activa' : 'Inactiva' }}
+                </span>
+              </td>
+              <td>
+                <button type="button" class="btn btn-outline-primary" title="Editar especialización"
+                  (click)="editarEspecializacion(especializacion)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para crear/editar especialización -->
+<div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-labelledby="modalCrearEspecializacionLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearEspecializacionLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <p>Formulario de especialización pendiente de implementar</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarEspecializacion()">{{ titleBoton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
