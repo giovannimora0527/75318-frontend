@@ -16,4 +16,12 @@ export class MedicoService {
   listarMedicos(): Observable<Medico[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
+
+  guardarMedico(medico: Medico): Observable<any> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', medico);
+  }
+
+  actualizarMedico(medico: Medico): Observable<any> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', medico);
+  }
 }

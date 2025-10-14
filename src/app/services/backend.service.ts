@@ -45,6 +45,9 @@ import { Observable } from 'rxjs';
  * @param data Archivo o datos a enviar en el cuerpo de la petición.
  */
 export class BackendService {
+  delete(urlBase: string, endpoint: string, arg2: string, arg3: { id: number; }): Observable<import("../demo/pages/usuario/models/respuesta-rs").RespuestaRs> {
+    throw new Error('Method not implemented.');
+  }
   constructor(private http: HttpClient) { }
 
   construirHeader() {

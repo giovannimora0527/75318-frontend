@@ -23,8 +23,12 @@ export class UsuarioService {
   }
 
   actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {
+    // POST a /usuario/actualizar
     return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', usuario);
-  } 
+  }
 
-
+  eliminarUsuario(id: number): Observable<RespuestaRs> {
+    // DELETE a /usuario/eliminar?id=ID
+    return this.backendService.delete(this.urlBase, this.endpoint, 'eliminar', { id });
+  }
 }
