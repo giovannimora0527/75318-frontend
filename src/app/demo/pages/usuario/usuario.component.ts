@@ -110,8 +110,7 @@ export class UsuarioComponent {
    */
   guardarUsuario() {
     this.titleSpinner = this.modoFormulario === 'C' ? "Creando usuario..." : "Actualizando usuario...";
-    this.spinner.show();
-    console.log(this.form);
+    this.spinner.show();   
     if (this.modoFormulario === 'C') {
       this.form.get('activo')?.setValue(true);
     }
