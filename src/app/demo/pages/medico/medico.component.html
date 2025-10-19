@@ -1,12 +1,19 @@
+<<<<<<< HEAD
 <ngx-spinner type="ball-fussion" size="medium" color="#fff">
   <p>{{ titleSpinner }}</p>
 </ngx-spinner>
 
+=======
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
 <div class="container">
   <div class="card">
     <div class="card-header">
       <div class="d-flex justify-content-between align-items-center">
+<<<<<<< HEAD
         <h3>
+=======
+        <h3 class="mb-0">
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
           <i class="fa fa-user-md"></i>
           &nbsp;Lista de médicos
         </h3>
@@ -43,18 +50,35 @@
               <td>{{ medico.registroProfesional }}</td>
               <td>{{ medico.especializacion.nombre }}</td>
               <td>
+<<<<<<< HEAD
                 <button type="button" class="btn btn btn-outline-primary" title="Editar médico" (click)="editarModalMedico(medico)">
                   <i class="fa fa-edit"></i>
                 </button>
               </td>
             </tr>
           </tbody>
+=======
+                <button type="button" class="btn btn btn-outline-primary" title="Editar médico"
+                (click)="editarModalMedico(medico)"><i class="fa fa-edit"></i></button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="medicoList && medicoList.length === 0">
+           <tr>
+              <td colspan="9" class="text-center">No hay médicos disponibles.</td>
+           </tr>
+          </tbody>
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
         </table>
       </div>
     </div>
   </div>
 </div>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
 <!-- Modal para nuevo medico -->
 <div class="modal fade" id="modalCrearMedico" tabindex="-1" aria-labelledby="modalCrearMedicoLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -68,6 +92,7 @@
       <div class="modal-body">
         <div class="row">
           <div class="col">
+<<<<<<< HEAD
             <form [formGroup]="form">
               <!--  Tipo de documento -->
               <div class="mb-3">
@@ -175,6 +200,112 @@
                  
                 </select>                
               </div>
+=======
+            <form [formGroup]>
+              <!-- Tipo de Documento -->
+            <div class="mb-3">
+              <label for="tipoDocumento" class="form-label">Tipo de Documento <span class="text-danger">*</span></label>
+              <select formControlName="tipoDocumento" class="form-control" id="tipoDocumento">
+                <option value="" disabled>Seleccione el tipo de documento</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="TI">Tarjeta de Identidad</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="PA">Pasaporte</option>
+              </select>
+              <div *ngIf="f['tipoDocumento'].hasError('required') && f['tipoDocumento'].touched" class="text-danger">
+                El tipo de documento es requerido.
+              </div>
+            </div>
+<!-- Número de Documento -->
+            <div class="mb-3">
+              <label for="documento" class="form-label">Número de Documento <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                formControlName="documento" 
+                class="form-control" 
+                id="documento" 
+                placeholder="Ingrese el número de documento"
+              />
+              <div *ngIf="f['documento'].hasError('required') && f['documento'].touched" class="text-danger">
+                El número de documento es requerido.
+              </div>
+              <div *ngIf="f['documento'].hasError('minlength') && f['documento'].touched" class="text-danger">
+                Debe tener mínimo 6 caracteres.
+              </div>
+            </div>
+<!-- Nombres -->
+            <div class="mb-3">
+              <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                formControlName="nombres" 
+                class="form-control" 
+                id="nombres" 
+                placeholder="Ingrese los nombres"
+              />
+              <div *ngIf="f['nombres'].hasError('required') && f['nombres'].touched" class="text-danger">
+                Los nombres son requeridos.
+              </div>
+            </div>
+<!-- Apellidos -->
+            <div class="col-md-6 mb-3">
+              <label for="apellidos" class="form-label">Apellidos <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                formControlName="apellidos" 
+                class="form-control" 
+                id="apellidos" 
+                placeholder="Ingrese los apellidos"
+              />
+              <div *ngIf="f['apellidos'].hasError('required') && f['apellidos'].touched" class="text-danger">
+                Los apellidos son requeridos.
+              </div>
+            </div>
+<!-- Teléfono -->
+            <div class="mb-3">
+              <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                formControlName="telefono" 
+                class="form-control" 
+                id="telefono" 
+                placeholder="3001234567"
+              />
+              <div *ngIf="f['telefono'].hasError('required') && f['telefono'].touched" class="text-danger">
+                El teléfono es requerido.
+              </div>
+              <div *ngIf="f['telefono'].hasError('pattern') && f['telefono'].touched" class="text-danger">
+                El teléfono debe tener 10 dígitos.
+              </div>
+            </div>
+<!-- Registro Profesional -->
+            <div class="mb-3">
+              <label for="registroProfesional" class="form-label">Registro Profesional <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                formControlName="registroProfesional" 
+                class="form-control" 
+                id="registroProfesional" 
+                placeholder="RP-1234"
+              />
+              <div *ngIf="f['registroProfesional'].hasError('required') && f['registroProfesional'].touched" class="text-danger">
+                El registro profesional es requerido.
+              </div>
+            </div>
+<!-- Especialización -->
+            <div class="mb-3">
+              <label for="especializacionId" class="form-label">Especialización <span class="text-danger">*</span></label>
+              <select formControlName="especializacionId" class="form-control" id="especializacionId">
+                <option value="" disabled>Seleccione una especialización</option>
+                <option *ngFor="let esp of especializacionList" [value]="esp.id">
+                  {{ esp.nombre }}
+                </option>
+              </select>
+              <div *ngIf="f['especializacionId'].hasError('required') && f['especializacionId'].touched" class="text-danger">
+                La especialización es requerida.
+              </div>
+            </div>
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
             </form>
           </div>
         </div>
@@ -185,4 +316,8 @@
       </div>
     </div>
   </div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3

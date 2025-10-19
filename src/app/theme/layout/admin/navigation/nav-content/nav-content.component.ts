@@ -4,7 +4,11 @@ import { Location } from '@angular/common';
 
 // project import
 import { environment } from 'src/environments/environment';
+<<<<<<< HEAD
 import { NavigationItem, NavigationItems } from '../navigation';
+=======
+import { NavigationItem, NavigationItems } from 'src/app/theme/layout/admin/navigation/navigation'; // ✅ RUTA CORREGIDA
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavGroupComponent } from './nav-group/nav-group.component';
 
@@ -17,8 +21,11 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
 export class NavContentComponent {
   private location = inject(Location);
 
+<<<<<<< HEAD
   // public method
   // version
+=======
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
   title = 'Demo application for version numbering';
   currentApplicationVersion = environment.appVersion;
 
@@ -28,8 +35,13 @@ export class NavContentComponent {
 
   NavCollapsedMob = output();
 
+<<<<<<< HEAD
   // constructor
   constructor() {
+=======
+  constructor() {
+    // ✅ Aquí cargamos los items del menú correctamente
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
     this.navigations = NavigationItems;
   }
 
@@ -42,6 +54,7 @@ export class NavContentComponent {
     const ele = document.querySelector(link);
     if (ele !== null && ele !== undefined) {
       const parent = ele.parentElement;
+<<<<<<< HEAD
       const up_parent = parent.parentElement.parentElement;
       const last_parent = up_parent.parentElement;
       if (parent.classList.contains('pcoded-hasmenu')) {
@@ -53,7 +66,21 @@ export class NavContentComponent {
       } else if (last_parent.classList.contains('pcoded-hasmenu')) {
         last_parent.classList.add('pcoded-trigger');
         last_parent.classList.add('active');
+=======
+      const up_parent = parent.parentElement?.parentElement;
+      const last_parent = up_parent?.parentElement;
+      if (parent?.classList.contains('pcoded-hasmenu')) {
+        parent.classList.add('pcoded-trigger', 'active');
+      } else if (up_parent?.classList.contains('pcoded-hasmenu')) {
+        up_parent.classList.add('pcoded-trigger', 'active');
+      } else if (last_parent?.classList.contains('pcoded-hasmenu')) {
+        last_parent.classList.add('pcoded-trigger', 'active');
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
       }
     }
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3

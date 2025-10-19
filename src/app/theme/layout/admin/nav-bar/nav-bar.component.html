@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <header>
   <div class="m-header" [style.display]="this.headerStyle">
     <a class="mobile-menu" id="mobile-collapse1" href="javascript:" (click)="this.NavCollapsedMob.emit()"><span></span></a>
@@ -17,3 +18,26 @@
   </div>
 </header>
 <div class="pc-menu-overlay" (click)="closeMenu()" (keydown)="handleKeyDown($event)" tabindex="0"></div>
+=======
+<nav class="navbar pcoded-navbar">
+  <div class="navbar-wrapper">
+    <div class="navbar-content scroll-div">
+      <ul class="nav pcoded-inner-navbar">
+        <!-- Lado izquierdo -->
+        <li class="nav-item">
+          <app-nav-left></app-nav-left>
+        </li>
+
+        <!-- Espaciador -->
+        <li class="nav-item flex-grow-1"></li>
+
+        <!-- Lado derecho -->
+        <li class="nav-item">
+          <app-nav-right></app-nav-right>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3

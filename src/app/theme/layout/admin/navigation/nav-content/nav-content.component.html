@@ -4,9 +4,19 @@
     <ul class="nav pcoded-inner-navbar" (clickOutside)="fireOutClick()">
       @for (item of navigations; track item) {
         @if (item.type === 'group') {
+<<<<<<< HEAD
           <app-nav-group [item]="item" />
         }
       }
     </ul>   
   </div>
 </ng-scrollbar>
+=======
+         <app-nav-group [item]="item" />
+        }
+      }
+    </ul>
+  </div>
+</ng-scrollbar>
+
+>>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
