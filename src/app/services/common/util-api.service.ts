@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { BackendService } from '../backend.service';
 import { Especializacion } from 'src/app/demo/pages/medico/models/especializacion';
 import { Observable } from 'rxjs';
+import { Usuario } from 'src/app/models/usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +15,9 @@ export class UtilApiService {
 
   listarEspecializaciones(): Observable<Especializacion[]> {
     return this.backendService.get(this.urlBase, 'especializacion', 'listar');
+  }
+
+  listarUsuarios(): Observable<Usuario[]> {
+    return this.backendService.get(this.urlBase, 'usuario', 'listar');
   }
 }
