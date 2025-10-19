@@ -22,6 +22,8 @@ export class PacienteComponent {
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   pacientes: Paciente[] = [];
+  pacientesOriginal: Paciente[] = []; // Guarda la lista original filtros*
+  pacientesFiltrados: Paciente[] = []; // Lista filtrada para mostrar filtros*
   titleModal: string = '';
   titleBoton: string = '';
   pacienteSelected: Paciente;
@@ -62,6 +64,7 @@ export class PacienteComponent {
     this.pacienteService.listarPaciente().subscribe({
       next: (data) => {
         this.pacientes = data;
+        this.pacientesFiltrados = [...data];//filtros*
         console.log('Pacientes:', this.pacientes);
         this.spinner.hide();
       },
@@ -175,4 +178,87 @@ export class PacienteComponent {
     this.form.markAsPristine();
     this.form.markAsUntouched();
   }
+//filtros*
+ filtrarTabla(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const texto = input.value.toLowerCase().trim();
+  
+  if (!texto) {
+    this.pacientesFiltrados = [...this.pacientes];
+    return;
+  }
+
+  this.pacientesFiltrados = this.pacientes.filter(paciente => 
+    paciente.id.toString().includes(texto) ||
+    paciente.usuarioId.toString().includes(texto) ||
+    (paciente.tipoDocumento && paciente.tipoDocumento.toLowerCase().includes(texto)) ||
+    (paciente.numeroDocumento && paciente.numeroDocumento.toLowerCase().includes(texto)) ||
+    (paciente.nombres && paciente.nombres.toLowerCase().includes(texto)) ||
+    (paciente.apellidos && paciente.apellidos.toLowerCase().includes(texto)) ||
+    (paciente.fechaNacimiento && paciente.fechaNacimiento.includes(texto)) ||
+    (paciente.genero && paciente.genero.toLowerCase().includes(texto)) ||
+    (paciente.telefono && paciente.telefono.includes(texto)) ||
+    (paciente.direccion && paciente.direccion.toLowerCase().includes(texto))
+  );
+}
+
+// Filtro por campo específico
+filtrarPorCampo(campo: keyof Paciente, event: Event) {
+  const select = event.target as HTMLSelectElement;
+  const valor = select.value;
+  
+  if (!valor) {
+    this.pacientesFiltrados = [...this.pacientes];
+    return;
+  }
+
+  this.pacientesFiltrados = this.pacientes.filter(paciente => 
+    paciente[campo] === valor
+  );
+}
+
+// Ordenar la tabla
+ordenarTabla(event: Event) {
+  const select = event.target as HTMLSelectElement;
+  const criterio = select.value;
+  
+  if (!criterio) {
+    this.pacientesFiltrados = [...this.pacientes];
+    return;
+  }
+
+  this.pacientesFiltrados = [...this.pacientesFiltrados].sort((a, b) => {
+    switch (criterio) {
+      case 'nombres':
+        return a.nombres.localeCompare(b.nombres);
+      case 'nombres_desc':
+        return b.nombres.localeCompare(a.nombres);
+      case 'fechaNacimiento':
+        return new Date(a.fechaNacimiento).getTime() - new Date(b.fechaNacimiento).getTime();
+      case 'fechaNacimiento_desc':
+        return new Date(b.fechaNacimiento).getTime() - new Date(a.fechaNacimiento).getTime();
+      case 'id':
+        return a.id - b.id;
+      case 'id_desc':
+        return b.id - a.id;
+      default:
+        return 0;
+    }
+  });
+}
+
+// Limpiar todos los filtros
+limpiarFiltros() {
+  this.pacientesFiltrados = [...this.pacientes];
+  
+  // Limpiar inputs con tipos específicos
+  const inputs = document.querySelectorAll('input, select');
+  inputs.forEach((input: Element) => {
+    if (input instanceof HTMLInputElement && input.type === 'text') {
+      input.value = '';
+    } else if (input instanceof HTMLSelectElement) {
+      input.value = '';
+    }
+  });
+}
 }
