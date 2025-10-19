@@ -3,23 +3,18 @@ import { PacienteService } from './service/paciente.service';
 import { Paciente } from './models/paciente';
 import { CommonModule } from '@angular/common';
 
+// Import library module
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
 
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
-//import { delay, map, Observable, of } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-paciente',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './paciente.component.html',
   styleUrl: './paciente.component.scss'
 })
@@ -30,12 +25,15 @@ export class PacienteComponent {
   titleModal: string = '';
   titleBoton: string = '';
   pacienteSelected: Paciente;
+  titleSpinner: string = "Cargando...";
 
   form: FormGroup;
 
-    constructor(
+  constructor(
     private readonly pacienteService: PacienteService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
+
   ) {
     this.listarPacientes();
     this.inicializarFormulario();
@@ -43,6 +41,7 @@ export class PacienteComponent {
 
   inicializarFormulario() {
     this.form = this.formBuilder.group({
+      usuarioId: ['', [Validators.required]],
       tipoDocumento: ['', [Validators.required]],
       numeroDocumento: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
       nombres: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -59,15 +58,16 @@ export class PacienteComponent {
   }
 
   listarPacientes() {
-    console.log('Listando Pacientes...');
+    this.spinner.show();
     this.pacienteService.listarPaciente().subscribe({
       next: (data) => {
         this.pacientes = data;
         console.log('Pacientes:', this.pacientes);
+        this.spinner.hide();
       },
       error: (error) => {
         console.error('Error al listar pacientes', error);
-        Swal.fire('Error', 'No se pudieron cargar los pacientes', 'error');
+        this.spinner.hide();
       }
     });
   }
@@ -79,7 +79,7 @@ export class PacienteComponent {
     this.limpiarFormulario();
   }
 
-  openModal(modo: string) {    
+  openModal(modo: string) {
     this.titleModal = modo === 'C' ? 'Crear Paciente' : 'Editar Paciente';
     this.titleBoton = modo === 'C' ? 'Guardar Paciente' : 'Actualizar Paciente';
     this.modoFormulario = modo;
@@ -93,85 +93,68 @@ export class PacienteComponent {
 
   abrirNuevoPaciente() {
     this.pacienteSelected = null;
-    this.limpiarFormulario();
     this.openModal('C');
   }
 
   abrirEditarPaciente(paciente: Paciente) {
     this.pacienteSelected = paciente;
-    this.cargarDatosFormulario(paciente);
     this.openModal('E');
-  }
-
-  /**
-   * Carga los datos del paciente en el formulario para edición
-   */
-  cargarDatosFormulario(paciente: Paciente) {
-    this.form.patchValue({
-      tipoDocumento: paciente.tipoDocumento,
-      numeroDocumento: paciente.numeroDocumento,
-      nombres: paciente.nombres,
-      apellidos: paciente.apellidos,
-      fechaNacimiento: paciente.fechaNacimiento,
-      genero: paciente.genero,
-      telefono: paciente.telefono,
-      direccion: paciente.direccion
-    });
   }
 
   /**
    * Funcion que permite guardar/actualizar un paciente.
    */
   guardarPaciente() {
-    console.log('Formulario válido:', !this.form.invalid);
-    console.log('Datos del formulario:', this.form.value);
-    
+    this.titleSpinner = this.modoFormulario === 'C' ? "Creando paciente..." : "Actualizando paciente...";
+    this.spinner.show();
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo')?.setValue(true);
+    }
     if (this.form.invalid) {
       // Manejar el formulario inválido
+      this.spinner.hide();
       Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
-      this.form.markAllAsTouched(); // Marca todos los campos como tocados para mostrar errores
       return;
     }
 
     if (this.modoFormulario === 'C') {
       // Modo Creación
-      const pacienteNuevo: Paciente = this.form.getRawValue();
-      
-      this.pacienteService.guardarPaciente(pacienteNuevo).subscribe({
+      this.pacienteService.guardarPaciente(this.form.getRawValue()).subscribe({
         next: (data) => {
-          console.log(data);
           if (data.status === 200) {
+            this.spinner.hide();
             Swal.fire('Éxito', data.mensaje, 'success');
             this.closeModal();
             this.listarPacientes();
           } else {
+            this.spinner.hide();
             Swal.fire('Error', data.mensaje, 'error');
           }
         },
         error: (error) => {
-          console.error('Error al guardar paciente', error);
-          Swal.fire('Error', error.error?.message || 'Error al guardar el paciente', 'error');
+          this.spinner.hide();
+          Swal.fire('Error', error.error.message, 'error');
         }
       });
     } else {
       // Modo Edición
       const pacienteActualizado: Paciente = this.form.getRawValue();
-      pacienteActualizado.id = this.pacienteSelected!.id;
-      
+      pacienteActualizado.id = this.pacienteSelected.id;
       this.pacienteService.actualizarPaciente(pacienteActualizado).subscribe({
         next: (data) => {
-          console.log(data);
           if (data.status === 200) {
+            this.spinner.hide();
             Swal.fire('Éxito', data.mensaje, 'success');
             this.closeModal();
             this.listarPacientes();
           } else {
+            this.spinner.hide();
             Swal.fire('Error', data.mensaje, 'error');
           }
         },
         error: (error) => {
-          console.error('Error al actualizar paciente', error);
-          Swal.fire('Error', error.error?.message || 'Error al actualizar el paciente', 'error');
+          this.spinner.hide();
+          Swal.fire('Error', error.error.message, 'error');
         }
       });
     }
@@ -179,14 +162,15 @@ export class PacienteComponent {
 
   limpiarFormulario() {
     this.form.reset({
-      tipoDocumento: '',
-      numeroDocumento: '',
-      nombres: '',
-      apellidos: '',
-      fechaNacimiento: '',
-      genero: '',
-      telefono: '',
-      direccion: ''
+      usuarioId: this.pacienteSelected ? this.pacienteSelected.usuarioId : '',
+      tipoDocumento: this.pacienteSelected ? this.pacienteSelected.tipoDocumento : '',
+      numeroDocumento: this.pacienteSelected ? this.pacienteSelected.numeroDocumento : '',
+      nombres: this.pacienteSelected ? this.pacienteSelected.nombres : '',
+      apellidos: this.pacienteSelected ? this.pacienteSelected.apellidos : '',
+      fechaNacimiento: this.pacienteSelected ? this.pacienteSelected.fechaNacimiento : '',
+      genero: this.pacienteSelected ? this.pacienteSelected.genero : '',
+      telefono: this.pacienteSelected ? this.pacienteSelected.telefono : '',
+      direccion: this.pacienteSelected ? this.pacienteSelected.direccion : ''
     });
     this.form.markAsPristine();
     this.form.markAsUntouched();
