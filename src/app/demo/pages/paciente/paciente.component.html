@@ -1,1 +1,175 @@
-<p>paciente works!</p>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container mt-4">
+  <div class="card shadow-lg rounded-xl">
+    <!-- Encabezado de la Tarjeta de Listado -->
+    <div class="card-header bg-gray-50 border-b border-gray-200 p-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+          <i class="fa fa-users text-indigo-600"></i>
+          <span>Lista de Pacientes</span>
+        </h3>
+        
+        <!-- CORRECCIÓN: Se cambió 'space-x-3' a 'gap-4' para una mejor organización visual -->
+        <div class="flex items-center gap-4">
+          <!-- Input para Filtro Global -->
+          <div class="w-48 md:w-64"> <!-- Contenedor de ancho fijo/responsive para el input -->
+            <input 
+              type="text" 
+              placeholder="Buscar por nombre, documento..." 
+              class="form-control rounded-lg shadow-sm p-2 text-sm border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 w-full" 
+              [(ngModel)]="filtroGlobal"
+              [ngModelOptions]="{standalone: true}"
+            >
+          </div>
+          
+
+          <!-- Botón de Nuevo Paciente -->
+          <button type="button" class="btn btn-primary bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md flex-shrink-0" (click)="nuevoPaciente()">
+            <i class="fa fa-plus-circle"></i> 
+            Nuevo Paciente
+          </button>
+          
+         
+        </div>
+      </div>
+    </div>
+    
+    <!-- Cuerpo de la Tarjeta (Tabla) -->
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="text-sm font-semibold text-gray-600">Id</th>
+              <th class="text-sm font-semibold text-gray-600">Tipo de doc.</th>
+              <th class="text-sm font-semibold text-gray-600"># Documento</th>
+              <th class="text-sm font-semibold text-gray-600">Nombres</th>
+              <th class="text-sm font-semibold text-gray-600">Apellidos</th>
+              <th class="text-sm font-semibold text-gray-600">F. Nacimiento</th>
+              <th class="text-sm font-semibold text-gray-600">Teléfono</th>
+              <th class="text-sm font-semibold text-gray-600">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Listado dinámico de pacientes filtrados -->
+            <tr *ngFor="let paciente of pacientesFiltrados">
+              <td>{{ paciente.id }}</td>
+              <td>{{ paciente.tipoDocumento }}</td>
+              <td>{{ paciente.numeroDocumento }}</td>
+              <td>{{ paciente.nombres }}</td>
+              <td>{{ paciente.apellidos }}</td>
+              <!-- Se asume que el pipe 'date' está disponible a través de CommonModule -->
+              <td>{{ paciente.fechaNacimiento | date:'yyyy-MM-dd' }}</td>
+              <td>{{ paciente.telefono }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <!-- Botón Editar -->
+                  <button type="button" class="btn btn-outline-primary" title="Editar paciente"
+                    (click)="editarModalPaciente(paciente)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <!-- Botón Eliminar: ELIMINADO PARA CORREGIR EL ERROR TS2339 -->
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Mensaje si la lista está vacía -->
+        <div *ngIf="pacientesFiltrados.length === 0" class="alert alert-info text-center rounded-lg shadow-sm" role="alert">
+          No hay pacientes disponibles o la búsqueda no arrojó resultados.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para editar/guardar paciente -->
+<div class="modal fade" id="modalPaciente" tabindex="-1" aria-labelledby="modalPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-xl shadow-2xl">
+      <!-- Encabezado del Modal -->
+      <div class="modal-header bg-indigo-50 border-b border-indigo-200 p-4">
+        <h1 class="modal-title fs-5 font-bold text-indigo-700" id="modalPacienteLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      
+      <!-- Formulario con Reactive Forms -->
+      <form [formGroup]="pacienteForm" (ngSubmit)="guardarPaciente()">
+        <div class="modal-body p-4">
+          <input type="hidden" formControlName="id">
+          <input type="hidden" formControlName="usuarioId">
+
+          <!-- Fila 1: Nombres y Apellidos -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="nombres" class="form-label font-medium text-gray-700">Nombres</label>
+              <input type="text" id="nombres" class="form-control rounded-lg" formControlName="nombres" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="apellidos" class="form-label font-medium text-gray-700">Apellidos</label>
+              <input type="text" id="apellidos" class="form-control rounded-lg" formControlName="apellidos" required>
+            </div>
+          </div>
+
+          <!-- Fila 2: Tipo y Número de Documento -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="tipoDocumento" class="form-label font-medium text-gray-700">Tipo de Documento</label>
+              <select id="tipoDocumento" class="form-select rounded-lg" formControlName="tipoDocumento" required>
+                <option value="" disabled>Seleccione...</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="TI">Tarjeta de Identidad</option>
+                <option value="RC">Registro Civil</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="numeroDocumento" class="form-label font-medium text-gray-700">Número de Documento</label>
+              <input type="text" id="numeroDocumento" class="form-control rounded-lg" formControlName="numeroDocumento" required>
+            </div>
+          </div>
+
+          <!-- Fila 3: Fecha, Género, Teléfono -->
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="fechaNacimiento" class="form-label font-medium text-gray-700">F. Nacimiento</label>
+              <input type="date" id="fechaNacimiento" class="form-control rounded-lg" formControlName="fechaNacimiento" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="genero" class="form-label font-medium text-gray-700">Género</label>
+              <select id="genero" class="form-select rounded-lg" formControlName="genero">
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="O">Otro</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="telefono" class="form-label font-medium text-gray-700">Teléfono</label>
+              <input type="text" id="telefono" class="form-control rounded-lg" formControlName="telefono">
+            </div>
+          </div>
+
+          <!-- Dirección -->
+          <div class="mb-3">
+            <label for="direccion" class="form-label font-medium text-gray-700">Dirección</label>
+            <input type="text" id="direccion" class="form-control rounded-lg" formControlName="direccion">
+          </div>
+        </div>
+        
+        <!-- Pie de Modal -->
+        <div class="modal-footer border-t border-gray-100 p-3">
+          <button type="button" class="btn btn-secondary rounded-lg" (click)="closeModal()">Cerrar</button>
+          
+          <button type="submit" class="btn btn-primary bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg" [disabled]="pacienteForm.invalid">
+            <i class="fa fa-save"></i> {{ titleBoton }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
