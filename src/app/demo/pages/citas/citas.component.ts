@@ -105,7 +105,7 @@ listarCitas() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
-      this.guardando = false; // Restablece guardando si el formulario es inválido
+      this.guardando = false; 
       return;
     }
 

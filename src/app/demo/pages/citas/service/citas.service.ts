@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface CitaRq {
-  id?: number; // Propiedad ID agregada para manejar actualizaciones
+  id?: number; 
   pacienteId: number;
   medicoId: number;
   fechaHora: string;
@@ -31,15 +31,15 @@ export interface RespuestaRs {
   providedIn: 'root'
 })
 export class CitasService {
-  private readonly apiUrl = 'http://localhost:8000/clinica/v1/cita'; // URL base corregida
+  private readonly apiUrl = 'http://localhost:8000/clinica/v1/cita'; 
 
   constructor(private readonly http: HttpClient) {}
 
   listarCitas(): Observable<CitaRs[]> {
-    return this.http.get<CitaRs[]>(`${this.apiUrl}/listar-recientes`); // Usa apiUrl como base
+    return this.http.get<CitaRs[]>(`${this.apiUrl}/listar-recientes`); 
   }
 
   guardarCita(cita: CitaRq): Observable<RespuestaRs> {
-    return this.http.post<RespuestaRs>(`${this.apiUrl}/guardar`, cita); // Usa apiUrl como base
+    return this.http.post<RespuestaRs>(`${this.apiUrl}/guardar`, cita); 
   }
 }

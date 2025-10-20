@@ -27,8 +27,8 @@ export interface RespuestaRs {
 export interface Cita {
   id: number;
   fechaHora: string;
-  pacienteNombre?: string; // Campo esperado por el frontend
-  nombreCompletoPaciente: string; // Campo devuelto por el backend
+  pacienteNombre?: string; 
+  nombreCompletoPaciente: string; 
   medicoId?: number;
   nombreCompletoMedico?: string;
 }
@@ -42,10 +42,9 @@ export interface Medicamento {
   providedIn: 'root'
 })
 export class RecetasService {
-  private readonly apiUrl = 'http://localhost:8000/clinica/v1/receta'; // URL base
-  private readonly citasUrl = 'http://localhost:8000/clinica/v1/cita/listar-recientes'; // Endpoint para citas
-  private readonly medicamentosUrl = 'http://localhost:8000/clinica/v1/medicamento/listar'; // Endpoint para medicamentos
-
+  private readonly apiUrl = 'http://localhost:8000/clinica/v1/receta'; 
+  private readonly citasUrl = 'http://localhost:8000/clinica/v1/cita/listar-recientes'; 
+  private readonly medicamentosUrl = 'http://localhost:8000/clinica/v1/medicamento/listar'; 
   constructor(private readonly http: HttpClient) {}
 
   listarRecetas(): Observable<RecetaRs[]> {

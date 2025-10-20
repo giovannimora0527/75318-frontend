@@ -59,11 +59,12 @@ export class RecetasComponent {
   cargarCitas() {
     this.recetasService.listarCitas().subscribe({
       next: (data) => {
+        
         // Mapea los datos del backend al formato esperado por el frontend
         this.citasList = data.map(cita => ({
           id: cita.id,
           fechaHora: cita.fechaHora,
-          pacienteNombre: cita.nombreCompletoPaciente // Ajusta el campo
+          pacienteNombre: cita.nombreCompletoPaciente 
         })) as Cita[];
       },
       error: (error) => {
@@ -76,7 +77,7 @@ export class RecetasComponent {
  cargarMedicamentos() {
   this.recetasService.listarMedicamentos().subscribe({
     next: (data) => {
-      console.log('Medicamentos cargados:', data); // Depuración
+      console.log('Medicamentos cargados:', data); 
       this.medicamentosList = data;
     },
     error: (error) => {
@@ -149,7 +150,7 @@ export class RecetasComponent {
       next: (r) => {
         Swal.fire('Éxito', r?.mensaje || 'La receta se ha guardado correctamente.', 'success');
         this.closeModal();
-        this.listarRecetas(); // Actualiza la lista de recetas
+        this.listarRecetas(); 
       },
       error: (e) => {
         console.error(e);

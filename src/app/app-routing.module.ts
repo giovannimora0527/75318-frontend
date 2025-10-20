@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
 import { CitasComponent } from './demo/pages/citas/citas.component';
-import { RecetasComponent } from './demo/pages/recetas/recetas.component'; 
+import { RecetasComponent } from './demo/pages/recetas/recetas.component';
 
-export const routes: Routes = [
+
+export const routes: Routes = [ // Exportar las rutas
   {
     path: '',
     redirectTo: 'inicio',
@@ -23,6 +24,7 @@ export const routes: Routes = [
       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
       { path: 'citas', component: CitasComponent, data: { title: 'Citas' }},
       { path: 'recetas', component: RecetasComponent, data: { title: 'Recetas' }}
+
     ]
   },
   { path: '**', redirectTo: 'inicio' }

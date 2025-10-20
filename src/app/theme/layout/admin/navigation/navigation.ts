@@ -61,6 +61,15 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-file-text',
         classes: 'nav-item'
       }
+    ,
+     {
+        id: 'medicamento', 
+        title: 'Gestión de Medicamentos',
+        type: 'item',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-package', 
+        classes: 'nav-item'
+      }
     ]
   },
   /* ---------- Nuevos menus aqui -------------  */
