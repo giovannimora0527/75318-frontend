@@ -43,14 +43,15 @@ export class UsuarioComponent {
     this.inicializarFormulario();
   }
 
-  inicializarFormulario() {
-    this.form = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)], [this.passwordAsyncValidator]],
-      rol: ['', [Validators.required]],
-      activo: [true]
-    });
-  }
+inicializarFormulario(validators: any[] = [Validators.required, Validators.minLength(8), Validators.maxLength(16)]) {
+  this.form = this.formBuilder.group({
+    username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+    password: ['', validators], // <-- solo validadores pasados por parámetro
+    rol: ['', [Validators.required]],
+    activo: [true]
+  });
+}
+
 
   passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
     const contrasenasProhibidas = ['123456', 'password', 'admin'];
@@ -85,17 +86,31 @@ export class UsuarioComponent {
     this.limpiarFormulario();
   }
 
-  openModal(modo: string) {    
-    this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
-    this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
-    this.modoFormulario = modo;
-    const modalElement = document.getElementById('modalCrearUsuario');
-    if (modalElement) {
-      // Verificar si ya existe una instancia del modal
-      this.modalInstance ??= new Modal(modalElement);
-      this.modalInstance.show();
+openModal(modo: string) {
+  this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
+  this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
+  this.modoFormulario = modo;
+  if (modo === 'C') {
+    this.inicializarFormulario([Validators.required, Validators.minLength(8), Validators.maxLength(16)]);
+    this.form.reset({ username: '', password: '', rol: '', activo: true });
+  } else {
+    // Solo valida longitud si hay valor, pero no required
+    this.inicializarFormulario([Validators.minLength(8), Validators.maxLength(16)]);
+    if (this.usuarioSelected) {
+      this.form.patchValue({
+        username: this.usuarioSelected.username,
+        password: '',
+        rol: this.usuarioSelected.rol,
+        activo: this.usuarioSelected.activo
+      });
     }
   }
+  const modalElement = document.getElementById('modalCrearUsuario');
+  if (modalElement) {
+    this.modalInstance ??= new Modal(modalElement);
+    this.modalInstance.show();
+  }
+}
 
   abrirNuevoUsuario() {
     this.usuarioSelected = null;
@@ -110,6 +125,9 @@ export class UsuarioComponent {
   /**
    * Funcion que permite guardar/actualizar un usuario.
    */
+
+
+
   guardarUsuario() {
     console.log(this.form.invalid);
     console.log(this.form);
@@ -124,7 +142,9 @@ export class UsuarioComponent {
 
     if (this.modoFormulario === 'C') {
       // Modo Creación
-      this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
+      const usuarioNuevo = { ...this.form.getRawValue(), pass: this.form.get('password')?.value };
+      delete usuarioNuevo.password;
+      this.usuarioService.guardarUsuario(usuarioNuevo).subscribe({
         next: (data) => {
           console.log(data);
           if (data.status === 200) {
@@ -142,8 +162,9 @@ export class UsuarioComponent {
       });
     } else {
       // Modo Edición
-      const usuarioActualizado: Usuario = this.form.getRawValue();
-      usuarioActualizado.id = this.usuarioSelected.id;   
+      const usuarioActualizado: any = { ...this.form.getRawValue(), pass: this.form.get('password')?.value };
+      usuarioActualizado.id = this.usuarioSelected.id;
+      delete usuarioActualizado.password;
       this.usuarioService.actualizarUsuario(usuarioActualizado).subscribe({
         next: (data) => {
           console.log(data);
@@ -173,4 +194,5 @@ export class UsuarioComponent {
     this.form.markAsPristine();
     this.form.markAsUntouched();
   }
+
 }

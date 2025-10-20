@@ -97,17 +97,19 @@
                     <i class="fa" style="margin-left: 10px" [ngClass]="mostrarPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                   </button>
                 </div>
-                <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger">
+              
+                <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched && modoFormulario === 'C'" class="text-danger">
                   La contraseña es requerida.
                 </div>
-                <div *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched" class="text-danger">
+        
+                <div *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched && form.get('password')?.value" class="text-danger">
                   La contraseña debe ser al menos de 8 caracteres.
                 </div>
-                <div *ngIf="form.get('password')?.hasError('maxlength') && form.get('password')?.touched" class="text-danger">
-                  La contraseña debe ser al menos de 16 caracteres.
+                <div *ngIf="form.get('password')?.hasError('maxlength') && form.get('password')?.touched && form.get('password')?.value" class="text-danger">
+                  La contraseña debe ser máximo de 16 caracteres.
                 </div>
               </div>
-              <!--  Rol del usuario -->
+       
               <div class="mb-3">
                 <label for="rol" class="form-label">Rol</label>
                 <select formControlName="rol" class="form-control" id="rol" [ngModel]="usuarioSelected?.rol || ''">
@@ -121,7 +123,7 @@
                 </div>
               </div>
 
-              <!--  Estado del usuario -->
+      
               <div class="mb-3" *ngIf="modoFormulario === 'E'">
                 <label for="activo" class="form-label">Estado</label>
                 <select formControlName="activo" class="form-control" id="activo" [ngModel]="usuarioSelected?.activo || false">

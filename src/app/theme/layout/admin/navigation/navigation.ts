@@ -60,6 +60,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/recetas',
         icon: 'feather icon-file-text',
         classes: 'nav-item'
+      },
+      {
+        id: 'medicamentos',
+        title: 'Gestión de Medicamentos',
+        type: 'item',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
       }
     ,
      {
@@ -72,5 +80,5 @@ export const NavigationItems: NavigationItem[] = [
       }
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */
+
 ];
