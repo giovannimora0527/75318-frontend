@@ -1,1 +1,192 @@
-<p>paciente works!</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Gestión de Pacientes</h4>
+  <button class="btn btn-primary" (click)="abrirNuevoPaciente()">Nuevo Paciente</button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Tipo Documento</th>
+        <th>Número</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Fecha Nacimiento</th>
+        <th>Género</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+      <tr>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.tipoDocumento"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.numeroDocumento"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.nombres"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.apellidos"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="YYYY-MM-DD"
+            [(ngModel)]="filtro.fechaNacimiento"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.genero"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.telefono"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.direccion"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of pacientesFiltrados">
+        <td>{{ p.tipoDocumento }}</td>
+        <td>{{ p.numeroDocumento }}</td>
+        <td>{{ p.nombres }}</td>
+        <td>{{ p.apellidos }}</td>
+        <td>{{ p.fechaNacimiento }}</td>
+        <td>{{ p.genero }}</td>
+        <td>{{ p.telefono }}</td>
+        <td>{{ p.direccion }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditarPaciente(p)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="!pacientesFiltrados || pacientesFiltrados.length === 0">
+        <td colspan="9" class="text-center text-muted">No hay pacientes registrados</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPaciente" tabindex="-1" aria-labelledby="modalPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalPacienteLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarPaciente()">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Tipo Documento</label>
+              <input type="text" class="form-control" formControlName="tipoDocumento" />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Número Documento</label>
+              <input type="text" class="form-control" formControlName="numeroDocumento" />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Género</label>
+              <select class="form-select" formControlName="genero">
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nombres</label>
+              <input type="text" class="form-control" formControlName="nombres" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Apellidos</label>
+              <input type="text" class="form-control" formControlName="apellidos" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Nacimiento</label>
+            <input type="date" class="form-control" formControlName="fechaNacimiento" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <input type="text" class="form-control" formControlName="telefono" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Dirección</label>
+            <input type="text" class="form-control" formControlName="direccion" />
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
