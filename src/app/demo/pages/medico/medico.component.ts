@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MedicoService } from './service/medico.service';
-import { Medico } from './models/medico';
+import { Medico, MedicoRequest } from './models/medico';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
@@ -43,7 +43,7 @@ export class MedicoComponent {
   inicializarFormulario() {
     this.form = this.formBuilder.group({
       tipoDocumento: ['', [Validators.required]],
-      numeroDocumento: ['', [Validators.required, Validators.maxLength(20), Validators.pattern('^[0-9]+$')]],
+      documento: ['', [Validators.required, Validators.maxLength(20), Validators.pattern('^[0-9]+$')]],
       nombres: ['', [Validators.required, Validators.maxLength(100)]],
       apellidos: ['', [Validators.required, Validators.maxLength(100)]],
       telefono: ['', [Validators.maxLength(20), Validators.pattern('^[0-9]*$')]],
@@ -103,7 +103,7 @@ export class MedicoComponent {
     this.inicializarFormulario();
     this.form.patchValue({
       tipoDocumento: medico.tipoDocumento,
-      numeroDocumento: medico.numeroDocumento,
+      documento: medico.documento,
       nombres: medico.nombres,
       apellidos: medico.apellidos,
       telefono: medico.telefono,
@@ -133,18 +133,21 @@ export class MedicoComponent {
     }
 
     const formValue = this.form.getRawValue();
-    const medicoRq: Medico = {
+    
+    // Crear objeto para enviar al backend usando MedicoRequest
+    const medicoRq: MedicoRequest = {
       id: this.modoFormulario === 'E' && this.medicoSelected ? this.medicoSelected.id : undefined,
       tipoDocumento: formValue.tipoDocumento,
-      numeroDocumento: formValue.numeroDocumento,
+      documento: formValue.documento,
       nombres: formValue.nombres,
       apellidos: formValue.apellidos,
       telefono: formValue.telefono,
       registroProfesional: formValue.registroProfesional,
-      especializacionId: formValue.especializacionId,
-      especializacionNombre: ''
+      especializacionId: formValue.especializacionId
     };
 
+    console.log('Enviando médico al backend:', medicoRq);
+    
     if (this.modoFormulario === 'C') {
       this.medicoService.guardarMedico(medicoRq).subscribe({
         next: () => {
@@ -153,7 +156,9 @@ export class MedicoComponent {
           this.listarMedicos();
         },
         error: (error) => {
-          Swal.fire('Error', error.error?.mensaje || error.error || 'Error desconocido', 'error');
+          console.error('Error completo al guardar:', error);
+          const mensaje = error.error?.mensaje || error.error?.message || error.message || 'Error desconocido';
+          Swal.fire('Error', mensaje, 'error');
         }
       });
     } else {
@@ -164,7 +169,9 @@ export class MedicoComponent {
           this.listarMedicos();
         },
         error: (error) => {
-          Swal.fire('Error', error.error?.mensaje || error.error || 'Error desconocido', 'error');
+          console.error('Error completo al actualizar:', error);
+          const mensaje = error.error?.mensaje || error.error?.message || error.message || 'Error desconocido';
+          Swal.fire('Error', mensaje, 'error');
         }
       });
     }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface RecetaRq {
   citaId: number;
@@ -27,6 +28,7 @@ export interface RespuestaRs {
 export interface Cita {
   id: number;
   fechaHora: string;
+  estado: string;
   pacienteNombre?: string; 
   nombreCompletoPaciente: string; 
   medicoId?: number;
@@ -57,6 +59,23 @@ export class RecetasService {
 
   listarCitas(): Observable<Cita[]> {
     return this.http.get<Cita[]>(this.citasUrl);
+  }
+
+  /**
+   * Lista las citas disponibles para crear recetas
+   * Solo muestra citas que no estén cumplidas o canceladas
+   */
+  listarCitasDisponiblesParaRecetas(): Observable<Cita[]> {
+    return this.http.get<Cita[]>(this.citasUrl).pipe(
+      map(citas => this.filtrarCitasDisponibles(citas))
+    );
+  }
+
+  private filtrarCitasDisponibles(citas: Cita[]): Cita[] {
+    // Filtro simple: solo excluir citas cumplidas y canceladas
+    return citas.filter(cita => {
+      return cita.estado !== 'CUMPLIDA' && cita.estado !== 'CANCELADA';
+    });
   }
 
   listarMedicamentos(): Observable<Medicamento[]> {

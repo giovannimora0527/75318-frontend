@@ -70,14 +70,24 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       }
     ,
-     {
-        id: 'medicamento', 
-        title: 'Gestión de Medicamentos',
+ {
+        id: 'especializacion', 
+        title: 'Gestión de Especializaciones',
         type: 'item',
-        url: '/inicio/medicamento',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-package', 
+        classes: 'nav-item'
+      },
+       {
+        id: 'HC', 
+        title: 'Gestión de Historia Clínica',
+        type: 'item',
+        url: '/inicio/historia-clinica',
         icon: 'feather icon-package', 
         classes: 'nav-item'
       }
+
+      
     ]
   },
 

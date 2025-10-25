@@ -34,12 +34,12 @@
             <tr *ngFor="let medico of medicoList">
               <td>{{ medico.id }}</td>
               <td>{{ medico.tipoDocumento }}</td>
-              <td>{{ medico.numeroDocumento }}</td>
+              <td>{{ medico.documento }}</td>
               <td>{{ medico.nombres }}</td>
               <td>{{ medico.apellidos }}</td>
               <td>{{ medico.telefono }}</td>
               <td>{{ medico.registroProfesional }}</td>
-              <td>{{ medico.especializacionNombre }}</td>
+              <td>{{ medico.especializacion?.nombre || 'N/A' }}</td>
               <td>
                 <button type="button" class="btn btn-outline-primary btn-sm" title="Editar médico"
                   (click)="editarModalMedico(medico)">
@@ -84,11 +84,11 @@
             </div>
             <div class="col-md-4">
               <label class="form-label">Número de documento <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="numeroDocumento" maxlength="20">
-              <div *ngIf="form.get('numeroDocumento')?.touched && form.get('numeroDocumento')?.invalid" class="text-danger small">
-                <span *ngIf="form.get('numeroDocumento')?.errors?.['required']">El número de documento es requerido.</span>
-                <span *ngIf="form.get('numeroDocumento')?.errors?.['maxlength']">Máximo 20 caracteres.</span>
-                <span *ngIf="form.get('numeroDocumento')?.errors?.['pattern']">Solo números.</span>
+              <input type="text" class="form-control" formControlName="documento" maxlength="20">
+              <div *ngIf="form.get('documento')?.touched && form.get('documento')?.invalid" class="text-danger small">
+                <span *ngIf="form.get('documento')?.errors?.['required']">El número de documento es requerido.</span>
+                <span *ngIf="form.get('documento')?.errors?.['maxlength']">Máximo 20 caracteres.</span>
+                <span *ngIf="form.get('documento')?.errors?.['pattern']">Solo números.</span>
               </div>
             </div>
             <div class="col-md-4">
