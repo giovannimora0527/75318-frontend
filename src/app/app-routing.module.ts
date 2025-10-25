@@ -35,6 +35,8 @@ export const routes: Routes = [
       { path: 'especializaciones', component: GestionEspecializacionesComponent, data: { title: 'Gestión de Especializaciones' } }
     ]
   },
+  { path: 'recetas', loadChildren: () => import('./demo/pages/recetas/recetas.module').then(m => m.RecetasModule) },
+  { path: 'especializaciones', loadChildren: () => import('./demo/pages/especializaciones/especializaciones.module').then(m => m.EspecializacionesModule) },
   { path: '**', redirectTo: 'inicio' }
 ];
 
