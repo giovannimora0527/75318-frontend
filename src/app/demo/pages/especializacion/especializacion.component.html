@@ -1,1 +1,142 @@
-<p>especializacion works!</p>
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{titleSpinner}}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+          <i class="fa fa-stethoscope"></i>
+          &nbsp;Lista de especializaciones
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoEspecializacion()">
+          <i class="fa fa-plus"></i>
+          Nueva especialización
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Código</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="especializaciones && especializaciones.length > 0">
+            <tr *ngFor="let especializacion of especializaciones">
+              <td>{{ especializacion.id }}</td>
+              <td>{{ especializacion.nombre }}</td>
+              <td>{{ especializacion.descripcion }}</td>
+              <td>{{ especializacion.codigoEspecializacion }}</td>
+              <td>
+                <button type="button" class="btn btn btn-outline-primary" title="Editar especialización" (click)="abrirEditarEspecializacion(especializacion)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="especializaciones && especializaciones.length === 0">
+            <tr>
+              <td colspan="7" class="text-center">No hay especializaciones disponibles.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para nueva especialización -->
+<div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-labelledby="modalCrearEspecializacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearEspecializacionLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <form [formGroup]="form">
+              <!-- Nombre -->
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre de la especialización</label>
+                <input
+                  type="text"
+                  formControlName="nombre"
+                  class="form-control"
+                  id="nombre"
+                  placeholder="Ingrese el nombre de la especialización"
+                  [ngModel]="especializacionSelected ? especializacionSelected.nombre : ''"
+                />
+                <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+                  El nombre es requerido.
+                </div>
+                <div *ngIf="form.get('nombre')?.hasError('minlength') && form.get('nombre')?.touched" class="text-danger">
+                  El nombre debe ser al menos de 3 caracteres.
+                </div>
+                <div *ngIf="form.get('nombre')?.hasError('maxlength') && form.get('nombre')?.touched" class="text-danger">
+                  El nombre debe ser máximo de 50 caracteres.
+                </div>
+              </div>
+              <!-- Descripción -->
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea
+                  formControlName="descripcion"
+                  class="form-control"
+                  id="descripcion"
+                  placeholder="Ingrese la descripción de la especialización"
+                  [ngModel]="especializacionSelected ? especializacionSelected.descripcion : ''"
+                  rows="3"
+                ></textarea>
+                <div *ngIf="form.get('descripcion')?.hasError('required') && form.get('descripcion')?.touched" class="text-danger">
+                  La descripción es requerida.
+                </div>
+                <div *ngIf="form.get('descripcion')?.hasError('minlength') && form.get('descripcion')?.touched" class="text-danger">
+                  La descripción debe ser al menos de 10 caracteres.
+                </div>
+                <div *ngIf="form.get('descripcion')?.hasError('maxlength') && form.get('descripcion')?.touched" class="text-danger">
+                  La descripción debe ser máximo de 200 caracteres.
+                </div>
+              </div>
+              <!-- Código de especialización -->
+              <div class="mb-3">
+                <label for="codigoEspecializacion" class="form-label">Código de especialización</label>
+                <input
+                  type="text"
+                  formControlName="codigoEspecializacion"
+                  class="form-control"
+                  id="codigoEspecializacion"
+                  placeholder="Ingrese el código de la especialización"
+                  [ngModel]="especializacionSelected ? especializacionSelected.codigoEspecializacion : ''"
+                />
+                <div *ngIf="form.get('codigoEspecializacion')?.hasError('required') && form.get('codigoEspecializacion')?.touched" class="text-danger">
+                  El código es requerido.
+                </div>
+                <div *ngIf="form.get('codigoEspecializacion')?.hasError('minlength') && form.get('codigoEspecializacion')?.touched" class="text-danger">
+                  El código debe ser al menos de 2 caracteres.
+                </div>
+                <div *ngIf="form.get('codigoEspecializacion')?.hasError('maxlength') && form.get('codigoEspecializacion')?.touched" class="text-danger">
+                  El código debe ser máximo de 10 caracteres.
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarEspecializacion()">{{ titleBoton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
