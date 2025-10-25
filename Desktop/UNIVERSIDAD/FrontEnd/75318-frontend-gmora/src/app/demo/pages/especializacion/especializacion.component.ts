@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EspecializacionService } from './service/especializacion.service';
 import { Especializacion } from './models/especializacion';
-import { RespuestaRs } from 'src/app/models/respuesta-rs';
-import Modal from 'bootstrap/js/dist/modal';
 import Swal from 'sweetalert2';
+import Modal from 'bootstrap/js/dist/modal';
 
 @Component({
   selector: 'app-especializacion',
@@ -15,12 +14,15 @@ import Swal from 'sweetalert2';
 })
 export class EspecializacionComponent {
   especializaciones: Especializacion[] = [];
-  especializacionSeleccionada: Especializacion | null = null;
+  especializacionesFiltradas: Especializacion[] = [];
+  filtro = { codigoEspecializacion: '', nombre: '', descripcion: '' };
+
   form: FormGroup;
   modalInstance: Modal | null = null;
   modoFormulario: 'C' | 'E' | '' = '';
   titleModal = '';
   titleBoton = '';
+  cargando = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -32,34 +34,49 @@ export class EspecializacionComponent {
 
   inicializarFormulario(): void {
     this.form = this.fb.group({
-      nombre: ['', [Validators.required, Validators.maxLength(100)]],
-      descripcion: [''],
-      estado: ['Activa', Validators.required]
+      id: [null],
+      codigoEspecializacion: ['', Validators.required],
+      nombre: ['', Validators.required],
+      descripcion: ['', Validators.required],
     });
   }
 
   listarEspecializaciones(): void {
+    this.cargando = true;
     this.especializacionService.listarEspecializaciones().subscribe({
-      next: (data) => (this.especializaciones = data || []),
-      error: () => Swal.fire('Error', 'No fue posible listar las especializaciones', 'error')
+      next: (data) => {
+        this.especializaciones = data || [];
+        this.especializacionesFiltradas = [...this.especializaciones];
+        this.cargando = false;
+      },
+      error: () => {
+        Swal.fire('Error', 'No fue posible listar las especializaciones', 'error');
+        this.cargando = false;
+      }
     });
   }
 
-  abrirNuevaEspecializacion(): void {
-    this.especializacionSeleccionada = null;
+  filtrarEspecializaciones(): void {
+    this.especializacionesFiltradas = this.especializaciones.filter(e =>
+      (!this.filtro.codigoEspecializacion || e.codigoEspecializacion.toLowerCase().includes(this.filtro.codigoEspecializacion.toLowerCase())) &&
+      (!this.filtro.nombre || e.nombre.toLowerCase().includes(this.filtro.nombre.toLowerCase())) &&
+      (!this.filtro.descripcion || e.descripcion.toLowerCase().includes(this.filtro.descripcion.toLowerCase()))
+    );
+  }
+
+  abrirNueva(): void {
+    this.form.reset();
+    this.modoFormulario = 'C';
     this.titleModal = 'Nueva Especialización';
     this.titleBoton = 'Guardar';
-    this.modoFormulario = 'C';
-    this.form.reset({ estado: 'Activa' });
     this.openModal();
   }
 
-  abrirEditarEspecializacion(e: Especializacion): void {
-    this.especializacionSeleccionada = e;
+  abrirEditar(e: Especializacion): void {
+    this.form.patchValue(e);
+    this.modoFormulario = 'E';
     this.titleModal = 'Editar Especialización';
     this.titleBoton = 'Actualizar';
-    this.modoFormulario = 'E';
-    this.form.patchValue(e);
     this.openModal();
   }
 
@@ -75,30 +92,28 @@ export class EspecializacionComponent {
     if (this.modalInstance) this.modalInstance.hide();
   }
 
-  guardarEspecializacion(): void {
+  guardar(): void {
     if (this.form.invalid) {
       Swal.fire('Error', 'Por favor complete los campos obligatorios', 'error');
       return;
     }
 
     const payload: Especializacion = { ...this.form.value };
+    const obs = this.modoFormulario === 'C'
+      ? this.especializacionService.guardarEspecializacion(payload)
+      : this.especializacionService.actualizarEspecializacion(payload);
 
-    const obs =
-      this.modoFormulario === 'C'
-        ? this.especializacionService.guardarEspecializacion(payload)
-        : this.especializacionService.actualizarEspecializacion({
-            ...payload,
-            id: this.especializacionSeleccionada?.id
-          });
-
+    this.cargando = true;
     obs.subscribe({
-      next: (res: RespuestaRs) => {
-        Swal.fire('Éxito', res.mensaje, 'success');
+      next: () => {
+        Swal.fire('Éxito', this.modoFormulario === 'E' ? 'Especialización actualizada con éxito' : 'Especialización guardada con éxito', 'success');
         this.closeModal();
         this.listarEspecializaciones();
+        this.cargando = false;
       },
       error: () => {
         Swal.fire('Error', 'No se pudo guardar la especialización', 'error');
+        this.cargando = false;
       }
     });
   }

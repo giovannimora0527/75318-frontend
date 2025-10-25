@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
@@ -10,8 +9,8 @@ import { RespuestaRs } from 'src/app/models/respuesta-rs';
   providedIn: 'root'
 })
 export class MedicamentoService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'medicamento';
+  private readonly urlBase = environment.apiUrl;
+  private readonly endpoint = 'medicamento';
 
   constructor(private readonly backendService: BackendService) {}
 
@@ -26,5 +25,4 @@ export class MedicamentoService {
   actualizarMedicamento(medicamento: Medicamento): Observable<RespuestaRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', medicamento);
   }
-
 }

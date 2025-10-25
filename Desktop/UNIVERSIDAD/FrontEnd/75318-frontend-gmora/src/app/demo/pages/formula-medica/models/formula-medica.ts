@@ -1,11 +1,8 @@
 export interface FormulaMedica {
   id?: number;
-  idPaciente: number;
-  idMedico: number;
-  fecha: string;       
-  diagnostico: string;
+  citaId: number;
+  medicamentoId: number;
+  dosis: string;    
   indicaciones: string;
-  medicamento: string;          
-  dosis: string;
-  duracion: string;            
+  fechaCreacionRegistro?: string;            
 }

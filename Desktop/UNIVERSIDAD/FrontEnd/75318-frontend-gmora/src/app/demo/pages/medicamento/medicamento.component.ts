@@ -1,18 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MedicamentoService } from './service/medicamento.service';
 import { Medicamento } from './models/medicamento';
-import { RespuestaRs } from 'src/app/models/respuesta-rs'
-import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
+import { RespuestaRs } from 'src/app/models/respuesta-rs';
 import Modal from 'bootstrap/js/dist/modal';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-medicamento',
@@ -22,54 +15,80 @@ import {
 })
 export class MedicamentoComponent {
   medicamentos: Medicamento[] = [];
+  medicamentosFiltrados: Medicamento[] = [];
+  filtro = {
+    nombre: '',
+    descripcion: '',
+    presentacion: ''
+  };
+
   medicamentoSeleccionado: Medicamento | null = null;
+  form: FormGroup;
   modalInstance: Modal | null = null;
   modoFormulario: 'C' | 'E' | '' = '';
   titleModal = '';
   titleBoton = '';
-
-  form: FormGroup;
+  cargando = false;
 
   constructor(
-    private readonly medicamentoService: MedicamentoService,
-    private readonly formBuilder: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly medicamentoService: MedicamentoService
   ) {
-    this.listarMedicamentos();
     this.inicializarFormulario();
+    this.listarMedicamentos();
   }
 
   inicializarFormulario(): void {
-    this.form = this.formBuilder.group({
-      nombre: ['', [Validators.required, Validators.maxLength(100)]],
+    this.form = this.fb.group({
+      id: [null],
+      nombre: ['', Validators.required],
       descripcion: [''],
-      presentacion: [''],
-      fechaCompra: [''],
-      fechaVence: ['']
+      presentacion: ['']
     });
   }
 
-  get f(): { [key: string]: AbstractControl } {
-    return this.form.controls;
-  }
-
   listarMedicamentos(): void {
-    console.log('Listando medicamentos...');
+    this.cargando = true;
     this.medicamentoService.listarMedicamentos().subscribe({
       next: (data) => {
         this.medicamentos = data || [];
+        this.medicamentosFiltrados = [...this.medicamentos];
+        this.cargando = false;
       },
-      error: (error) => {
-        console.error('Error al listar medicamentos', error);
-        Swal.fire('Error', 'No se pudo cargar la lista de medicamentos', 'error');
+      error: () => {
+        Swal.fire('Error', 'No fue posible listar los medicamentos', 'error');
+        this.cargando = false;
       }
     });
   }
 
-  openModal(modo: 'C' | 'E'): void {
-    this.titleModal = modo === 'C' ? 'Registrar Medicamento' : 'Editar Medicamento';
-    this.titleBoton = modo === 'C' ? 'Guardar' : 'Actualizar';
-    this.modoFormulario = modo;
+  filtrar(): void {
+    this.medicamentosFiltrados = this.medicamentos.filter(m =>
+      (!this.filtro.nombre || (m.nombre || '').toLowerCase().includes(this.filtro.nombre.toLowerCase())) &&
+      (!this.filtro.descripcion || (m.descripcion || '').toLowerCase().includes(this.filtro.descripcion.toLowerCase())) &&
+      (!this.filtro.presentacion || (m.presentacion || '').toLowerCase().includes(this.filtro.presentacion.toLowerCase()))
+    );
+  }
 
+  abrirNuevoMedicamento(): void {
+    this.medicamentoSeleccionado = null;
+    this.titleModal = 'Registrar Medicamento';
+    this.titleBoton = 'Guardar';
+    this.modoFormulario = 'C';
+    this.form.reset();
+    this.openModal();
+  }
+
+  abrirEditarMedicamento(medicamento: Medicamento): void {
+    this.medicamentoSeleccionado = medicamento;
+    this.titleModal = 'Editar Medicamento';
+    this.titleBoton = 'Actualizar';
+    this.modoFormulario = 'E';
+    this.form.patchValue(medicamento);
+    this.openModal();
+  }
+
+  openModal(): void {
     const modalElement = document.getElementById('modalMedicamento');
     if (modalElement) {
       this.modalInstance ??= new Modal(modalElement);
@@ -78,68 +97,34 @@ export class MedicamentoComponent {
   }
 
   closeModal(): void {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-    }
-    this.limpiarFormulario();
-  }
-
-  abrirNuevoMedicamento(): void {
-    this.medicamentoSeleccionado = null;
-    this.openModal('C');
-  }
-
-  abrirEditarMedicamento(medicamento: Medicamento): void {
-    this.medicamentoSeleccionado = medicamento;
-    this.form.patchValue(medicamento);
-    this.openModal('E');
+    if (this.modalInstance) this.modalInstance.hide();
   }
 
   guardarMedicamento(): void {
     if (this.form.invalid) {
-      Swal.fire('Error', 'Por favor, corrige los errores del formulario.', 'error');
+      Swal.fire('Error', 'Complete los campos obligatorios', 'error');
       return;
     }
 
     const payload: Medicamento = { ...this.form.value };
 
-    if (this.modoFormulario === 'C') {
-      this.medicamentoService.guardarMedicamento(payload).subscribe({
-        next: (res: RespuestaRs) => {
-          Swal.fire('Éxito', res.mensaje, 'success');
-          this.closeModal();
-          this.listarMedicamentos();
-        },
-        error: (error) => {
-          console.error('Error al guardar medicamento', error);
-          Swal.fire('Error', 'No se pudo guardar el medicamento.', 'error');
-        }
-      });
-    } else if (this.modoFormulario === 'E' && this.medicamentoSeleccionado) {
-      payload.id = this.medicamentoSeleccionado.id;
-      this.medicamentoService.actualizarMedicamento(payload).subscribe({
-        next: (res: RespuestaRs) => {
-          Swal.fire('Éxito', res.mensaje, 'success');
-          this.closeModal();
-          this.listarMedicamentos();
-        },
-        error: (error) => {
-          console.error('Error al actualizar medicamento', error);
-          Swal.fire('Error', 'No se pudo actualizar el medicamento.', 'error');
-        }
-      });
-    }
-  }
+    const obs =
+      this.modoFormulario === 'C'
+        ? this.medicamentoService.guardarMedicamento(payload)
+        : this.medicamentoService.actualizarMedicamento(payload);
 
-  limpiarFormulario(): void {
-    this.form.reset({
-      nombre: this.medicamentoSeleccionado ? this.medicamentoSeleccionado.nombre : '',
-      descripcion: this.medicamentoSeleccionado ? this.medicamentoSeleccionado.descripcion : '',
-      presentacion: this.medicamentoSeleccionado ? this.medicamentoSeleccionado.presentacion : '',
-      fechaCompra: this.medicamentoSeleccionado ? this.medicamentoSeleccionado.fechaCompra : '',
-      fechaVence: this.medicamentoSeleccionado ? this.medicamentoSeleccionado.fechaVence : ''
+    this.cargando = true;
+    obs.subscribe({
+      next: (res: RespuestaRs) => {
+        Swal.fire('Éxito', res.mensaje, 'success');
+        this.closeModal();
+        this.listarMedicamentos();
+        this.cargando = false;
+      },
+      error: () => {
+        Swal.fire('Error', 'No se pudo guardar el medicamento', 'error');
+        this.cargando = false;
+      }
     });
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
   }
 }

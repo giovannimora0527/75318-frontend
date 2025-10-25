@@ -1,99 +1,174 @@
--><div class="d-flex justify-content-between align-items-center mb-3">
+<div class="spinner-overlay" *ngIf="cargando">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
   <h4>Gestión de Citas</h4>
   <button class="btn btn-primary" (click)="abrirNuevaCita()">Nueva Cita</button>
 </div>
 
-<!-- Tabla -->
+<div *ngIf="cargando" class="text-center my-3">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
 <div class="table-responsive">
   <table class="table table-striped align-middle">
     <thead class="table-light">
       <tr>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Motivo</th>
+        <th>ID</th>
         <th>Paciente</th>
         <th>Médico</th>
+        <th>Fecha y Hora</th>
         <th>Estado</th>
+        <th>Motivo</th>
         <th class="text-center">Acciones</th>
       </tr>
+      <tr>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.id"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.nombrePaciente"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.nombreMedico"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="YYYY-MM-DD HH:MM"
+            [(ngModel)]="filtro.fechaHora"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.estado"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.motivo"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th></th>
+      </tr>
     </thead>
+
     <tbody>
-      <tr *ngFor="let c of citas">
-        <td>{{ c.fecha }}</td>
-        <td>{{ c.hora }}</td>
+      <tr *ngFor="let c of citasFiltradas">
+        <td><strong>#{{ c.id }}</strong></td>
+        <td>{{ c.nombrePaciente }}</td>
+        <td>{{ c.nombreMedico }}</td>
+        <td>{{ c.fechaHora }}</td>
+        <td>
+          <span [class]="getBadgeClass(c.estado)">{{ c.estado }}</span>
+        </td>
         <td>{{ c.motivo }}</td>
-        <td>{{ c.idPaciente }}</td>
-        <td>{{ c.idMedico }}</td>
-        <td>{{ c.estado }}</td>
         <td class="text-center">
           <button class="btn btn-sm btn-info" (click)="abrirEditarCita(c)">
             <i class="feather icon-edit"></i> Editar
           </button>
         </td>
       </tr>
-      <tr *ngIf="!citas || citas.length === 0">
+
+      <tr *ngIf="!citasFiltradas || citasFiltradas.length === 0">
         <td colspan="7" class="text-center text-muted">No hay citas registradas</td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="modalCita"
-  tabindex="-1"
-  aria-labelledby="modalCitaLabel"
-  aria-hidden="true"
->
+<!-- Modal (sin cambios de diseño) -->
+<div class="modal fade" id="modalCita" tabindex="-1" aria-labelledby="modalCitaLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="modalCitaLabel">{{ titleModal }}</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
       </div>
 
       <div class="modal-body">
         <form [formGroup]="form" (ngSubmit)="guardarCita()">
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Fecha</label>
-              <input type="date" class="form-control" formControlName="fecha" />
+              <label class="form-label">Paciente</label>
+              <select class="form-select" formControlName="pacienteId">
+                <option value="">Seleccionar paciente</option>
+                <option *ngFor="let p of pacientes" [value]="p.id">
+                  {{ p.nombres }} {{ p.apellidos }} - {{ p.numeroDocumento }}
+                </option>
+              </select>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Hora</label>
-              <input type="time" class="form-control" formControlName="hora" />
+              <label class="form-label">Médico</label>
+              <select class="form-select" formControlName="medicoId">
+                <option value="">Seleccionar médico</option>
+                <option *ngFor="let m of medicos" [value]="m.id">
+                  {{ m.nombres }} {{ m.apellidos }} - {{ m.especializacion?.nombre }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Fecha y Hora</label>
+              <input type="datetime-local" class="form-control" formControlName="fechaHora" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Estado</label>
+              <select class="form-select" formControlName="estado">
+                <option value="PROGRAMADA">Programada</option>
+                <option value="CONFIRMADA">Confirmada</option>
+                <option value="COMPLETADA">Completada</option>
+                <option value="CANCELADA">Cancelada</option>
+              </select>
             </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Motivo</label>
-            <input type="text" class="form-control" formControlName="motivo" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Observaciones</label>
-            <textarea class="form-control" formControlName="observaciones" rows="2"></textarea>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">ID Paciente</label>
-              <input type="number" class="form-control" formControlName="idPaciente" />
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">ID Médico</label>
-              <input type="number" class="form-control" formControlName="idMedico" />
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Estado</label>
-            <select class="form-select" formControlName="estado">
-              <option value="Programada">Programada</option>
-              <option value="Cancelada">Cancelada</option>
-              <option value="Completada">Completada</option>
-            </select>
+            <textarea class="form-control" formControlName="motivo" rows="3" placeholder="Descripción del motivo de la cita"></textarea>
           </div>
 
           <div class="modal-footer">

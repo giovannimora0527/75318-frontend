@@ -10,8 +10,8 @@ import { RespuestaRs } from 'src/app/models/respuesta-rs';
 })
 export class FormulaMedicaService {
   private readonly urlBase = environment.apiUrl;
-  private readonly endpoint = 'formula-medica';
-
+  private readonly endpoint = 'receta';
+  
   constructor(private readonly backendService: BackendService) {}
 
   listarFormulas(): Observable<FormulaMedica[]> {
