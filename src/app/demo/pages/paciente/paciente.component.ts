@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-<<<<<<< HEAD
 import { PacienteService } from './service/paciente.service';
 import { Paciente } from './models/paciente';
 import { CommonModule } from '@angular/common';
@@ -16,17 +15,10 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, React
 @Component({
   selector: 'app-paciente',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
-=======
-
-@Component({
-  selector: 'app-paciente',
-  imports: [],
->>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
   templateUrl: './paciente.component.html',
   styleUrl: './paciente.component.scss'
 })
 export class PacienteComponent {
-<<<<<<< HEAD
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   pacientes: Paciente[] = [];
@@ -270,7 +262,3 @@ limpiarFiltros() {
   });
 }
 }
-=======
-
-}
->>>>>>> 00707d3287baa9aff4df8c1f76e78b24bd7625a3
