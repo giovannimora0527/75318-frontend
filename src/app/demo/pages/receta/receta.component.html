@@ -1,0 +1,308 @@
+<div class="container">
+  <!-- Spinner de carga -->
+  <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 200px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="!loading">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>
+          <i class="fa fa-file-prescription"></i>
+          &nbsp;Gestión de Recetas Médicas
+        </h3>
+        <div class="btn-group" role="group">
+          <button class="btn btn-outline-primary" (click)="abrirNuevaReceta()">
+            <i class="fa fa-plus"></i>
+            Nueva Receta
+          </button>
+          <button class="btn btn-outline-info" (click)="buscarPorCita()">
+            <i class="fa fa-calendar"></i>
+            Por Cita
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de filtros -->
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">
+                <i class="fa fa-filter"></i>
+                Filtros de Búsqueda
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-2">
+                  <label class="form-label">ID</label>
+                  <input type="text" class="form-control" [(ngModel)]="filtros.id" placeholder="ID">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Diagnóstico</label>
+                  <input type="text" class="form-control" [(ngModel)]="filtros.diagnostico" placeholder="Diagnóstico">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Fecha</label>
+                  <input type="date" class="form-control" [(ngModel)]="filtros.fecha">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Paciente</label>
+                  <input type="text" class="form-control" [(ngModel)]="filtros.paciente" placeholder="Nombre paciente">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Médico</label>
+                  <input type="text" class="form-control" [(ngModel)]="filtros.medico" placeholder="Nombre médico">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Estado</label>
+                  <select class="form-select" [(ngModel)]="filtros.estado">
+                    <option value="">Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-12">
+                  <button class="btn btn-primary" (click)="aplicarFiltros()">
+                    <i class="fa fa-search"></i>
+                    Aplicar Filtros
+                  </button>
+                  <button class="btn btn-secondary ms-2" (click)="limpiarFiltros()">
+                    <i class="fa fa-times"></i>
+                    Limpiar Filtros
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de recetas médicas -->
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Paciente</th>
+              <th>Médico</th>
+              <th>Diagnóstico</th>
+              <th>Dosis</th>
+              <th>Indicaciones</th>
+              <th>Medicamentos</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let receta of recetaList">
+              <td>{{ receta.id }}</td>
+              <td>{{ receta.fecha | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <strong>{{ receta.paciente?.nombres }} {{ receta.paciente?.apellidos }}</strong>
+                <br>
+                <small class="text-muted">{{ receta.paciente?.documento }}</small>
+              </td>
+              <td>
+                <strong>{{ receta.medico?.nombres }} {{ receta.medico?.apellidos }}</strong>
+                <br>
+                <small class="text-muted">{{ receta.medico?.especializacion?.nombre }}</small>
+              </td>
+              <td>
+                <span class="badge bg-info">{{ receta.diagnostico }}</span>
+              </td>
+              <td>
+                <span class="badge bg-warning">{{ receta.dosis }}</span>
+              </td>
+              <td>
+                <span class="text-truncate d-inline-block" style="max-width: 200px;" 
+                      [title]="receta.indicaciones">
+                  {{ receta.indicaciones }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-success" *ngIf="receta.medicamentos?.length">
+                  {{ receta.medicamentos.length }} medicamento(s)
+                </span>
+                <span class="text-muted" *ngIf="!receta.medicamentos?.length">Sin medicamentos</span>
+              </td>
+              <td>
+                <span class="badge" [class.bg-success]="receta.activo" [class.bg-danger]="!receta.activo">
+                  {{ receta.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-outline-primary btn-sm" title="Editar receta"
+                    (click)="editarReceta(receta)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button type="button" class="btn btn-outline-danger btn-sm" title="Eliminar receta"
+                    (click)="eliminarReceta(receta)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="recetaList.length === 0">
+              <td colspan="10" class="text-center text-muted py-4">
+                <i class="fa fa-inbox fa-2x mb-2"></i>
+                <br>
+                No se encontraron recetas médicas
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para crear/editar receta médica -->
+<div class="modal fade" id="modalCrearReceta" tabindex="-1" aria-labelledby="modalCrearRecetaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearRecetaLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form" *ngIf="form">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="fecha" class="form-label">Fecha *</label>
+              <input type="date" class="form-control" id="fecha" formControlName="fecha"
+                     [class.is-invalid]="f['fecha'] && f['fecha'].invalid && (f['fecha'].dirty || f['fecha'].touched)">
+              <div class="invalid-feedback" *ngIf="f['fecha'] && f['fecha'].invalid && (f['fecha'].dirty || f['fecha'].touched)">
+                La fecha es requerida
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="medicoId" class="form-label">Médico ID *</label>
+              <input type="number" class="form-control" id="medicoId" formControlName="medicoId"
+                     [class.is-invalid]="f['medicoId'] && f['medicoId'].invalid && (f['medicoId'].dirty || f['medicoId'].touched)"
+                     min="1">
+              <div class="invalid-feedback" *ngIf="f['medicoId'] && f['medicoId'].invalid && (f['medicoId'].dirty || f['medicoId'].touched)">
+                <div *ngIf="f['medicoId'].errors?.['required']">El médico ID es requerido</div>
+                <div *ngIf="f['medicoId'].errors?.['min']">El médico ID debe ser mayor a 0</div>
+              </div>
+              <small class="form-text text-muted">Ingresa el ID del médico responsable</small>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="pacienteId" class="form-label">Paciente ID *</label>
+              <input type="number" class="form-control" id="pacienteId" formControlName="pacienteId"
+                     [class.is-invalid]="f['pacienteId'] && f['pacienteId'].invalid && (f['pacienteId'].dirty || f['pacienteId'].touched)"
+                     min="1">
+              <div class="invalid-feedback" *ngIf="f['pacienteId'] && f['pacienteId'].invalid && (f['pacienteId'].dirty || f['pacienteId'].touched)">
+                <div *ngIf="f['pacienteId'].errors?.['required']">El paciente ID es requerido</div>
+                <div *ngIf="f['pacienteId'].errors?.['min']">El paciente ID debe ser mayor a 0</div>
+              </div>
+              <small class="form-text text-muted">Ingresa el ID del paciente</small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="medicamentoIds" class="form-label">Medicamentos *</label>
+              <input type="text" class="form-control" id="medicamentoIds" formControlName="medicamentoIds"
+                     [class.is-invalid]="f['medicamentoIds'] && f['medicamentoIds'].invalid && (f['medicamentoIds'].dirty || f['medicamentoIds'].touched)"
+                     placeholder="Ej: 1,2,3">
+              <div class="invalid-feedback" *ngIf="f['medicamentoIds'] && f['medicamentoIds'].invalid && (f['medicamentoIds'].dirty || f['medicamentoIds'].touched)">
+                Los medicamentos son requeridos
+              </div>
+              <small class="form-text text-muted">Ingresa los IDs de medicamentos separados por comas (ej: 1,2,3)</small>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="citaId" class="form-label">Cita ID *</label>
+              <input type="number" class="form-control" id="citaId" formControlName="citaId"
+                     [class.is-invalid]="f['citaId'] && f['citaId'].invalid && (f['citaId'].dirty || f['citaId'].touched)"
+                     min="1">
+              <div class="invalid-feedback" *ngIf="f['citaId'] && f['citaId'].invalid && (f['citaId'].dirty || f['citaId'].touched)">
+                <div *ngIf="f['citaId'].errors?.['required']">El cita ID es requerido</div>
+                <div *ngIf="f['citaId'].errors?.['min']">El cita ID debe ser mayor a 0</div>
+              </div>
+              <small class="form-text text-muted">Ingresa el ID de la cita médica</small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="dosis" class="form-label">Dosis *</label>
+              <input type="text" class="form-control" id="dosis" formControlName="dosis"
+                     [class.is-invalid]="f['dosis'] && f['dosis'].invalid && (f['dosis'].dirty || f['dosis'].touched)"
+                     placeholder="Ej: 500mg cada 8 horas">
+              <div class="invalid-feedback" *ngIf="f['dosis'] && f['dosis'].invalid && (f['dosis'].dirty || f['dosis'].touched)">
+                <div *ngIf="f['dosis'].errors?.['required']">La dosis es requerida</div>
+                <div *ngIf="f['dosis'].errors?.['minlength']">La dosis debe tener al menos 3 caracteres</div>
+              </div>
+              <small class="form-text text-muted">Especifica la dosis de los medicamentos</small>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="diagnostico" class="form-label">Diagnóstico *</label>
+              <textarea class="form-control" id="diagnostico" formControlName="diagnostico" rows="3"
+                        [class.is-invalid]="f['diagnostico'] && f['diagnostico'].invalid && (f['diagnostico'].dirty || f['diagnostico'].touched)"
+                        placeholder="Ingrese el diagnóstico del paciente"></textarea>
+              <div class="invalid-feedback" *ngIf="f['diagnostico'] && f['diagnostico'].invalid && (f['diagnostico'].dirty || f['diagnostico'].touched)">
+                <div *ngIf="f['diagnostico'].errors?.['required']">El diagnóstico es requerido</div>
+                <div *ngIf="f['diagnostico'].errors?.['minlength']">El diagnóstico debe tener al menos 5 caracteres</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="indicaciones" class="form-label">Indicaciones *</label>
+              <textarea class="form-control" id="indicaciones" formControlName="indicaciones" rows="4"
+                        [class.is-invalid]="f['indicaciones'] && f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)"
+                        placeholder="Ingrese las indicaciones médicas"></textarea>
+              <div class="invalid-feedback" *ngIf="f['indicaciones'] && f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)">
+                <div *ngIf="f['indicaciones'].errors?.['required']">Las indicaciones son requeridas</div>
+                <div *ngIf="f['indicaciones'].errors?.['minlength']">Las indicaciones deben tener al menos 10 caracteres</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <textarea class="form-control" id="observaciones" formControlName="observaciones" rows="3"
+                        [class.is-invalid]="f['observaciones'] && f['observaciones'].invalid && (f['observaciones'].dirty || f['observaciones'].touched)"
+                        placeholder="Ingrese observaciones adicionales (opcional)"></textarea>
+              <div class="invalid-feedback" *ngIf="f['observaciones'] && f['observaciones'].invalid && (f['observaciones'].dirty || f['observaciones'].touched)">
+                <div *ngIf="f['observaciones'].errors?.['maxlength']">Las observaciones no pueden exceder 500 caracteres</div>
+              </div>
+              <small class="form-text text-muted">Observaciones adicionales (máximo 500 caracteres)</small>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarReceta()" 
+                [disabled]="!form || form.invalid || loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ titleBoton }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

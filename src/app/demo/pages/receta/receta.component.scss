@@ -1,4 +1,4 @@
-/* Estilos para el módulo de Medicamentos */
+/* Estilos para el módulo de Recetas Médicas */
 
 .card {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -59,25 +59,6 @@
   height: 1rem;
 }
 
-/* Estilos específicos para estados de vencimiento */
-.badge.bg-success {
-  background-color: #198754 !important;
-}
-
-.badge.bg-warning {
-  background-color: #ffc107 !important;
-  color: #000 !important;
-}
-
-.badge.bg-danger {
-  background-color: #dc3545 !important;
-}
-
-.badge.bg-info {
-  background-color: #0dcaf0 !important;
-  color: #000 !important;
-}
-
 /* Animaciones */
 @keyframes fadeIn {
   from {
@@ -108,44 +89,6 @@
   .table-responsive {
     font-size: 0.875rem;
   }
-  
-  .modal-xl {
-    max-width: 95%;
-  }
 }
 
-/* Hover effects */
-.table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.075);
-}
 
-.btn-outline-primary:hover {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
-}
-
-/* Estilos para alertas de vencimiento */
-.alert-vencimiento {
-  border-left: 4px solid;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.375rem;
-}
-
-.alert-vencimiento.vencido {
-  border-left-color: #dc3545;
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.alert-vencimiento.por-vencer {
-  border-left-color: #ffc107;
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.alert-vencimiento.vigente {
-  border-left-color: #198754;
-  background-color: #d1e7dd;
-  color: #0f5132;
-}

@@ -146,6 +146,28 @@ export class BackendService {
     });
   }
 
+  /**
+   * Metodo generico DELETE
+   * @param urlApi URL base de la API
+   * @param endpoint Endpoint específico
+   * @param service Servicio o recurso
+   * @returns Observable<T> respuesta del servidor
+   */
+  delete<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string
+  ): Observable<T> {
+    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+    });
+    return this.http.delete<T>(`${urlApi}/${endpoint}/${service}`, {
+      headers: headers,
+    });
+  }
+
 
 
   postFile<T>(

@@ -6,7 +6,7 @@ import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
 import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
 import { CitaComponent } from './demo/pages/cita/cita.component';
-import { FormulaMedicaComponent } from './demo/pages/formula-medica/formula-medica.component';
+import { RecetaComponent } from './demo/pages/receta/receta.component';
 import { HistoriaMedicaComponent } from './demo/pages/historia-medica/historia-medica.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
 
@@ -26,7 +26,7 @@ export const routes: Routes = [
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
        { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},
        { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},
-       { path: 'formula-medica', component: FormulaMedicaComponent, data: { title: 'Formula Medica' }},
+       { path: 'receta', component: RecetaComponent, data: { title: 'Receta' }},
        { path: 'historia-medica', component: HistoriaMedicaComponent, data: { title: 'Historia Medica' }},
        { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
     ]

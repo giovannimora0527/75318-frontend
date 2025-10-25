@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormulaMedicaComponent } from './formula-medica.component';
+import { RecetaComponent } from './receta.component';
 
-describe('FormulaMedicaComponent', () => {
-  let component: FormulaMedicaComponent;
-  let fixture: ComponentFixture<FormulaMedicaComponent>;
+describe('RecetaComponent', () => {
+  let component: RecetaComponent;
+  let fixture: ComponentFixture<RecetaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormulaMedicaComponent]
+      imports: [RecetaComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FormulaMedicaComponent);
+    fixture = TestBed.createComponent(RecetaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,3 +21,5 @@ describe('FormulaMedicaComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+

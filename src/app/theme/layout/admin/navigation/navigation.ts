@@ -62,10 +62,10 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'formula-medica',
-        title: 'Fórmulas Médicas',
+        id: 'receta',
+        title: 'Recetas Médicas',
         type: 'item',
-        url: '/inicio/formula-medica',
+        url: '/inicio/receta',
         icon: 'feather icon-file-text',
         classes: 'nav-item'
       },
