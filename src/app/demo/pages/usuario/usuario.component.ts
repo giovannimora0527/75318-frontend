@@ -1,4 +1,4 @@
-mport { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { UsuarioService } from './service/usuario.service';
 import { Usuario } from './models/usuario';
 import { CommonModule } from '@angular/common';
@@ -173,7 +173,5 @@ export class UsuarioComponent {
     });
     this.form.markAsPristine();
     this.form.markAsUntouched();
-  }
-}
   }
 }
