@@ -1,3 +1,7 @@
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{titleSpinner}}</p>
+</ngx-spinner>
+
 <div class="container">
   <div class="card">
     <div class="card-header">
@@ -104,7 +108,7 @@
                   La contraseña debe ser al menos de 8 caracteres.
                 </div>
                 <div *ngIf="form.get('password')?.hasError('maxlength') && form.get('password')?.touched" class="text-danger">
-                  La contraseña debe ser al menos de 16 caracteres.
+                  La contraseña debe ser máximo de 16 caracteres.
                 </div>
               </div>
               <!--  Rol del usuario -->
