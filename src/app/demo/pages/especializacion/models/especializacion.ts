@@ -3,4 +3,6 @@ export class Especializacion {
     nombre!: string;
     descripcion!: string;
     codigoEspecializacion!: string;
+    fechaCreacion!: Date;
+    activo!: boolean;
 }
