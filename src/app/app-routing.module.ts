@@ -26,23 +26,26 @@ export const routes: Routes = [
       // Rutas standalone
       { 
         path: 'citas', 
-        loadComponent: () => import('./demo/pages/citas/citas.component').then(m => m.CitasComponent),
+        loadComponent: () => import('./demo/pages/citas/citas.component')
+                              .then(m => m.CitasComponent),
         data: { title: 'Citas' } 
       },
       { 
         path: 'formulas', 
-        loadComponent: () => import('./demo/pages/formulas/formulas.component').then(m => m.FormulasComponent),
-        data: { title: 'Fórmulas' } 
+        loadComponent: () => import('./demo/pages/formula-medica/formula-medica.component')
+                              .then(m => m.FormulaMedicaComponent),
+        data: { title: 'Fórmulas Médicas' } 
       },
       { 
         path: 'historia', 
-        loadComponent: () => import('./demo/pages/historia/historia.component').then(m => m.HistoriaComponent),
+        loadComponent: () => import('./demo/pages/historia/historia.component')
+                              .then(m => m.HistoriaComponent),
         data: { title: 'Historia Clínica' } 
       },
       { 
         path: 'especializacion', 
         loadComponent: () => import('./demo/pages/especializacion/especializacion.component')
-                             .then(m => m.EspecializacionComponent),
+                              .then(m => m.EspecializacionComponent),
         data: { title: 'Especializaciones' } 
       }
     ]

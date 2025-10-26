@@ -9,22 +9,43 @@ import { RespuestaRs } from '../models/respuesta-rs';
   providedIn: 'root'
 })
 export class UsuarioService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'usuario';
+  private readonly urlBase = environment.apiUrl;
+  private readonly endpoint = 'usuario';
 
   constructor(private readonly backendService: BackendService) {}
 
+  /**
+   * 📋 Listar todos los usuarios
+   */
   listarUsuarios(): Observable<Usuario[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
 
+  /**
+   * 💾 Guardar un nuevo usuario
+   */
   guardarUsuario(usuario: Usuario): Observable<RespuestaRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'guardar', usuario);
   }
 
+  /**
+   * ✏️ Actualizar un usuario existente
+   */
   actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', usuario);
-  } 
+    return this.backendService.put(this.urlBase, this.endpoint, `actualizar/${usuario.id}`, usuario);
+  }
 
+  /**
+   * ❌ Eliminar un usuario por ID
+   */
+  eliminarUsuario(id: number): Observable<RespuestaRs> {
+    return this.backendService.delete(this.urlBase, this.endpoint, `eliminar/${id}`);
+  }
 
+  /**
+   * 🔍 Buscar un usuario por ID (opcional, por si lo necesitas)
+   */
+  obtenerPorId(id: number): Observable<Usuario> {
+    return this.backendService.get(this.urlBase, this.endpoint, `buscar/${id}`);
+  }
 }

@@ -7,155 +7,85 @@ import { Observable } from 'rxjs';
 })
 /**
  * Servicio para interactuar con el backend mediante peticiones HTTP.
- * Proporciona métodos genéricos para realizar operaciones GET, POST, PUT y envío de archivos.
+ * Proporciona métodos genéricos para realizar operaciones GET, POST, PUT, DELETE y envío de archivos.
  *
  * @remarks
  * Este servicio utiliza el token almacenado en localStorage para autenticar las peticiones.
- *
- * @example
- * ```typescript
- * backendService.get('https://api.example.com', 'users', 'list');
- * ```
- *
- * @param http Instancia de HttpClient para realizar las peticiones HTTP.
- *
- * @method construirHeader Construye los encabezados HTTP, incluyendo el token de autenticación si está disponible.
- * @method get Realiza una petición GET genérica al backend.
- * @param urlApi URL base de la API.
- * @param endpoint Endpoint específico de la API.
- * @param service Servicio o recurso a consultar.
- * @param routerParams Parámetros opcionales para la ruta.
- *
- * @method post Realiza una petición POST genérica al backend.
- * @param urlApi URL base de la API.
- * @param endpoint Endpoint específico de la API.
- * @param service Servicio o recurso a consultar.
- * @param data Datos a enviar en el cuerpo de la petición.
- *
- * @method put Realiza una petición PUT genérica al backend.
- * @param urlApi URL base de la API.
- * @param endpoint Endpoint específico de la API.
- * @param service Servicio o recurso a consultar.
- * @param data Datos a enviar en el cuerpo de la petición.
- *
- * @method postFile Realiza una petición POST para enviar archivos al backend.
- * @param urlApi URL base de la API.
- * @param endpoint Endpoint específico de la API.
- * @param service Servicio o recurso a consultar.
- * @param data Archivo o datos a enviar en el cuerpo de la petición.
  */
 export class BackendService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
+  /** Construye los encabezados con o sin token */
   construirHeader() {
-    // Aqui obtenemos el token desde el local storage
     const tokenRecuperado = localStorage.getItem('token');
-    if (tokenRecuperado != '') {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-        Authorization: 'Bearer ' + tokenRecuperado,
-      });
-      return headers;
-    } else {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-      });
-      return headers;
-    }
-  }
-
-  /**
-   * Metodo GET generico
-   * @param urlApi URL base de la API
-   * @param endpoint Endpoint específico
-   * @param service Servicio o recurso
-   * @param routerParams Parámetros opcionales de la ruta
-   * @returns Observable<T> respuesta del servidor
-   */
-  get<T>(
-    urlApi: string,        // URL base de la API
-    endpoint: string,      // Endpoint específico
-    service: string,       // Servicio o recurso
-    routerParams?: HttpParams // Parámetros opcionales de la ruta
-  ) {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
+      ...(tokenRecuperado ? { Authorization: 'Bearer ' + tokenRecuperado } : {}),
     });
+    return headers;
+  }
+
+  /** Método GET genérico */
+  get<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    routerParams?: HttpParams
+  ): Observable<T> {
     return this.http.get<T>(`${urlApi}/${endpoint}/${service}`, {
       params: routerParams,
-      headers: headers,
+      headers: this.construirHeader(),
       withCredentials: true,
     });
   }
 
-  /**
-   * Metodo generico POST
-   * @param urlApi URL base de la API
-   * @param endpoint Endpoint específico
-   * @param service Servicio o recurso
-   * @param data Datos a enviar en el cuerpo de la petición
-   * @returns Observable<T> respuesta del servidor
-   */
-  
+  /** Método POST genérico */
   post<T>(
     urlApi: string,
     endpoint: string,
     service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: unknown
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
     return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
-      headers: headers,
+      headers: this.construirHeader(),
       withCredentials: true,
     });
   }
 
-  /**
-   * Metodo generico PUT
-   * @param urlApi URL base de la API
-   * @param endpoint Endpoint específico
-   * @param service Servicio o recurso
-   * @param data Datos a enviar en el cuerpo de la petición
-   * @returns Observable<T> respuesta del servidor
-   */
+  /** Método PUT genérico */
   put<T>(
     urlApi: string,
     endpoint: string,
     service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: unknown
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
     return this.http.put<T>(`${urlApi}/${endpoint}/${service}`, data, {
-      headers: headers,
+      headers: this.construirHeader(),
     });
   }
 
+  /** 🆕 Método DELETE genérico */
+  delete<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string
+  ): Observable<T> {
+    return this.http.delete<T>(`${urlApi}/${endpoint}/${service}`, {
+      headers: this.construirHeader(),
+      withCredentials: true,
+    });
+  }
 
-
+  /** Método POST para archivos */
   postFile<T>(
     urlApi: string,
     endpoint: string,
     service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: unknown
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    const tokenRecuperado = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       mimeType: 'multipart/form-data',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',

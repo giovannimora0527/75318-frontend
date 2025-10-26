@@ -1,0 +1,157 @@
+/* ===============================
+   ESTILOS GENERALES
+=============================== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Tarjeta principal */
+.card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Encabezado */
+.card-header {
+  background: linear-gradient(90deg, #007bff, #00b4d8);
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* ===============================
+   FORMULARIO
+=============================== */
+form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: 600;
+  color: #333;
+}
+
+input.form-control {
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+input.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Botones del formulario */
+.btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #565e64;
+}
+
+/* ===============================
+   TABLA
+=============================== */
+.table {
+  margin-top: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Botones de acción */
+.btn-sm {
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* ===============================
+   SPINNER
+=============================== */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* ===============================
+   RESPONSIVE
+=============================== */
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f1f1f1;
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+  }
+
+  form {
+    padding: 15px;
+  }
+}
