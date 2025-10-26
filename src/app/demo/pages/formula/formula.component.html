@@ -1,1 +1,118 @@
-<p>formula works!</p>
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>
+          <i class="fa fa-user-md"></i>
+          &nbsp;Lista de formulas
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoFormula()">
+          <i class="fa fa-plus"></i>
+          Nueva formula
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Cita</th>
+              <th>Medicamento</th>
+              <th>Dosis</th>
+              <th>Indicaciones</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let formula of formulaList">
+              <td>{{ formula.id }}</td>
+              <td>{{ formula.cita?.id }}</td>
+              <td>{{ formula.medicamento?.nombre }}</td>
+              <td>{{ formula.dosis }}</td>
+              <td>{{ formula.indicaciones }}</td>
+              <td>
+                <button type="button" class="btn btn btn-outline-primary" title="Editar formula" (click)="editarModalFormula(formula)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para nueva formula -->
+<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearFormulaLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <form [formGroup]="form">
+
+              <!-- Cita -->
+              <div class="mb-3">
+                <label for="cita" class="form-label">Cita</label>
+                <select formControlName="cita" class="form-control" id="cita">
+                <option value="" disabled selected>Seleccione la cita de la formula</option>
+                <option *ngFor="let cita of citaList" [value]="cita.id">{{ cita.id }}</option>
+               </select>
+              </div>
+
+                <!-- Medicamento -->
+              <div class="mb-3">
+                <label for="medicamento" class="form-label">Medicamento</label>
+                <select formControlName="medicamento" class="form-control" id="medicamento">
+                <option value="" disabled selected>Seleccione el medicamento de la formula</option>
+                <option *ngFor="let medicamento of medicamentoList" [value]="medicamento.id">{{ medicamento.nombre }}</option>
+               </select>
+              </div>
+
+              <!-- Dosis -->
+              <div class="mb-3">
+                <label for="dosis" class="form-label">Dosis</label>
+                <input
+                  type="text"
+                  formControlName="dosis"
+                  class="form-control"
+                  id="dosis"
+                  [ngModel]="formulaSelected ? formulaSelected.dosis : ''"
+                />
+                <div *ngIf="form.get('dosis')?.hasError('required') && form.get('dosis')?.touched" class="text-danger">
+                  La dosis es requerida.
+                </div>
+              </div>
+
+              <!-- Indicaciones  -->
+              <div class="mb-3">
+                <label for="indicaciones" class="form-label">Indicaciones</label>
+                <input
+                  type="text"
+                  formControlName="indicaciones"
+                  class="form-control"
+                  id="indicaciones"
+                  [ngModel]="formulaSelected ? formulaSelected.indicaciones : ''"
+                />
+                <div *ngIf="form.get('indicaciones')?.hasError('required') && form.get('indicaciones')?.touched" class="text-danger">
+                  Las indicaciones son requeridas.              
+          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarFormula()">{{ titleBoton }}</button>
+      </div>
+    </div>
+

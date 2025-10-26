@@ -2,6 +2,7 @@
   import { CommonModule } from '@angular/common';
   import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
   import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+  import { FiltroPacientesPipe } from './filtro-pacientes.pipe';
 
   // Importa los objetos necesarios de Bootstrap
   import Modal from 'bootstrap/js/dist/modal';
@@ -11,10 +12,11 @@
   import { Usuario } from 'src/app/models/usuario';
 import { Paciente } from './models/paciente';
 import { PacienteService } from './service/paciente.service';
+import { Medicamento } from '../medicamento/models/medicamento';
 
   @Component({
     selector: 'app-paciente',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule, FiltroPacientesPipe],
     templateUrl: './paciente.component.html',
     styleUrl: './paciente.component.scss'
   })
@@ -51,13 +53,13 @@ import { PacienteService } from './service/paciente.service';
     inicializarFormulario() {
       this.form = this.formBuilder.group({
         tipoDocumento: ['', [Validators.required]],
-        documento: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(16)]],
+        numeroDocumento: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(16)]],
         nombres: ['', [Validators.required, Validators.minLength(3)]],
         apellidos: ['', [Validators.required, Validators.minLength(4)]],
         telefono: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10)]],
         genero: ['', [Validators.required]],
         fechaNacimiento: ['', [Validators.required]],
-        direccion: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10)]],
+        direccion: ['', [Validators.required]],
         usuario: ['', [Validators.required]],
         activo: [true]
       });
@@ -82,12 +84,30 @@ import { PacienteService } from './service/paciente.service';
       this.pacienteService.listarPacientes().subscribe({
         next: (data) => {
           this.pacienteList = data;
+          this.pacienteListFiltrada = [...this.pacienteList]; // copia inicial
+
         },
         error: (error) => {
           console.error('Error fetching paciente list:', error);
         }
       });
     }
+
+      filtros = {
+        id: '',
+        tipoDocumento: '',
+        numeroDocumento: '',
+        nombres: '',
+        apellidos: '',
+        telefono: '',
+        genero: '',
+        usuario: '',
+        fechaNacimiento: '',
+        direccion: ''
+};
+
+pacienteListFiltrada: Paciente[] = [];
+
 
     closeModal() {
       if (this.modalInstance) {
@@ -109,6 +129,7 @@ import { PacienteService } from './service/paciente.service';
 
     abrirNuevoPaciente() {
       this.pacienteSelected = null;
+      this.form.reset(); // Limpia los valores anteriores
       this.openModal('C');
     }
 
@@ -122,12 +143,22 @@ import { PacienteService } from './service/paciente.service';
       this.titleSpinner = this.modoFormulario === 'C' ? 'Creando paciente...' : 'Actualizando paciente...';
       this.spinner.show();
       if (this.form.invalid) {
-        // Manejar el formulario inválido
         this.spinner.hide();
         Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
-        return;
-      }
+      return;
+  }
 
+        // ✅ Preparar correctamente el objeto antes de enviarlo
+const paciente = { ...this.form.getRawValue() };
+paciente.usuario = {id: Number(paciente.usuario)};
+paciente.fechaNacimiento = paciente.fechaNacimiento.split('T')[0]; // formato YYYY-MM-DD
+delete paciente.activo;
+
+console.log('🧩 Formulario actual:', this.form.value);
+const medicamento = { ...this.form.getRawValue() };
+console.log('📤 JSON ENVIADO AL BACKEND:', JSON.stringify(medicamento, null, 2));
+
+      
       if (this.modoFormulario === 'C') {
         // Crear     
         this.pacienteService.guardarPaciente(this.form.getRawValue()).subscribe({

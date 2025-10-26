@@ -4,7 +4,7 @@ export class Paciente {
     id!: number;
     nombres!: string;
     apellidos!: string;
-    documento!: string;
+    numeroDocumento!: string;
     tipoDocumento!: string;
     telefono!: string;
     direccion!: string;

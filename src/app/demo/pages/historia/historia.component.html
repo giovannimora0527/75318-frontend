@@ -1,1 +1,109 @@
-<p>historia works!</p>
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>
+          <i class="fa fa-user-md"></i>
+          &nbsp;Lista de historia
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoHistoria()">
+          <i class="fa fa-plus"></i>
+          Nueva historia
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Paciente</th>
+              <th>Descripciòn</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let historia of historiaList">
+              <td>{{ historia.id }}</td>
+              <td>{{ historia.paciente?.nombres }}</td>
+              <td>{{ historia.descripcion }}</td>
+              <td>{{ historia.fecha }}</td>
+              <td>
+                <button type="button" class="btn btn btn-outline-primary" title="Editar historia" (click)="editarModalHistoria(historia)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para nueva historia -->
+<div class="modal fade" id="modalCrearHistoria" tabindex="-1" aria-labelledby="modalCrearHistoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearHistoriaLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+
+          <!-- Paciente -->
+          <div class="mb-3">
+            <label for="paciente" class="form-label">Paciente</label>
+            <select formControlName="paciente" class="form-control" id="paciente">
+              <option value="" disabled selected>Seleccione el paciente de la historia</option>
+              <option [value]="paciente.id" *ngFor="let paciente of pacienteList">
+                {{ paciente.nombres }}
+              </option>
+            </select>
+          </div>
+
+              <!--  Descripciòn -->
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripciòn </label>
+                <input
+                  type="text"
+                  formControlName="descripcion"
+                  class="form-control"
+                  id="descripcion"
+                  placeholder="Ingrese la descripciòn de la historia"
+                  [ngModel]="historiaSelected ? historiaSelected.descripcion : ''"
+                />
+                <div *ngIf="form.get('descripcion')?.hasError('required') && form.get('descripcion')?.touched" class="text-danger">
+                  La descripciòn es requerida.
+                </div>
+              </div>
+
+              <!-- Fecha  -->
+              <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha</label>
+                <input
+                  type="date"
+                  formControlName="fecha"
+                  class="form-control"
+                  id="fecha"
+                  [ngModel]="historiaSelected ? historiaSelected.fecha : ''"
+                />
+                <div *ngIf="form.get('fecha')?.hasError('required') && form.get('fecha')?.touched" class="text-danger">
+                  La fecha es requerida.
+                </div>
+              </div>
+
+     <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarHistoria()">{{ titleBoton }}</button>
+      </div>
+
