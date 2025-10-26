@@ -1,0 +1,194 @@
+<div class="spinner-overlay" *ngIf="cargando">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Gestión de Fórmulas Médicas</h4>
+  <button class="btn btn-primary" (click)="abrirNuevaFormula()">Nueva Fórmula</button>
+</div>
+
+<div *ngIf="cargando" class="text-center my-3">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Cita</th>
+        <th>Medicamento</th>
+        <th>Dosis</th>
+        <th>Indicaciones</th>
+        <th>Fecha de Creación</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+      <tr>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.id"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrarFormulas()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.citaId"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrarFormulas()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.medicamentoId"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrarFormulas()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.dosis"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrarFormulas()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.indicaciones"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrarFormulas()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="YYYY-MM-DD"
+            [(ngModel)]="filtro.fechaCreacionRegistro"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrarFormulas()"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let f of formulasFiltradas">
+        <td><strong>#{{ f.id }}</strong></td>
+        <td>{{ getDescripcionCita(f.citaId) }}</td>
+        <td>{{ getNombreMedicamento(f.medicamentoId) }}</td>
+        <td>{{ f.dosis }}</td>
+        <td>{{ f.indicaciones }}</td>
+        <td>{{ f.fechaCreacionRegistro | date:'yyyy-MM-dd HH:mm' }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditarFormula(f)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="!formulasFiltradas || formulasFiltradas.length === 0">
+        <td colspan="7" class="text-center text-muted">No hay fórmulas registradas</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalFormula" tabindex="-1" aria-labelledby="modalFormulaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalFormulaLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Spinner para carga de combos -->
+        <div class="spinner-overlay" *ngIf="cargandoCombos">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2 text-primary fw-bold">Cargando datos...</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="guardarFormula()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Cita</label>
+              <select class="form-select" formControlName="citaId">
+                <option value="">Seleccionar cita</option>
+                <option *ngFor="let c of citas" [value]="c.id">
+                  Cita #{{ c.id }} - {{ c.nombrePaciente }} con {{ c.nombreMedico }} ({{ c.fechaHora | date:'dd/MM/yyyy HH:mm' }})
+                </option>
+              </select>
+              <div *ngIf="form.get('citaId')?.invalid && form.get('citaId')?.touched" class="text-danger small">
+                La cita es obligatoria
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Medicamento</label>
+              <select class="form-select" formControlName="medicamentoId">
+                <option value="">Seleccionar medicamento</option>
+                <option *ngFor="let m of medicamentos" [value]="m.id">
+                  {{ m.nombre }} - {{ m.presentacion }}
+                </option>
+              </select>
+              <div *ngIf="form.get('medicamentoId')?.invalid && form.get('medicamentoId')?.touched" class="text-danger small">
+                El medicamento es obligatorio
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Dosis</label>
+            <input type="text" class="form-control" formControlName="dosis" placeholder="Ej: 500mg cada 8 horas" />
+            <div *ngIf="form.get('dosis')?.invalid && form.get('dosis')?.touched" class="text-danger small">
+              La dosis es obligatoria
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Indicaciones</label>
+            <textarea 
+              class="form-control" 
+              formControlName="indicaciones" 
+              rows="3"
+              placeholder="Indicaciones adicionales para el paciente"
+            ></textarea>
+            <div *ngIf="form.get('indicaciones')?.invalid && form.get('indicaciones')?.touched" class="text-danger small">
+              Las indicaciones son obligatorias
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

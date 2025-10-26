@@ -1,0 +1,123 @@
+<div class="spinner-overlay" *ngIf="cargando">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Gestión de Medicamentos</h4>
+  <button class="btn btn-primary" (click)="abrirNuevoMedicamento()">Nuevo Medicamento</button>
+</div>
+
+<div *ngIf="cargando" class="text-center my-3">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Presentación</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+      <tr>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.nombre"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.descripcion"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrar"
+            [(ngModel)]="filtro.presentacion"
+            [ngModelOptions]="{standalone: true}"
+            (input)="filtrar()"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let m of medicamentosFiltrados">
+        <td>{{ m.nombre }}</td>
+        <td>{{ m.descripcion }}</td>
+        <td>{{ m.presentacion }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditarMedicamento(m)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="!medicamentosFiltrados || medicamentosFiltrados.length === 0">
+        <td colspan="4" class="text-center text-muted">No hay medicamentos registrados</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalMedicamento" tabindex="-1" aria-labelledby="modalMedicamentoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalMedicamentoLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarMedicamento()">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" formControlName="nombre" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Descripción</label>
+              <textarea class="form-control" formControlName="descripcion" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Presentación</label>
+              <input type="text" class="form-control" formControlName="presentacion" />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

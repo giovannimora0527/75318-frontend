@@ -1,0 +1,86 @@
+<div class="spinner-overlay" *ngIf="cargando">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Gestión de Especializaciones Médicas</h4>
+  <button class="btn btn-primary" (click)="abrirNueva()">Nueva Especialización</button>
+</div>
+
+<div *ngIf="cargando" class="text-center my-3">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="mt-2 text-primary fw-bold">Procesando información...</p>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+      <tr>
+        <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar" [(ngModel)]="filtro.codigoEspecializacion" [ngModelOptions]="{standalone:true}" (input)="filtrarEspecializaciones()" /></th>
+        <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar" [(ngModel)]="filtro.nombre" [ngModelOptions]="{standalone:true}" (input)="filtrarEspecializaciones()" /></th>
+        <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar" [(ngModel)]="filtro.descripcion" [ngModelOptions]="{standalone:true}" (input)="filtrarEspecializaciones()" /></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let e of especializacionesFiltradas">
+        <td>{{ e.codigoEspecializacion }}</td>
+        <td>{{ e.nombre }}</td>
+        <td>{{ e.descripcion }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info" (click)="abrirEditar(e)">
+            <i class="feather icon-edit"></i> Editar
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="!especializacionesFiltradas || especializacionesFiltradas.length === 0">
+        <td colspan="4" class="text-center text-muted">No hay especializaciones registradas</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEspecializacion" tabindex="-1" aria-labelledby="modalEspecializacionLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalEspecializacionLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+          <div class="mb-3">
+            <label class="form-label">Código</label>
+            <input type="text" class="form-control" formControlName="codigoEspecializacion" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" formControlName="descripcion" rows="3"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
