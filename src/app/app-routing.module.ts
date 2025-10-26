@@ -4,11 +4,11 @@ import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
-import { CitasComponent } from './demo/pages/citas/citas.component';
+import { CitaComponent } from './demo/pages/cita/cita.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
-import { FormulasMedicasComponent } from './demo/pages/formulas-medicas/formulas-medicas.component';
-import { HistoriasMedicasComponent } from './demo/pages/historias-medicas/historias-medicas.component';
-import { MedicamentosComponent } from './demo/pages/medicamentos/medicamentos.component';
+import { FormulaComponent } from './demo/pages/formula/formula.component';
+import { HistoriaComponent } from './demo/pages/historia/historia.component';
+import { MedicamentosComponent } from './demo/pages/medicamento/medicamento.component';
 
 export const routes: Routes = [
   {
@@ -24,11 +24,12 @@ export const routes: Routes = [
        { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
-       { path: 'citas', component: CitasComponent, data: { title: 'Citas' }},
-       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},
-       { path: 'formulas-medicas', component: FormulasMedicasComponent, data: { title: 'Formulas-Medicas' }},
-       { path: 'historias-medicas', component: HistoriasMedicasComponent, data: { title: 'Historias-Medicas' }},
-       { path: 'medicamentos', component: MedicamentosComponent, data: { title: 'Medicamentos' }}
+       { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},
+       { path: 'medicamento', component: MedicamentosComponent, data: { title: 'Medicamento' }},
+       { path: 'formula-medica', component: FormulaComponent, data: { title: 'Formula' }},
+       { path: 'historia-clinica', component: HistoriaComponent, data: { title: 'Historia' }},
+       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
+
     ]
   },
   { path: '**', redirectTo: 'inicio' }
