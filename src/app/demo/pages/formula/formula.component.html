@@ -1,0 +1,176 @@
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+    <p>{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>
+                    <i class="fa fa-notes-medical"></i>
+                    &nbsp;Lista de Formulas Médicas
+                </h3>
+
+                <button class="btn btn-outline-primary" (click)="abrirNuevoReceta()">
+                    <i class="fa fa-plus"></i>
+                    Nueva formula médica
+                </button>
+            </div>
+
+        </div>
+        <div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-outline-primary d-flex justify-content-center align-items-center"
+                        style="width:40px; height:40px;">
+                        <i class="fa fa-filter"></i>
+                    </button>
+                    <tr>
+                        <th>
+                            <input type="text" class="form-control" style="width: 60px;" placeholder="Id"
+                                (input)="filtrar('id', $any($event.target).value)" />
+                        </th>
+                        <th>
+                            <input type="text" class="form-control" style="width: 130px;" placeholder="Cita id"
+                                (input)="filtrar('citaId', $any($event.target).value)" />
+                        </th>
+                        <th>
+                            <input type="text" class="form-control" style="width: 200px;" placeholder="Medicamento"
+                                (input)="filtrar('medicamentoId', $any($event.target).value)" />
+                        </th>
+                        <th>
+                            <input type="text" class="form-control" style="width: 200px;" placeholder="Dosis"
+                                (input)="filtrar('dosis', $any($event.target).value)" />
+                        </th>
+                        <th>
+                            <input type="text" class="form-control" style="width: 360px;" placeholder="Indicaciones"
+                                (input)="filtrar('indicaciones', $any($event.target).value)" />
+                        </th>
+                        <th>
+                            <input type="date" class="form-control" style="width: 300px;"
+                                placeholder="fecha Creacion Registro"
+                                (change)="filtrar('fechaCreacionRegistro', $any($event.target).value)" />
+                        </th>
+                        <th style="width: 500px;"></th>
+                    </tr>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Cita id</th>
+                            <th>Medicamento</th>
+                            <th>Dosis</th>
+                            <th>Indicaciones</th>
+                            <th>fecha Creacion Registro</th>
+                            <th></th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let formula of filteredFormula">
+                            <td>{{ formula.id }}</td>
+                            <td>{{ formula.citaId?.id }}</td>
+                            <td>{{ formula.medicamentoId?.nombre }}</td>
+                            <td>{{ formula.dosis }}</td>
+                            <td>{{ formula.indicaciones }}</td>
+                            <td>{{ formula.fechaCreacionRegistro }}</td>
+                            <td>
+                                <button type="button" class="btn btn btn-outline-primary" title="Editar Formula"
+                                    (click)="editarModalFormula(formula)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="filteredFormula && filteredFormula.length === 0">
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                No hay formulas disponibles.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para nueva formul -->
+<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalCrearFormulaLabel">
+                    {{ titleModal }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <form [formGroup]="form">
+
+                            <!-- Cita ID -->
+                            <div class="mb-3">
+                                <label for="citaId" class="form-label">Cita</label>
+                                <select class="form-control" formControlName="citaId">
+                                    <option [ngValue]="null" disabled>Seleccione una cita</option>
+                                    <option *ngFor="let c of citasList" [ngValue]="c">
+                                        {{ c.id }} - {{ c.motivo }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <!-- Medicamento -->
+                            <div class="mb-3">
+                                <label for="medicamentoId" class="form-label">Medicamento</label>
+                                <select class="form-control" formControlName="medicamentoId">
+                                    <option [ngValue]="null" disabled>Seleccione un medicamento</option>
+                                    <option *ngFor="let m of medicamentosList" [ngValue]="m">
+                                        {{ m.nombre }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                            <!--  Dosis -->
+                            <div class="mb-3">
+                                <label for="dosis" class="form-label">Dosis</label>
+                                <input type="text" formControlName="dosis" class="form-control" id="dosis"
+                                    placeholder="Ingrese la dosis del medicamento"
+                                    [ngModel]="formulaSelected ? formulaSelected.dosis : ''" />
+                                <div *ngIf="form.get('dosis')?.hasError('required') && form.get('dosis')?.touched"
+                                    class="text-danger">
+                                    La dosis es requerida.
+                                </div>
+                            </div>
+
+                            <!--  Indicaciones -->
+                            <div class="mb-3">
+                                <label for="indicaciones" class="form-label">Indicaciones</label>
+                                <input type="text" formControlName="indicaciones" class="form-control" id="indicaciones"
+                                    placeholder="Ingrese las indicaciones"
+                                    [ngModel]="formulaSelected ? formulaSelected.indicaciones : ''" />
+                                <div *ngIf="form.get('indicaciones')?.hasError('required') && form.get('indicaciones')?.touched"
+                                    class="text-danger">
+                                    Las indicaciones son requeridos.
+                                </div>
+                            </div>
+
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="guardarFormula()">{{ titleBoton }}</button>
+            </div>
+        </div>
+    </div>
+</div>
