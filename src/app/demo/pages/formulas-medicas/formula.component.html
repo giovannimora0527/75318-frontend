@@ -1,4 +1,4 @@
-<!-- formula.component.html (CORREGIDO) -->
+<!-- formula.component.html -->
 <ngx-spinner type="ball-scale-multiple" size="medium" color="#fff" [fullScreen]="true">
   <p style="color: white">{{ titleSpinner }}</p>
 </ngx-spinner>
@@ -24,6 +24,7 @@
             <tr>
               <th>Id</th>
               <th>Cita</th>
+              <th>Paciente</th> <!-- ← Cambiar columna -->
               <th>Medicamento</th>
               <th>Dosis</th>
               <th>Indicaciones</th>
@@ -33,13 +34,17 @@
           </thead>
           <tbody *ngIf="recetaList.length === 0">
             <tr>
-              <td colspan="7" class="text-center">No hay registros de fórmulas</td>
+              <td colspan="8" class="text-center">No hay registros de fórmulas</td>
             </tr>
           </tbody>
           <tbody *ngIf="recetaList.length > 0">
             <tr *ngFor="let receta of recetaList">
               <td>{{ receta.id }}</td>
-              <td>{{ receta.cita?.id || 'N/A' }}</td>
+              <td>Cita #{{ receta.cita?.id || 'N/A' }}</td>
+              <!-- ✅ MOSTRAR NOMBRE DEL PACIENTE -->
+              <td>
+                {{ receta.cita?.paciente?.nombres }} {{ receta.cita?.paciente?.apellidos }}
+              </td>
               <td>{{ receta.medicamento?.nombre || 'N/A' }}</td>
               <td>{{ receta.dosis }}</td>
               <td>{{ receta.indicaciones }}</td>
@@ -104,21 +109,6 @@
                 Debe tener mínimo 5 caracteres.
               </div>
             </div>
-
-            <!-- Cita -->
-            <div class="col-md-6 mb-3">
-              <label for="citaId" class="form-label">Cita <span class="text-danger">*</span></label>
-              <select formControlName="citaId" class="form-control" id="citaId">
-                <option [value]="null" disabled>Seleccione la cita</option>
-                <option *ngFor="let cita of citaList" [value]="cita.id">
-                  Cita #{{ cita.id }} - {{ cita.motivo }}
-                </option>
-              </select>
-              <div *ngIf="f['citaId'].hasError('required') && f['citaId'].touched" class="text-danger">
-                La cita es requerida.
-              </div>
-            </div>
-
             <!-- Medicamento -->
             <div class="col-md-6 mb-3">
               <label for="medicamentoId" class="form-label">Medicamento <span class="text-danger">*</span></label>
