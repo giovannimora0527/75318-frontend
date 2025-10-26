@@ -2,24 +2,24 @@ import { Component } from '@angular/core';
 import { MedicamentoService } from './service/medicamento.service';
 import { Medicamento } from './models/medicamento';
 import { CommonModule } from '@angular/common';
-
 import Swal from 'sweetalert2';
-// Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
-
 import {
   FormBuilder,
   FormGroup,
   Validators,
   AbstractControl,
   FormsModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  ValidationErrors
 } from '@angular/forms';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+
 
 @Component({
   selector: 'app-medicamentos',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './medicamento.component.html',
   styleUrl: './medicamento.component.scss'
 })
@@ -29,18 +29,24 @@ export class MedicamentosComponent {
   medicamentos: Medicamento[] = [];
   titleModal: string = '';
   titleBoton: string = '';
-  medicamentoSelected: Medicamento;
+  medicamentoSelected: Medicamento | null = null;
+  titleSpinner: string = 'Cargando...';
+
 
   form: FormGroup;
 
   constructor(
     private readonly medicamentoService: MedicamentoService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.listarMedicamentos();
     this.inicializarFormulario();
   }
 
+  /**
+   * Inicializa el formulario con validaciones
+   */
   inicializarFormulario() {
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -48,22 +54,72 @@ export class MedicamentosComponent {
       presentacion: [''],
       fechaCompra: ['', [Validators.required]],
       fechaVence: ['', [Validators.required]]
+    }, {
+      validators: this.validarFechas() // ← Validador personalizado a nivel de formulario
     });
+
+    // Escuchar cambios en las fechas para revalidar
+    this.form.get('fechaCompra')?.valueChanges.subscribe(() => {
+      this.form.get('fechaVence')?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    });
+
+    this.form.get('fechaVence')?.valueChanges.subscribe(() => {
+      this.form.get('fechaCompra')?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    });
+  }
+
+  /**
+   * Validador personalizado para fechas
+   */
+  validarFechas() {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const fechaCompra = formGroup.get('fechaCompra')?.value;
+      const fechaVence = formGroup.get('fechaVence')?.value;
+
+      // Si alguna fecha está vacía, no validar (ya lo hace Validators.required)
+      if (!fechaCompra || !fechaVence) {
+        return null;
+      }
+
+      const compra = new Date(fechaCompra);
+      const vencimiento = new Date(fechaVence);
+
+      // Validar que fecha de compra sea anterior a fecha de vencimiento
+      if (compra >= vencimiento) {
+        return { fechasInvalidas: true };
+      }
+
+      return null;
+    };
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
+  /**
+   * Verifica si hay error de fechas inválidas
+   */
+  get tieneFechasInvalidas(): boolean {
+    return this.form.hasError('fechasInvalidas') &&
+      (this.form.get('fechaCompra')?.touched || this.form.get('fechaVence')?.touched);
+  }
+
   listarMedicamentos() {
-    console.log('Listando Medicamentos..');
+    this.titleSpinner = 'Cargando datos...';
+    this.spinner.show();
     this.medicamentoService.listarMedicamentos().subscribe({
       next: (data) => {
         this.medicamentos = data;
-        console.log(this.medicamentos);
+        console.log('Medicamentos cargados:', this.medicamentos);
+        this.spinner.hide();
+
       },
       error: (error) => {
         console.error('Error al listar medicamentos', error);
+        this.spinner.hide();
+
+        Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error');
       }
     });
   }
@@ -81,27 +137,21 @@ export class MedicamentosComponent {
     this.modoFormulario = modo;
     const modalElement = document.getElementById('modalCrearMedicamento');
     if (modalElement) {
-      // Verificar si ya existe una instancia del modal
       this.modalInstance ??= new Modal(modalElement);
       this.modalInstance.show();
     }
   }
 
   abrirNuevoMedicamento() {
-      this.medicamentoSelected = null;
-      this.form.reset({
-        nombre: '',
-        descripcion: '',
-        presentacion: '',
-        fechaCompra: '',
-        fechaVence: ''
-      });
-      this.openModal('C');
+    this.medicamentoSelected = null;
+    this.limpiarFormulario();
+    this.openModal('C');
   }
 
   abrirEditarMedicamento(m: Medicamento) {
     this.medicamentoSelected = m;
-    // patch form with existing values (format dates for date inputs)
+
+    // Formatear fechas para input type="date"
     const formatDate = (d: string | Date | null | undefined) => {
       if (!d) return '';
       const date = new Date(d);
@@ -123,16 +173,42 @@ export class MedicamentosComponent {
   }
 
   guardarMedicamento() {
+    // Marcar todos los campos como tocados para mostrar errores
+    this.form.markAllAsTouched();
+
     if (this.form.invalid) {
-      Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
+      console.log('Formulario inválido:', this.form);
+
+      // Mensaje específico para fechas inválidas
+      if (this.form.hasError('fechasInvalidas')) {
+        Swal.fire(
+          'Error en fechas',
+          'La fecha de compra debe ser anterior a la fecha de vencimiento.',
+          'error'
+        );
+      } else {
+        Swal.fire('Error', 'Por favor, complete todos los campos correctamente.', 'error');
+      }
       return;
     }
+    this.titleSpinner = this.modoFormulario === 'C' ? 'Creando fórmula...' : 'Actualizando fórmula...';
+    this.spinner.show();
+    // Mostrar loading
+    Swal.fire({
+      title: this.modoFormulario === 'C' ? 'Guardando medicamento...' : 'Actualizando medicamento...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
     if (this.modoFormulario === 'C') {
       // Modo Creación
       this.medicamentoService.guardarMedicamento(this.form.getRawValue()).subscribe({
         next: (data) => {
-          console.log(data);
+          this.spinner.hide();
+
+          Swal.close();
           if (data.status === 200) {
             Swal.fire('Éxito', data.mensaje, 'success');
             this.closeModal();
@@ -142,17 +218,25 @@ export class MedicamentosComponent {
           }
         },
         error: (error) => {
-          console.error('Error al guardar medicamento', error);
-          Swal.fire('Error', error.error.message, 'error');
+          this.spinner.hide();
+
+          Swal.close();
+          console.error('Error al guardar medicamento:', error);
+          Swal.fire('Error', error.error?.message || 'No se pudo guardar el medicamento', 'error');
         }
       });
     } else {
       // Modo Edición
-      const medicamentoActualizado: Medicamento = this.form.getRawValue();
-      medicamentoActualizado.id = this.medicamentoSelected.id;
+      const medicamentoActualizado: Medicamento = {
+        ...this.form.getRawValue(),
+        id: this.medicamentoSelected!.id
+      };
+
       this.medicamentoService.actualizarMedicamento(medicamentoActualizado).subscribe({
         next: (data) => {
-          console.log(data);
+          this.spinner.hide();
+
+          Swal.close();
           if (data.status === 200) {
             Swal.fire('Éxito', data.mensaje, 'success');
             this.closeModal();
@@ -162,8 +246,11 @@ export class MedicamentosComponent {
           }
         },
         error: (error) => {
-          console.error('Error al actualizar medicamento', error);
-          Swal.fire('Error', error.error.message, 'error');
+          this.spinner.hide();
+
+          Swal.close();
+          console.error('Error al actualizar medicamento:', error);
+          Swal.fire('Error', error.error?.message || 'No se pudo actualizar el medicamento', 'error');
         }
       });
     }
@@ -171,11 +258,11 @@ export class MedicamentosComponent {
 
   limpiarFormulario() {
     this.form.reset({
-      nombre: this.medicamentoSelected ? this.medicamentoSelected.nombre : '',
-      descripcion: this.medicamentoSelected ? this.medicamentoSelected.descripcion : '',
-      presentacion: this.medicamentoSelected ? this.medicamentoSelected.presentacion : '',
-      fechaCompra: this.medicamentoSelected ? this.medicamentoSelected.fechaCompra : '',
-      fechaVence: this.medicamentoSelected ? this.medicamentoSelected.fechaVence : ''
+      nombre: '',
+      descripcion: '',
+      presentacion: '',
+      fechaCompra: '',
+      fechaVence: ''
     });
     this.form.markAsPristine();
     this.form.markAsUntouched();
