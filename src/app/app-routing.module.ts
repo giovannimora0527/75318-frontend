@@ -8,7 +8,7 @@ import { CitaComponent } from './demo/pages/cita/cita.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
 import { FormulaComponent } from './demo/pages/formula/formula.component';
 import { HistoriaComponent } from './demo/pages/historia/historia.component';
-import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
+import { MedicamentosComponent } from './demo/pages/medicamento/medicamento.component';
 
 export const routes: Routes = [
   {
@@ -25,7 +25,7 @@ export const routes: Routes = [
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
        { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},
-       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},
+       { path: 'medicamento', component: MedicamentosComponent, data: { title: 'Medicamento' }},
        { path: 'formula-medica', component: FormulaComponent, data: { title: 'Formula' }},
        { path: 'historia-clinica', component: HistoriaComponent, data: { title: 'Historia' }},
        { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
