@@ -9,13 +9,19 @@ import { CitaComponent } from './demo/pages/cita/cita.component';
 import { RecetaComponent } from './demo/pages/receta/receta.component';
 import { HistoriaMedicaComponent } from './demo/pages/historia-medica/historia-medica.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
+import { LoginComponent } from './demo/pages/login/login.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'login',
     pathMatch: 'full'
   },  
+  {
+    path: 'login',
+    data: { title: 'Login' },
+    component: LoginComponent,
+  },
   {
     path: 'inicio',
     component: AdminComponent,
@@ -31,7 +37,7 @@ export const routes: Routes = [
        { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
     ]
   },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({

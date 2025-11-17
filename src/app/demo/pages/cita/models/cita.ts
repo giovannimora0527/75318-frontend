@@ -1,5 +1,5 @@
 import { Medico } from '../../medico/models/medico';
-import { Paciente } from './paciente';
+import { Paciente } from '../../paciente/models/paciente';
 
 export class Cita {
     id!: number;
@@ -11,4 +11,3 @@ export class Cita {
     paciente!: Paciente;
     observaciones!: string;
 }
-

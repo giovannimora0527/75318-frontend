@@ -25,4 +25,3 @@ export class CitaService {
     return this.backendService.put(this.urlBase, this.endpoint, 'actualizar', cita);
   }
 }
-
