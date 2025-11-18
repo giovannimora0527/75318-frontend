@@ -99,11 +99,15 @@
               </div>
 
               <!-- Enlace de contraseña olvidada -->
-              <div class="text-center">
-                <a href="#" class="text-decoration-none" (click)="onForgotPassword($event)">
-                  <i class="fa fa-question-circle"></i>
+              <div class="text-center mb-3">
+                <button 
+                  type="button" 
+                  class="btn btn-link text-decoration-none p-0" 
+                  (click)="onForgotPassword($event)"
+                  style="color: #007bff;">
+                  <i class="fa fa-key"></i>
                   &nbsp;¿Has olvidado tu contraseña?
-                </a>
+                </button>
               </div>
             </form>
           </div>

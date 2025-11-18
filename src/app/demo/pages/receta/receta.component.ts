@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { RecetaService } from './service/receta.service';
 import { Receta, RecetaRq } from './models/receta';
 import { CommonModule } from '@angular/common';
@@ -38,7 +38,8 @@ export class RecetaComponent {
 
   constructor(
     private readonly recetaService: RecetaService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.inicializarFormulario();
     this.listarRecetas();
@@ -51,7 +52,7 @@ export class RecetaComponent {
       indicaciones: ['', [Validators.required, Validators.minLength(10)]],
       medicoId: [1, [Validators.required, Validators.min(1)]],
       pacienteId: [1, [Validators.required, Validators.min(1)]],
-      medicamentoIds: [[], [Validators.required]],
+      medicamentoIds: ['', [Validators.required]], // Cambiar a string para el input de texto
       observaciones: ['', [Validators.maxLength(500)]],
       citaId: [1, [Validators.required, Validators.min(1)]],
       dosis: ['', [Validators.required, Validators.minLength(3)]]
@@ -70,6 +71,8 @@ export class RecetaComponent {
         this.recetaListOriginal = [...data];
         this.loading = false;
         console.log('Recetas médicas cargadas:', data);
+        // Forzar detección de cambios
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error al obtener recetas médicas:', error);
@@ -145,13 +148,16 @@ export class RecetaComponent {
   }
 
   cargarDatosEnFormulario(receta: Receta) {
+    // Convertir array de IDs a string separado por comas para el formulario
+    const medicamentoIdsStr = receta.medicamentos?.map(m => m.id).join(',') || '';
+    
     this.form.patchValue({
       fecha: receta.fecha,
       diagnostico: receta.diagnostico,
       indicaciones: receta.indicaciones,
       medicoId: receta.medico?.id || 1,
       pacienteId: receta.paciente?.id || 1,
-      medicamentoIds: receta.medicamentos?.map(m => m.id) || [],
+      medicamentoIds: medicamentoIdsStr, // Enviar como string para el input
       observaciones: receta.observaciones,
       citaId: receta.citaId || 1,
       dosis: receta.dosis || ''
@@ -163,7 +169,7 @@ export class RecetaComponent {
     this.form.patchValue({
       medicoId: 1,
       pacienteId: 1,
-      medicamentoIds: [],
+      medicamentoIds: '', // Cambiar a string vacío
       citaId: 1,
       dosis: ''
     });
@@ -184,7 +190,40 @@ export class RecetaComponent {
       return;
     }
 
-    const recetaData: RecetaRq = this.form.getRawValue();
+    const formData = this.form.getRawValue();
+    
+    // Convertir medicamentoIds (string o array) a medicamentoId (número)
+    let medicamentoId: number;
+    if (typeof formData.medicamentoIds === 'string') {
+      // Si es string, tomar el primer ID después de separar por comas
+      const ids = formData.medicamentoIds.split(',').map(id => id.trim()).filter(id => id);
+      if (ids.length === 0) {
+        Swal.fire('Error', 'Debe ingresar al menos un ID de medicamento', 'error');
+        return;
+      }
+      medicamentoId = parseInt(ids[0], 10);
+    } else if (Array.isArray(formData.medicamentoIds)) {
+      // Si es array, tomar el primer elemento
+      if (formData.medicamentoIds.length === 0) {
+        Swal.fire('Error', 'Debe ingresar al menos un ID de medicamento', 'error');
+        return;
+      }
+      medicamentoId = typeof formData.medicamentoIds[0] === 'number' 
+        ? formData.medicamentoIds[0] 
+        : parseInt(formData.medicamentoIds[0], 10);
+    } else {
+      Swal.fire('Error', 'Formato de medicamentos inválido', 'error');
+      return;
+    }
+
+    // Crear el objeto RecetaRq con el formato que espera el backend
+    const recetaData: any = {
+      citaId: formData.citaId,
+      medicamentoId: medicamentoId,
+      dosis: formData.dosis,
+      indicaciones: formData.indicaciones
+    };
+
     console.log('Datos de la receta a enviar:', recetaData);
 
     this.loading = true;
@@ -211,7 +250,13 @@ export class RecetaComponent {
           this.loading = false;
           Swal.fire('Éxito', 'Receta médica actualizada correctamente', 'success');
           this.closeModal();
-          this.listarRecetas();
+          // Limpiar listas y recargar después de un pequeño delay para asegurar que el backend procesó la actualización
+          this.recetaList = [];
+          this.recetaListOriginal = [];
+          this.cdr.detectChanges();
+          setTimeout(() => {
+            this.listarRecetas();
+          }, 300);
         },
         error: (error) => {
           console.error('Error al actualizar receta médica:', error);

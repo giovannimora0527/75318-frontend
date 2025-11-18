@@ -4,6 +4,7 @@ import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 import { LoginRs } from '../models/login-rs';
 import { LoginRq } from '../models/login-rq';
+import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,9 @@ export class LoginService {
 
   loginUsuario(loginForm: LoginRq): Observable<LoginRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'login', loginForm);
+  }
+
+  recuperarContrasena(username: string): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'recuperar-contrasena', { username });
   }
 }

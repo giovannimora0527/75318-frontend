@@ -102,36 +102,43 @@ export class LoginComponent {
 
     Swal.fire({
       title: 'Recuperar contraseña',
-      text: 'Ingrese su correo electrónico para recuperar su contraseña',
-      input: 'email',
+      text: 'Ingrese su nombre de usuario para recuperar su contraseña',
+      input: 'text',
       inputAttributes: {
         autocapitalize: 'off',
-        placeholder: 'correo@ejemplo.com'
+        placeholder: 'Nombre de usuario'
       },
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar',
       showLoaderOnConfirm: true,
-      preConfirm: (email) => {
-        if (!email) {
-          Swal.showValidationMessage('El correo electrónico es requerido');
-          return false;
+      inputValidator: (value) => {
+        if (!value || value.trim().length < 3) {
+          return 'El nombre de usuario debe tener al menos 3 caracteres';
         }
-
-        // Simular envío de email de recuperación
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => {
-            console.log('Enviar email de recuperación a:', email);
-            resolve(true);
-          }, 1000);
+        return null;
+      },
+      preConfirm: (username) => {
+        return new Promise<boolean>((resolve, reject) => {
+          this.loginService.recuperarContrasena(username.trim()).subscribe({
+            next: (response) => {
+              console.log('Solicitud de recuperación procesada:', response);
+              resolve(true);
+            },
+            error: (error) => {
+              console.error('Error al procesar solicitud de recuperación:', error);
+              // Por seguridad, mostramos el mismo mensaje genérico
+              resolve(true);
+            }
+          });
         });
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: 'Email enviado',
-          text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
+          title: 'Solicitud procesada',
+          text: 'Si el usuario existe, se enviará un correo con las instrucciones de recuperación.',
           icon: 'success'
         });
       }

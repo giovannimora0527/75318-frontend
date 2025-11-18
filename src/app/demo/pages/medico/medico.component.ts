@@ -91,6 +91,7 @@ export class MedicoComponent {
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
+    this.limpiarFormulario();
   }
 
   openModal(modo: string) {
@@ -107,13 +108,43 @@ export class MedicoComponent {
 
   abrirNuevoMedico() {
     this.medicoSelected = null;
+    this.limpiarFormulario();
     this.openModal('C');
+  }
+
+  limpiarFormulario() {
+    this.form.reset();
+    this.form.patchValue({
+      tipoDocumento: '',
+      documento: '',
+      nombres: '',
+      apellidos: '',
+      telefono: '',
+      registroProfesional: '',
+      especializacion: '',
+      activo: true
+    });
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
 
   editarModalMedico(medico: Medico) {
     this.medicoSelected = medico;
     console.log(medico);
+    this.cargarDatosEnFormulario(medico);
     this.openModal('E');
+  }
+
+  cargarDatosEnFormulario(medico: Medico) {
+    this.form.patchValue({
+      tipoDocumento: medico.tipoDocumento || '',
+      documento: medico.documento || '',
+      nombres: medico.nombres || '',
+      apellidos: medico.apellidos || '',
+      telefono: medico.telefono || '',
+      registroProfesional: medico.registroProfesional || '',
+      especializacion: medico.especializacion?.id || ''
+    });
   }
 
   guardarMedico() {
@@ -127,8 +158,25 @@ export class MedicoComponent {
     }
 
     if (this.modoFormulario === 'C') {
-      // Crear     
-      this.medicoService.guardarMedico(this.form.getRawValue()).subscribe({
+      // Crear
+      const formData = this.form.getRawValue();
+      if (!formData.especializacion) {
+        this.spinner.hide();
+        Swal.fire('Error', 'La especialización es obligatoria', 'error');
+        return;
+      }
+      
+      const medicoNuevo: any = {
+        tipoDocumento: formData.tipoDocumento,
+        documento: formData.documento,
+        nombres: formData.nombres,
+        apellidos: formData.apellidos,
+        telefono: formData.telefono,
+        registroProfesional: formData.registroProfesional,
+        especializacion: parseInt(formData.especializacion, 10)
+      };
+      
+      this.medicoService.guardarMedico(medicoNuevo).subscribe({
         next: (data) => {
           if (data.status === 200) {
             this.spinner.hide();
@@ -142,14 +190,31 @@ export class MedicoComponent {
         },
         error: (error) => {
           this.spinner.hide();
-          Swal.fire('Error', error.error.message, 'error');
+          const errorMessage = error.error?.message || error.error?.mensaje || error.message || 'Error al guardar el médico';
+          Swal.fire('Error', errorMessage, 'error');
         }
       });
     } else {
-      // Actualizar      
-      const usuarioActualizado: Medico = this.form.getRawValue();
-      usuarioActualizado.id = this.medicoSelected.id;
-      this.medicoService.actualizarMedico(usuarioActualizado).subscribe({
+      // Actualizar
+      const formData = this.form.getRawValue();
+      if (!formData.especializacion) {
+        this.spinner.hide();
+        Swal.fire('Error', 'La especialización es obligatoria', 'error');
+        return;
+      }
+      
+      const medicoActualizado: any = {
+        id: parseInt(this.medicoSelected.id.toString(), 10),
+        tipoDocumento: formData.tipoDocumento,
+        documento: formData.documento,
+        nombres: formData.nombres,
+        apellidos: formData.apellidos,
+        telefono: formData.telefono,
+        registroProfesional: formData.registroProfesional,
+        especializacion: parseInt(formData.especializacion, 10)
+      };
+      
+      this.medicoService.actualizarMedico(medicoActualizado).subscribe({
         next: (data) => {
           if (data.status === 200) {
             this.spinner.hide();
@@ -163,7 +228,8 @@ export class MedicoComponent {
         },
         error: (error) => {
           this.spinner.hide();
-          Swal.fire('Error', error.error.message, 'error');
+          const errorMessage = error.error?.message || error.error?.mensaje || error.message || 'Error al actualizar el médico';
+          Swal.fire('Error', errorMessage, 'error');
         }
       });
     }
