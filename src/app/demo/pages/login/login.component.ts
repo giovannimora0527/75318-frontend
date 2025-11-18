@@ -5,6 +5,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { Usuario } from '../usuario/models/usuario';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +24,8 @@ export class LoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {
     this.inicializarFormulario();
   }
@@ -59,17 +62,29 @@ export class LoginComponent {
       this.loginService.loginUsuario(loginData).subscribe({
         next: (response) => {
           console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
+          
+          // Crear un objeto usuario básico con el username del login
+          const usuario: Usuario = {
+            id: 0,
+            username: loginData.username,
+            rol: 'USER', // Se puede obtener del token JWT si es necesario
+            activo: true,
+            email: '',
+            fechaCreacion: new Date()
+          };
+          
+          // Usar AuthService para guardar la sesión
+          this.authService.login(response, usuario);
+          
           this.isLoading = false;
           this.spinner.hide();
           Swal.fire({
             title: 'Éxito',
             text: 'Inicio de sesión exitoso',
-            icon: 'success'
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
           }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
-            this.isLoading = false;
             this.router.navigate(['/inicio']);
           });
         },
@@ -77,10 +92,31 @@ export class LoginComponent {
           this.spinner.hide();
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
+          
+          // Extraer el mensaje de error del backend
+          let mensajeError = 'Ups! Algo salió mal durante el inicio de sesión.';
+          
+          if (error?.error?.message) {
+            mensajeError = error.error.message;
+          } else if (error?.error?.mensaje) {
+            mensajeError = error.error.mensaje;
+          } else if (error?.message) {
+            mensajeError = error.message;
+          } else if (typeof error?.error === 'string') {
+            mensajeError = error.error;
+          }
+          
+          // Determinar el tipo de error para mostrar el icono apropiado
+          let icono: 'error' | 'warning' | 'info' = 'error';
+          if (mensajeError.toLowerCase().includes('bloqueado')) {
+            icono = 'warning';
+          }
+          
           Swal.fire({
-            title: 'Erro',
-            text: 'Ups! Algo salió mal durante el inicio de sesión.',
-            icon: 'error'
+            title: icono === 'warning' ? 'Usuario Bloqueado' : 'Error',
+            text: mensajeError,
+            icon: icono,
+            confirmButtonText: 'Entendido'
           });
         }
       });
