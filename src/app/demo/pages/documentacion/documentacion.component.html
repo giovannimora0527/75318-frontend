@@ -1,0 +1,346 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="feather icon-book"></i> Documentación del Sistema
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Loading State -->
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+            <p class="mt-3">Cargando documentación...</p>
+          </div>
+
+          <!-- Documentación Content -->
+          <div *ngIf="!loading && documentacion">
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs mb-4" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'info'" 
+                   (click)="cambiarTab('info')" href="javascript:void(0)">
+                  <i class="feather icon-info"></i> Información General
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'arquitectura'" 
+                   (click)="cambiarTab('arquitectura')" href="javascript:void(0)">
+                  <i class="feather icon-layers"></i> Arquitectura
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'endpoints'" 
+                   (click)="cambiarTab('endpoints')" href="javascript:void(0)">
+                  <i class="feather icon-link"></i> Endpoints API
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'diagramas'" 
+                   (click)="cambiarTab('diagramas')" href="javascript:void(0)">
+                  <i class="feather icon-grid"></i> Diagramas UML
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'analisis'" 
+                   (click)="cambiarTab('analisis')" href="javascript:void(0)">
+                  <i class="feather icon-file-text"></i> Análisis Técnico
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'codigo'" 
+                   (click)="cambiarTab('codigo')" href="javascript:void(0)">
+                  <i class="feather icon-code"></i> Documentación de Código
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'seguridad'" 
+                   (click)="cambiarTab('seguridad')" href="javascript:void(0)">
+                  <i class="feather icon-shield"></i> Seguridad
+                </a>
+              </li>
+            </ul>
+
+            <!-- Tab Content: Información General -->
+            <div *ngIf="activeTab === 'info'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-info text-primary"></i> 
+                    {{ documentacion.informacionSistema?.nombre }}
+                  </h4>
+                  
+                  <div class="row mb-4">
+                    <div class="col-md-6">
+                      <p><strong>Versión:</strong> {{ documentacion.informacionSistema?.version }}</p>
+                      <p><strong>Desarrollado por:</strong> {{ documentacion.informacionSistema?.desarrolladoPor }}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p><strong>Descripción:</strong></p>
+                      <p class="text-muted">{{ documentacion.informacionSistema?.descripcion }}</p>
+                    </div>
+                  </div>
+
+                  <h5 class="mt-4 mb-3">Tecnologías Utilizadas</h5>
+                  <div class="row">
+                    <div class="col-md-6" *ngFor="let tech of documentacion.informacionSistema?.tecnologias">
+                      <div class="alert alert-light d-flex align-items-center mb-2">
+                        <i class="feather icon-check-circle text-success mr-2"></i>
+                        <span>{{ tech }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Arquitectura -->
+            <div *ngIf="activeTab === 'arquitectura'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-layers text-primary"></i> 
+                    Arquitectura del Sistema
+                  </h4>
+                  
+                  <div class="mb-4">
+                    <h5>Tipo de Arquitectura</h5>
+                    <p class="alert alert-info">
+                      <strong>{{ documentacion.arquitectura?.tipo }}</strong>
+                    </p>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Descripción</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.arquitectura?.descripcion || '')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Ventajas</h5>
+                    <ul class="list-group">
+                      <li class="list-group-item" *ngFor="let ventaja of documentacion.arquitectura?.ventajas">
+                        <i class="feather icon-check-circle text-success mr-2"></i>
+                        {{ ventaja }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Endpoints -->
+            <div *ngIf="activeTab === 'endpoints'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-link text-primary"></i> 
+                    Endpoints de la API REST
+                  </h4>
+                  
+                  <div class="mb-3">
+                    <button class="btn btn-primary" (click)="abrirSwagger()">
+                      <i class="feather icon-external-link"></i> Ver Documentación Interactiva (Swagger)
+                    </button>
+                  </div>
+
+                  <div *ngFor="let categoria of getEndpointsKeys()" class="mb-4">
+                    <h5 class="text-capitalize">{{ categoria }}</h5>
+                    <div class="table-responsive">
+                      <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let endpoint of documentacion.endpoints[categoria]">
+                            <td><code>{{ endpoint }}</code></td>
+                            <td>{{ getEndpointDescription(endpoint) }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Diagramas UML -->
+            <div *ngIf="activeTab === 'diagramas'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-grid text-primary"></i> 
+                    Diagramas UML
+                  </h4>
+                  
+                  <div class="mb-4">
+                    <h5 class="mb-3">Diagrama de Clases</h5>
+                    <div class="text-center">
+                      <img [src]="documentacion.diagramasUML?.diagramaClases" 
+                           alt="Diagrama de Clases" 
+                           class="img-fluid border rounded shadow-sm"
+                           style="max-width: 100%; height: auto;"
+                           (error)="onImageError($event, 'diagramaClases')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5 class="mb-3">Diagrama de Despliegue</h5>
+                    <div class="text-center">
+                      <img [src]="documentacion.diagramasUML?.diagramaDespliegue" 
+                           alt="Diagrama de Despliegue" 
+                           class="img-fluid border rounded shadow-sm"
+                           style="max-width: 100%; height: auto;"
+                           (error)="onImageError($event, 'diagramaDespliegue')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5 class="mb-3">Diagrama de Arquitectura General</h5>
+                    <div class="text-center">
+                      <img [src]="documentacion.diagramasUML?.diagramaArquitectura" 
+                           alt="Diagrama de Arquitectura" 
+                           class="img-fluid border rounded shadow-sm"
+                           style="max-width: 100%; height: auto;"
+                           (error)="onImageError($event, 'diagramaArquitectura')">
+                    </div>
+                  </div>
+
+                  <div class="alert alert-info">
+                    <i class="feather icon-info"></i>
+                    <strong>Nota:</strong> Estos diagramas muestran la estructura y arquitectura del sistema.
+                    Puedes hacer clic derecho en las imágenes para descargarlas o verlas en tamaño completo.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Análisis Técnico -->
+            <div *ngIf="activeTab === 'analisis'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-file-text text-primary"></i> 
+                    Análisis de Arquitectura
+                  </h4>
+                  
+                  <div class="mb-4">
+                    <h5>Tipo de Arquitectura</h5>
+                    <p class="alert alert-primary">
+                      <strong>{{ documentacion.analisisArquitectura?.tipoArquitectura }}</strong>
+                    </p>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Justificación</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.analisisArquitectura?.justificacion || '')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Capas del Sistema</h5>
+                    <ul class="list-group">
+                      <li class="list-group-item" *ngFor="let capa of documentacion.analisisArquitectura?.capas">
+                        <i class="feather icon-layers text-primary mr-2"></i>
+                        {{ capa }}
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Patrones de Diseño Utilizados</h5>
+                    <div class="row">
+                      <div class="col-md-6" *ngFor="let patron of documentacion.analisisArquitectura?.patronesUtilizados">
+                        <div class="alert alert-light d-flex align-items-center mb-2">
+                          <i class="feather icon-star text-warning mr-2"></i>
+                          <span>{{ patron }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Documentación de Código -->
+            <div *ngIf="activeTab === 'codigo'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-code text-primary"></i> 
+                    Documentación de Código
+                  </h4>
+                  
+                  <div class="mb-4">
+                    <h5>Backend (Java)</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.documentacionCodigo?.backend || '')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Frontend (TypeScript/Angular)</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.documentacionCodigo?.frontend || '')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>API REST (Swagger/OpenAPI)</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.documentacionCodigo?.api || '')">
+                    </div>
+                    <button class="btn btn-primary mt-3" (click)="abrirSwagger()">
+                      <i class="feather icon-external-link"></i> Abrir Swagger UI
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Seguridad -->
+            <div *ngIf="activeTab === 'seguridad'" class="tab-content">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h4 class="mb-4">
+                    <i class="feather icon-shield text-primary"></i> 
+                    Seguridad del Sistema
+                  </h4>
+                  
+                  <div class="mb-4">
+                    <h5>Autenticación</h5>
+                    <p class="alert alert-info">
+                      <strong>{{ documentacion.seguridad?.autenticacion }}</strong>
+                    </p>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Control de Acceso</h5>
+                    <p class="alert alert-info">
+                      <strong>{{ documentacion.seguridad?.controlAcceso }}</strong>
+                    </p>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Control de Intentos de Login</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.seguridad?.controlIntentos || '')">
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <h5>Sistema de Auditoría</h5>
+                    <div class="bg-light p-3 rounded" [innerHTML]="markdownToHtml(documentacion.seguridad?.auditoria || '')">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

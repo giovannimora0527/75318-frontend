@@ -92,6 +92,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/auditoria',
         icon: 'feather icon-shield',
         classes: 'nav-item'
+      },
+      {
+        id: 'documentacion',
+        title: 'Documentación',
+        type: 'item',
+        url: '/inicio/documentacion',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
       }
     ]
   },

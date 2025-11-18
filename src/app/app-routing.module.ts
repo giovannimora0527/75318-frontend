@@ -11,6 +11,7 @@ import { HistoriaMedicaComponent } from './demo/pages/historia-medica/historia-m
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
 import { LoginComponent } from './demo/pages/login/login.component';
 import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
+import { DocumentacionComponent } from './demo/pages/documentacion/documentacion.component';
 
 export const routes: Routes = [
   {
@@ -36,7 +37,8 @@ export const routes: Routes = [
        { path: 'receta', component: RecetaComponent, data: { title: 'Receta' }},
        { path: 'historia-medica', component: HistoriaMedicaComponent, data: { title: 'Historia Medica' }},
        { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},
-       { path: 'auditoria', component: AuditoriaComponent, data: { title: 'Auditoría' }}
+       { path: 'auditoria', component: AuditoriaComponent, data: { title: 'Auditoría' }},
+       { path: 'documentacion', component: DocumentacionComponent, data: { title: 'Documentación' }}
     ]
   },
   { path: '**', redirectTo: 'login' }
