@@ -5,6 +5,8 @@ import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideRouter, withEnabledBlockingInitialNavigation, withHashLocation, withInMemoryScrolling, withRouterConfig, withViewTransitions } from "@angular/router";
 import { routes } from './app-routing.module';
 import { HeadersInterceptor } from "./interceptors/headers.interceptor";
+import { AuthInterceptor } from "./interceptors/auth.interceptor";
+import { AuthService } from "./services/auth.service";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -23,6 +25,12 @@ export const appConfig: ApplicationConfig = {
       provideHttpClient(),     
       provideAnimations(),
       provideClientHydration(),
+      AuthService,
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true, // Permite múltiples interceptores
+      },
       {
         provide: HTTP_INTERCEPTORS,
         useClass: HeadersInterceptor,

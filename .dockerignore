@@ -1,0 +1,27 @@
+# Archivos y directorios a ignorar en la construcción de Docker
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+.angular/
+coverage/
+.nyc_output/
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+.git/
+.gitignore
+README.md
+LICENSE
+.vscode/
+.idea/
+*.iml
+e2e/
+*.spec.ts
+karma.conf.js
+tsconfig.*.json
+!tsconfig.json
+!tsconfig.app.json
+
