@@ -16,10 +16,14 @@ export class AuditoriaService {
 
   listarAuditorias(tipoEvento?: string): Observable<Auditoria[]> {
     let params = new HttpParams();
-    if (tipoEvento) {
+    if (tipoEvento && tipoEvento.trim() !== '') {
       params = params.set('tipoEvento', tipoEvento);
     }
     return this.backendService.get(this.urlBase, this.endpoint, 'listar', params);
+  }
+
+  listarTiposEventos(): Observable<string[]> {
+    return this.backendService.get(this.urlBase, this.endpoint, 'tipos-eventos');
   }
 }
 

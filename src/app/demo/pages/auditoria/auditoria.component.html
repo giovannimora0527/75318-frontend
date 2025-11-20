@@ -27,47 +27,16 @@
             [(ngModel)]="filtroTipoEvento"
             (change)="filtrarPorTipo()">
             <option value="">Todos los eventos</option>
-            <optgroup label="Recuperación de Contraseña">
-              <option value="RECUPERACION_CONTRASENA_EXITO">Recuperación Exitosa</option>
-              <option value="RECUPERACION_CONTRASENA_ERROR">Recuperación Error</option>
-            </optgroup>
-            <optgroup label="Usuarios">
-              <option value="USUARIO_CREAR">Crear Usuario</option>
-              <option value="USUARIO_ACTUALIZAR">Actualizar Usuario</option>
-              <option value="USUARIO_ELIMINAR">Eliminar Usuario</option>
-              <option value="USUARIO_CONSULTAR">Consultar Usuarios</option>
-            </optgroup>
-            <optgroup label="Médicos">
-              <option value="MEDICO_CREAR">Crear Médico</option>
-              <option value="MEDICO_ACTUALIZAR">Actualizar Médico</option>
-              <option value="MEDICO_ELIMINAR">Eliminar Médico</option>
-              <option value="MEDICO_CONSULTAR">Consultar Médicos</option>
-            </optgroup>
-            <optgroup label="Pacientes">
-              <option value="PACIENTE_CREAR">Crear Paciente</option>
-              <option value="PACIENTE_ACTUALIZAR">Actualizar Paciente</option>
-              <option value="PACIENTE_ELIMINAR">Eliminar Paciente</option>
-              <option value="PACIENTE_CONSULTAR">Consultar Pacientes</option>
-            </optgroup>
-            <optgroup label="Medicamentos">
-              <option value="MEDICAMENTO_CREAR">Crear Medicamento</option>
-              <option value="MEDICAMENTO_ACTUALIZAR">Actualizar Medicamento</option>
-              <option value="MEDICAMENTO_ELIMINAR">Eliminar Medicamento</option>
-              <option value="MEDICAMENTO_CONSULTAR">Consultar Medicamentos</option>
-            </optgroup>
-            <optgroup label="Citas">
-              <option value="CITA_CREAR">Crear Cita</option>
-              <option value="CITA_ACTUALIZAR">Actualizar Cita</option>
-              <option value="CITA_ELIMINAR">Eliminar Cita</option>
-              <option value="CITA_CONSULTAR">Consultar Citas</option>
-            </optgroup>
-            <optgroup label="Recetas">
-              <option value="RECETA_CREAR">Crear Receta</option>
-              <option value="RECETA_ACTUALIZAR">Actualizar Receta</option>
-              <option value="RECETA_ELIMINAR">Eliminar Receta</option>
-              <option value="RECETA_CONSULTAR">Consultar Recetas</option>
-            </optgroup>
+            <option *ngFor="let tipo of tiposEventosDisponibles" [value]="tipo">
+              {{ obtenerEtiquetaTipoEvento(tipo) }}
+            </option>
+            <option *ngIf="tiposEventosDisponibles.length === 0" disabled>
+              Cargando tipos de eventos...
+            </option>
           </select>
+          <small class="text-muted" *ngIf="tiposEventosDisponibles.length > 0">
+            {{ tiposEventosDisponibles.length }} tipo(s) de evento disponible(s)
+          </small>
         </div>
         <div class="col-md-2 d-flex align-items-end">
           <button class="btn btn-outline-secondary" (click)="limpiarFiltro()">

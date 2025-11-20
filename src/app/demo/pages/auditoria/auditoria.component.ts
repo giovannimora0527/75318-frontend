@@ -16,6 +16,7 @@ export class AuditoriaComponent implements OnInit {
   auditoriasFiltradas: Auditoria[] = [];
   titleSpinner: string = "Cargando...";
   filtroTipoEvento: string = '';
+  tiposEventosDisponibles: string[] = [];
 
   constructor(
     private readonly auditoriaService: AuditoriaService,
@@ -23,7 +24,23 @@ export class AuditoriaComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.cargarTiposEventos();
     this.listarAuditorias();
+  }
+
+  cargarTiposEventos() {
+    console.log('Cargando tipos de eventos...');
+    this.auditoriaService.listarTiposEventos().subscribe({
+      next: (data) => {
+        console.log('Tipos de eventos cargados:', data);
+        this.tiposEventosDisponibles = data;
+      },
+      error: (error) => {
+        console.error('Error al cargar tipos de eventos', error);
+        // Si falla, usar lista vacía para evitar errores
+        this.tiposEventosDisponibles = [];
+      }
+    });
   }
 
   listarAuditorias() {
@@ -32,6 +49,11 @@ export class AuditoriaComponent implements OnInit {
       next: (data) => {
         this.auditorias = data;
         this.auditoriasFiltradas = data;
+        // Si no se cargaron los tipos de eventos, extraerlos de las auditorías
+        if (this.tiposEventosDisponibles.length === 0 && data.length > 0) {
+          this.tiposEventosDisponibles = [...new Set(data.map(a => a.tipoEvento))].sort();
+          console.log('Tipos de eventos extraídos de auditorías:', this.tiposEventosDisponibles);
+        }
         this.spinner.hide();
       },
       error: (error) => {
@@ -61,7 +83,7 @@ export class AuditoriaComponent implements OnInit {
 
   limpiarFiltro() {
     this.filtroTipoEvento = '';
-    this.auditoriasFiltradas = this.auditorias;
+    this.listarAuditorias(); // Recargar desde el backend
   }
 
   obtenerBadgeClass(tipoEvento: string): string {
@@ -92,6 +114,39 @@ export class AuditoriaComponent implements OnInit {
       minute: '2-digit',
       second: '2-digit'
     });
+  }
+
+  obtenerEtiquetaTipoEvento(tipoEvento: string): string {
+    const etiquetas: { [key: string]: string } = {
+      'LOGIN_EXITOSO': 'Login Exitoso',
+      'LOGIN_FALLIDO': 'Login Fallido',
+      'BLOQUEO_USUARIO': 'Bloqueo de Usuario',
+      'RECUPERACION_CONTRASENA_EXITO': 'Recuperación de Contraseña Exitosa',
+      'RECUPERACION_CONTRASENA_ERROR': 'Recuperación de Contraseña Error',
+      'CREAR_USUARIO': 'Crear Usuario',
+      'ACTUALIZAR_USUARIO': 'Actualizar Usuario',
+      'ELIMINAR_USUARIO': 'Eliminar Usuario',
+      'CREAR_MEDICO': 'Crear Médico',
+      'ACTUALIZAR_MEDICO': 'Actualizar Médico',
+      'ELIMINAR_MEDICO': 'Eliminar Médico',
+      'CREAR_PACIENTE': 'Crear Paciente',
+      'ACTUALIZAR_PACIENTE': 'Actualizar Paciente',
+      'ELIMINAR_PACIENTE': 'Eliminar Paciente',
+      'CREAR_MEDICAMENTO': 'Crear Medicamento',
+      'ACTUALIZAR_MEDICAMENTO': 'Actualizar Medicamento',
+      'ELIMINAR_MEDICAMENTO': 'Eliminar Medicamento',
+      'CREAR_CITA': 'Crear Cita',
+      'ACTUALIZAR_CITA': 'Actualizar Cita',
+      'ELIMINAR_CITA': 'Eliminar Cita',
+      'CREAR_RECETA': 'Crear Receta',
+      'ACTUALIZAR_RECETA': 'Actualizar Receta',
+      'ELIMINAR_RECETA': 'Eliminar Receta',
+      'CREAR_ESPECIALIZACION': 'Crear Especialización',
+      'ACTUALIZAR_ESPECIALIZACION': 'Actualizar Especialización',
+      'ELIMINAR_ESPECIALIZACION': 'Eliminar Especialización',
+      'SISTEMA_INICIALIZADO': 'Sistema Inicializado'
+    };
+    return etiquetas[tipoEvento] || tipoEvento;
   }
 }
 
