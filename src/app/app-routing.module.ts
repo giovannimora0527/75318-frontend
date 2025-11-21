@@ -8,6 +8,8 @@ import { CitasComponent } from './demo/pages/citas/citas.component';
 import { RecetasComponent } from './demo/pages/recetas/recetas.component'; 
 import { MedicamentosComponent } from './demo/pages/medicamentos/medicamentos.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
+import { PasswordRecoveryComponent } from './demo/pages/auth/password-recovery.component';
+import { AuditLogsComponent } from './demo/pages/audit/audit-logs.component';
 
 
 export const routes: Routes = [ // Exportar las rutas
@@ -21,6 +23,8 @@ export const routes: Routes = [ // Exportar las rutas
     component: AdminComponent,
     data: { title: 'Inicio' },
     children: [
+      { path: 'auth/password-recovery', component: PasswordRecoveryComponent, data: { title: 'Recuperación' } },
+      { path: 'audit/logs', component: AuditLogsComponent, data: { title: 'Auditoría' } },
       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
       { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},

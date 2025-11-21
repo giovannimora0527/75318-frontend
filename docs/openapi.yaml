@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: Clinica API (partial spec for auth & audit)
+  version: 1.0.0
+paths:
+  /auth/password-recovery:
+    post:
+      summary: Request password recovery (generic response)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Generic success message (always show same message to client)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+  /audit/logs:
+    get:
+      summary: Get audit logs (paged)
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 50
+        - in: query
+          name: username
+          schema:
+            type: string
+        - in: query
+          name: event
+          schema:
+            type: string
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Paged audit logs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        timestamp:
+                          type: string
+                          format: date-time
+                        username:
+                          type: string
+                        ip:
+                          type: string
+                        event:
+                          type: string
+                        description:
+                          type: string
+                  total:
+                    type: integer
