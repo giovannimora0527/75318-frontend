@@ -221,6 +221,30 @@ export class RecetasComponent implements OnDestroy {
       indicaciones: this.form.getRawValue().indicaciones?.trim() || undefined
     };
 
+    // Si estamos editando una receta existente, llamar al endpoint de actualización
+    if (this.recetaSelected && this.recetaSelected.id) {
+      const id = Number(this.recetaSelected.id);
+      this.recetasService.actualizarReceta(id, body).subscribe({
+        next: (r) => {
+          Swal.fire('Éxito', r?.mensaje || 'La receta se ha actualizado correctamente.', 'success');
+          this.closeModal();
+          this.listarRecetas();
+          // Refrescar las citas disponibles por si la receta afecta la disponibilidad
+          this.cargarCitas();
+        },
+        error: (e) => {
+          console.error(e);
+          const msg = e?.error?.message || e?.error || 'Error actualizando la receta.';
+          Swal.fire('Error', msg, 'error');
+        },
+        complete: () => {
+          this.guardando = false;
+        }
+      });
+      return;
+    }
+
+    // Si no es edición, crear nueva receta
     this.recetasService.guardarReceta(body).subscribe({
       next: (r) => {
         Swal.fire('Éxito', r?.mensaje || 'La receta se ha guardado correctamente.', 'success');
