@@ -127,6 +127,37 @@ app.get('/clinica/v1/medicamento/listar', (req, res) => {
   });
 });
 
+// Medicamento: guardar, actualizar, eliminar
+app.post('/clinica/v1/medicamento/guardar', (req, res) => {
+  const { nombre } = req.body || {};
+  if (!nombre) return res.status(400).json({ mensaje: 'Invalid data' });
+  db.run(`INSERT INTO medicamentos (nombre) VALUES (?)`, [nombre], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error saving medicamento' });
+    auditLog({ username: null, ip: req.ip, event: 'MEDICAMENTO_CREATED', description: `Medicamento ${this.lastID} creado` });
+    res.json({ mensaje: 'Medicamento guardado', status: 200 });
+  });
+});
+
+app.post('/clinica/v1/medicamento/actualizar', (req, res) => {
+  const { id, nombre } = req.body || {};
+  if (!id || !nombre) return res.status(400).json({ mensaje: 'Invalid data' });
+  db.run(`UPDATE medicamentos SET nombre = ? WHERE id = ?`, [nombre, id], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error updating medicamento' });
+    auditLog({ username: null, ip: req.ip, event: 'MEDICAMENTO_UPDATED', description: `Medicamento ${id} actualizado` });
+    res.json({ mensaje: 'Medicamento actualizado', status: 200 });
+  });
+});
+
+app.delete('/clinica/v1/medicamento/eliminar/:id', (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ mensaje: 'Invalid id' });
+  db.run(`DELETE FROM medicamentos WHERE id = ?`, [id], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error deleting medicamento' });
+    auditLog({ username: null, ip: req.ip, event: 'MEDICAMENTO_DELETED', description: `Medicamento ${id} eliminado` });
+    res.json({ mensaje: 'Medicamento eliminado', status: 200 });
+  });
+});
+
 // Citas: listar recientes (only PENDIENTE)
 app.get('/clinica/v1/cita/listar-recientes', (req, res) => {
   const now = Math.floor(Date.now() / 1000);
@@ -169,6 +200,44 @@ app.get('/audit/logs', (req, res) => {
       const items = rows.map(r => ({ ...r, timestamp: new Date(r.timestamp * 1000).toISOString() }));
       res.json({ items, total });
     });
+  });
+});
+
+// Especializaciones endpoints
+app.get('/clinica/v1/especializacion/listar', (req, res) => {
+  db.all(`SELECT id, codigoEspecializacion, nombre, descripcion FROM especializaciones ORDER BY nombre`, [], (err, rows) => {
+    if (err) return res.status(500).json({ message: 'Error fetching especializaciones' });
+    res.json(rows.map(r => ({ id: r.id, codigoEspecializacion: r.codigoEspecializacion, nombre: r.nombre, descripcion: r.descripcion })));
+  });
+});
+
+app.post('/clinica/v1/especializacion/guardar', (req, res) => {
+  const { codigoEspecializacion, nombre, descripcion } = req.body || {};
+  if (!codigoEspecializacion || !nombre) return res.status(400).json({ mensaje: 'Invalid data' });
+  db.run(`INSERT INTO especializaciones (codigoEspecializacion, nombre, descripcion) VALUES (?,?,?)`, [codigoEspecializacion, nombre, descripcion || null], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error saving especializacion' });
+    auditLog({ username: null, ip: req.ip, event: 'ESPECIALIZACION_CREATED', description: `Especializacion ${this.lastID} creada` });
+    res.json({ mensaje: 'Especializacion guardada', status: 200 });
+  });
+});
+
+app.put('/clinica/v1/especializacion/actualizar/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const { codigoEspecializacion, nombre, descripcion } = req.body || {};
+  if (!id || !codigoEspecializacion || !nombre) return res.status(400).json({ mensaje: 'Invalid data' });
+  db.run(`UPDATE especializaciones SET codigoEspecializacion = ?, nombre = ?, descripcion = ? WHERE id = ?`, [codigoEspecializacion, nombre, descripcion || null, id], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error updating especializacion' });
+    auditLog({ username: null, ip: req.ip, event: 'ESPECIALIZACION_UPDATED', description: `Especializacion ${id} actualizada` });
+    res.json({ mensaje: 'Especializacion actualizada', status: 200 });
+  });
+});
+
+app.get('/clinica/v1/especializacion/buscar/:codigo', (req, res) => {
+  const codigo = req.params.codigo;
+  db.get(`SELECT id, codigoEspecializacion, nombre, descripcion FROM especializaciones WHERE codigoEspecializacion = ?`, [codigo], (err, row) => {
+    if (err) return res.status(500).json({ mensaje: 'Error searching especializacion' });
+    if (!row) return res.status(404).json({ mensaje: 'No encontrado' });
+    res.json(row);
   });
 });
 

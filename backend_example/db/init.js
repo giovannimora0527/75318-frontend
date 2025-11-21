@@ -45,6 +45,13 @@ db.serialize(() => {
     nombre TEXT NOT NULL
   )`);
 
+  db.run(`CREATE TABLE especializaciones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigoEspecializacion TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    descripcion TEXT
+  )`);
+
   db.run(`CREATE TABLE citas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fechahora INTEGER NOT NULL,
