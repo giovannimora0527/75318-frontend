@@ -89,6 +89,54 @@ app.post('/auth/password-recovery', (req, res) => {
   });
 });
 
+// --- Recetas endpoints under /clinica/v1/receta ---
+app.get('/clinica/v1/receta/listar', (req, res) => {
+  db.all(`SELECT r.id, r.cita_id as citaId, r.medicamento_id as medicamentoId, r.dosis, r.indicaciones, r.fecha_creacion as fechaCreacionRegistro, m.nombre as nombreMedicamento FROM recetas r JOIN medicamentos m ON r.medicamento_id = m.id ORDER BY r.fecha_creacion DESC`, [], (err, rows) => {
+    if (err) return res.status(500).json({ message: 'Error fetching recetas' });
+    const items = rows.map(r => ({ id: r.id, citaId: r.citaId, medicamentoId: r.medicamentoId, dosis: r.dosis, indicaciones: r.indicaciones, fechaCreacionRegistro: new Date(r.fechaCreacionRegistro * 1000).toISOString(), nombreMedicamento: r.nombreMedicamento }));
+    res.json(items);
+  });
+});
+
+app.post('/clinica/v1/receta/guardar', (req, res) => {
+  const { citaId, medicamentoId, dosis, indicaciones } = req.body || {};
+  const ts = Math.floor(Date.now() / 1000);
+  if (!citaId || !medicamentoId || !dosis) return res.status(400).json({ mensaje: 'Invalid data' });
+  db.run(`INSERT INTO recetas (cita_id, medicamento_id, dosis, indicaciones, fecha_creacion) VALUES (?,?,?,?,?)`, [citaId, medicamentoId, dosis, indicaciones || null, ts], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error saving receta' });
+    auditLog({ username: null, ip: req.ip, event: 'RECETA_CREATED', description: `Receta ${this.lastID} creada` });
+    res.json({ mensaje: 'Receta guardada', status: 200 });
+  });
+});
+
+app.post('/clinica/v1/receta/actualizar', (req, res) => {
+  const { id, citaId, medicamentoId, dosis, indicaciones } = req.body || {};
+  if (!id || !citaId || !medicamentoId || !dosis) return res.status(400).json({ mensaje: 'Invalid data' });
+  db.run(`UPDATE recetas SET medicamento_id = ?, dosis = ?, indicaciones = ? WHERE id = ?`, [medicamentoId, dosis, indicaciones || null, id], function(err) {
+    if (err) return res.status(500).json({ mensaje: 'Error updating receta' });
+    auditLog({ username: null, ip: req.ip, event: 'RECETA_UPDATED', description: `Receta ${id} actualizada` });
+    res.json({ mensaje: 'Receta actualizada', status: 200 });
+  });
+});
+
+// Medicamentos list
+app.get('/clinica/v1/medicamento/listar', (req, res) => {
+  db.all(`SELECT id, nombre FROM medicamentos ORDER BY nombre`, [], (err, rows) => {
+    if (err) return res.status(500).json({ message: 'Error fetching medicamentos' });
+    res.json(rows.map(r => ({ id: r.id, nombre: r.nombre }))); 
+  });
+});
+
+// Citas: listar recientes (only PENDIENTE)
+app.get('/clinica/v1/cita/listar-recientes', (req, res) => {
+  const now = Math.floor(Date.now() / 1000);
+  db.all(`SELECT id, fechahora as fechaHora, estado, paciente_nombre as nombreCompletoPaciente FROM citas WHERE estado != 'CUMPLIDA' AND estado != 'CANCELADA' ORDER BY fechahora ASC`, [], (err, rows) => {
+    if (err) return res.status(500).json({ message: 'Error fetching citas' });
+    const items = rows.map(r => ({ id: r.id, fechaHora: new Date(r.fechaHora * 1000).toISOString(), estado: r.estado, nombreCompletoPaciente: r.nombreCompletoPaciente }));
+    res.json(items);
+  });
+});
+
 // GET /audit/logs?page=0&size=50&username=&event=&from=&to=
 app.get('/audit/logs', (req, res) => {
   const { page = 0, size = 50, username, event, from, to } = req.query;
