@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const cors = require('cors');
 
 const DB_FILE = path.join(__dirname, 'data.sqlite');
@@ -77,8 +78,8 @@ app.post('/auth/password-recovery', (req, res) => {
       return res.json({ mensaje: 'Si la cuenta existe, se ha enviado un correo con instrucciones.' });
     }
 
-    // Generate a simple token (in real world use secure random token)
-    const token = Math.random().toString(36).slice(2, 10);
+    // Generate a secure random token
+    const token = crypto.randomBytes(16).toString('hex');
     const expires = epochNow() + 60 * 60; // 1 hour
     db.run(`INSERT INTO password_recovery_tokens (user_id, token, expires_at) VALUES (?, ?, ?)`, [user.id, token, expires]);
 
@@ -86,6 +87,39 @@ app.post('/auth/password-recovery', (req, res) => {
     console.log(`Password recovery token for ${username}: ${token} (expires ${new Date(expires * 1000).toISOString()})`);
     auditLog({ username, ip, event: 'PASSWORD_RECOVERY_SENT', description: 'Recovery token created and email sent (simulated)' });
     return res.json({ mensaje: 'Si la cuenta existe, se ha enviado un correo con instrucciones.' });
+  });
+});
+
+// Endpoint to reset password using token
+app.post('/auth/password-reset', async (req, res) => {
+  const { token, newPassword } = req.body || {};
+  const ip = req.ip || req.connection.remoteAddress;
+  if (!token || !newPassword) return res.status(400).json({ mensaje: 'Bad request' });
+
+  db.get(`SELECT * FROM password_recovery_tokens WHERE token = ?`, [token], async (err, row) => {
+    if (err) return res.status(500).json({ mensaje: 'Internal error' });
+    if (!row) {
+      auditLog({ username: null, ip, event: 'PASSWORD_RESET_INVALID_TOKEN', description: 'Token not found' });
+      return res.status(400).json({ mensaje: 'Token inválido o expirado' });
+    }
+    if (row.used) {
+      auditLog({ username: null, ip, event: 'PASSWORD_RESET_REUSED_TOKEN', description: 'Token already used' });
+      return res.status(400).json({ mensaje: 'Token inválido o expirado' });
+    }
+    if (row.expires_at < epochNow()) {
+      auditLog({ username: null, ip, event: 'PASSWORD_RESET_EXPIRED_TOKEN', description: 'Token expired' });
+      return res.status(400).json({ mensaje: 'Token inválido o expirado' });
+    }
+
+    // All good: update user's password
+    const newHash = await bcrypt.hash(newPassword, 10);
+    db.run(`UPDATE users SET password_hash = ?, failed_login_attempts = 0, is_locked_until = NULL WHERE id = ?`, [newHash, row.user_id], function(uerr) {
+      if (uerr) return res.status(500).json({ mensaje: 'Error updating password' });
+      // mark token as used
+      db.run(`UPDATE password_recovery_tokens SET used = 1 WHERE id = ?`, [row.id]);
+      auditLog({ username: null, ip, event: 'PASSWORD_RESET', description: `Password reset for user_id ${row.user_id}` });
+      return res.json({ mensaje: 'Contraseña actualizada' });
+    });
   });
 });
 
