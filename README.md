@@ -133,3 +133,32 @@ To report a bug, please submit an [issue](https://github.com/codedthemes/datta-a
 - Dribbble [https://dribbble.com/codedthemes](https://dribbble.com/codedthemes)
 - Facebook [https://www.facebook.com/codedthemes](https://www.facebook.com/codedthemes)
 - Twitter [https://twitter.com/codedthemes](https://twitter.com/codedthemes)
+
+## Local Changes (Recetas / Fórmulas Médicas)
+
+- Branch: `798507_luisavilaozuna` was synchronized with remote `854284_ElmerNovoa` and a few local fixes were applied.
+- Added `apiUrl` to `src/environments/environment.prod.ts` so services can resolve the backend URL during production builds.
+- Recetas UI: `src/app/demo/pages/recetas/recetas.component.ts` now supports editing existing recetas — when you open the edit modal it calls the new `actualizarReceta` path in the service; creating new recetas keeps using `guardarReceta`.
+
+How to test locally
+
+1. Make sure the backend API is running (default expected URL): `http://localhost:8000/clinica/v1`
+2. Install dependencies (if not already):
+
+```powershell
+npm install
+```
+
+3. Start the dev server:
+
+```powershell
+npm run start
+```
+
+4. Open the app in your browser: `http://localhost:4200` and navigate to "Recetas" (Fórmulas Médicas). Test creating and editing a receta; you should see SweetAlert2 confirmations and the list refreshing.
+
+Notes
+
+- The build may show non-blocking warnings about CommonJS dependencies (e.g., `sweetalert2`) and some SCSS budget warnings; they do not prevent the app from running.
+- If `http://localhost:4200` does not load, check that the dev server started successfully and there is no other process occupying port 4200. To change the port, run `npm run start -- --port 4300`.
+

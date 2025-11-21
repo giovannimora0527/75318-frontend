@@ -163,6 +163,16 @@ export class RecetasComponent implements OnDestroy {
   }
 
   abrirNuevaReceta() {
+    // Validar que existan citas y medicamentos antes de abrir el modal
+    if (!this.citasList || this.citasList.length === 0) {
+      Swal.fire('Atención', 'No hay citas disponibles para crear una receta. Verifica el backend o recarga los datos.', 'warning');
+      return;
+    }
+    if (!this.medicamentosList || this.medicamentosList.length === 0) {
+      Swal.fire('Atención', 'No hay medicamentos cargados. Verifica el backend o recarga los datos.', 'warning');
+      return;
+    }
+
     this.titleModal = 'Crear Receta';
     this.titleBoton = 'Guardar Receta';
     this.recetaSelected = null;
@@ -183,7 +193,31 @@ export class RecetasComponent implements OnDestroy {
     this.titleModal = 'Editar Receta';
     this.titleBoton = 'Actualizar Receta';
     this.recetaSelected = receta;
+    // Asegurar que la lista de medicamentos esté cargada para que el select muestre el valor
+    if (!this.medicamentosList || this.medicamentosList.length === 0) {
+      this.cargandoMedicamentos = true;
+      this.recetasService.listarMedicamentos().subscribe({
+        next: (data) => {
+          this.medicamentosList = data;
+          this._setFormForEditing(receta);
+          this.abrirModal();
+        },
+        error: (err) => {
+          console.error('Error cargando medicamentos antes de editar:', err);
+          Swal.fire('Error', 'No se pudieron cargar los medicamentos para editar la receta.', 'error');
+        },
+        complete: () => {
+          this.cargandoMedicamentos = false;
+        }
+      });
+      return;
+    }
 
+    this._setFormForEditing(receta);
+    this.abrirModal();
+  }
+
+  private _setFormForEditing(receta: RecetaRs) {
     this.form.reset({
       citaId: receta.citaId,
       medicamentoId: receta.medicamentoId,
@@ -191,7 +225,6 @@ export class RecetasComponent implements OnDestroy {
       indicaciones: receta.indicaciones || ''
     });
     this.form.get('citaId')?.disable();
-    this.abrirModal();
   }
 
   abrirModal() {
