@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BackendService } from '../../../../services/backend.service';
+import { environment } from '../../../../../src/environments/environment';
+import { AuthServiceMock } from './auth.mock';
 
 export interface PasswordRecoveryRq {
   username: string;
@@ -13,16 +15,18 @@ export interface GenericRs {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiBase = 'http://localhost:8000/clinica/v1';
-  constructor(private readonly backend: BackendService) {}
+  private readonly apiBase = environment.apiUrl; 
+  private mock: AuthServiceMock | null = null;
+  constructor(private readonly backend: BackendService) {
+    if (environment.useMocks) {
+      this.mock = new AuthServiceMock();
+    }
+  }
 
-  /**
-   * Solicita la recuperación de contraseña para un nombre de usuario.
-   * Nota: por motivos de seguridad la respuesta al cliente debe ser genérica.
-   */
   requestPasswordRecovery(body: PasswordRecoveryRq): Observable<GenericRs> {
-    // Usamos backend.post para delegar cabeceras y auth si aplica.
-    // Endpoint sugerido: /auth/password-recovery
+    if (this.mock) {
+      return this.mock.requestPasswordRecovery(body) as Observable<GenericRs>;
+    }
     return this.backend.post<GenericRs>(this.apiBase, 'auth', 'password-recovery', body);
   }
 }

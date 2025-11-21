@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from '../../../../services/backend.service';
+import { environment } from '../../../../../src/environments/environment';
+import { AuditServiceMock } from './audit.mock';
 
 export interface AuditLog {
   id: number;
@@ -18,16 +20,22 @@ export interface AuditPage {
 
 @Injectable({ providedIn: 'root' })
 export class AuditService {
-  private readonly apiBase = 'http://localhost:8000/clinica/v1';
-  constructor(private readonly backend: BackendService) {}
+  private readonly apiBase = environment.apiUrl;
+  private mock: AuditServiceMock | null = null;
+  constructor(private readonly backend: BackendService) {
+    if (environment.useMocks) {
+      this.mock = new AuditServiceMock();
+    }
+  }
 
   /**
    * Consulta paginada de logs de auditoría.
    * Params: page, size, from, to, username, event
    */
   getLogs(params?: any): Observable<AuditPage> {
-    // Endpoint sugerido: /audit/logs
-    // Construir HttpParams en el BackendService.get si se necesita.
+    if (this.mock) {
+      return this.mock.getLogs(params) as Observable<AuditPage>;
+    }
     return this.backend.get<AuditPage>(this.apiBase, 'audit', 'logs');
   }
 }
