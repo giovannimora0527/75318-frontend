@@ -78,6 +78,14 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
+        id: 'auditoria',
+        title: 'Visualización de Logs de Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
         id: 'especializacion',
         title: 'Gestión de especializaciones',
         type: 'item',
@@ -86,6 +94,6 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       }
     ]
-  },
+  }
   /* ---------- Nuevos menus aqui -------------  */
 ];
