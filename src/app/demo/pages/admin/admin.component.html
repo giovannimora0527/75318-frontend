@@ -1,0 +1,34 @@
+<div class="admin-header">
+  <h1>Bienvenido, {{ rol }}</h1>
+  <button (click)="logout()">Cerrar sesión</button>
+</div>
+
+<div class="sections">
+  <div *ngFor="let section of secciones">
+    <!-- Solo mostrar si el usuario puede ver la sección -->
+    <div *ngIf="puedeVer(section)">
+      <h2>{{ section | titlecase }}</h2>
+
+      <div class="actions">
+        <button *ngIf="canCreate(section)" (click)="crear(section)">Crear</button>
+        <button *ngIf="canEdit(section)" (click)="editar(section)">Editar</button>
+        <button *ngIf="canDelete(section)" (click)="eliminar(section)">Eliminar</button>
+      </div>
+
+      <!-- Lista de ejemplo según sección -->
+      <ul *ngIf="section === 'usuario'">
+        <li *ngFor="let u of usuarios">{{ u.username }} - {{ u.rol }}</li>
+      </ul>
+
+      <ul *ngIf="section === 'paciente'">
+        <li *ngFor="let p of pacientes">{{ p.nombres }} {{ p.apellidos }}</li>
+      </ul>
+
+      <ul *ngIf="section === 'medico'">
+        <li *ngFor="let m of medicos">{{ m.nombres }} {{ m.apellidos }} - {{ m.especializacion }}</li>
+      </ul>
+
+      <!-- Para otras secciones puedes agregar listas similares -->
+    </div>
+  </div>
+</div>

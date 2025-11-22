@@ -1,0 +1,40 @@
+<div class="auditoria-container">
+  <h2>Auditoría</h2>
+
+  <form [formGroup]="filterForm" (ngSubmit)="filtrar()" class="filter-form">
+    <input type="text" placeholder="Usuario" formControlName="usuario" />
+    <input type="text" placeholder="Tipo Evento" formControlName="tipoEvento" />
+    <input type="date" placeholder="Fecha" formControlName="fecha" />
+    <button type="submit">Filtrar</button>
+    <button type="button" (click)="limpiarFiltros()">Limpiar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Fecha/Hora</th>
+        <th>Usuario</th>
+        <th>Tabla</th>
+        <th>ID Registro</th>
+        <th>Evento</th>
+        <th>Valores Antes</th>
+        <th>Valores Después</th>
+        <th>Descripción</th>
+        <th>IP Origen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of auditorias">
+        <td>{{ a.fechaHora | date: 'short' }}</td>
+        <td>{{ a.nombreUsuario }}</td>
+        <td>{{ a.tablaAfectada }}</td>
+        <td>{{ a.idRegistroAfectado }}</td>
+        <td>{{ a.tipoEvento }}</td>
+        <td>{{ a.valoresAntes }}</td>
+        <td>{{ a.valoresDespues }}</td>
+        <td>{{ a.descripcion }}</td>
+        <td>{{ a.ipOrigen }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
