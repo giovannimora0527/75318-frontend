@@ -12,9 +12,19 @@ export class LoginService {
   urlBase = environment.apiUrl;
   endpoint: string = 'auth';
 
-  constructor(private readonly backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) { }
 
   loginUsuario(loginForm: LoginRq): Observable<LoginRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'login', loginForm);
   }
+
+  recoverPassword(username: string) {
+    return this.backendService.post(
+      this.urlBase,
+      'auth',    // corresponde al AuthController
+      'recuperar-contrasena', // corresponde al @PostMapping("/recover")
+      { username }
+    );
+  }
 }
+

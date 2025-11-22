@@ -1,0 +1,33 @@
+.audit-container {
+  padding: 16px;
+}
+
+.header-audit {
+  background-color: #fff; // fondo blanco
+  border-bottom: 1px solid #dee2e6; // línea sutil debajo del header
+  padding: 12px 16px;
+}
+
+.filters {
+  margin-bottom: 16px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e6f2ff; // azul muy suave al pasar mouse
+}
+
+.thead-custom {
+  background-color: #f8f9fa; // gris muy suave para encabezado
+  color: #1a1a1a;
+  border-radius: 8px;
+}
+
+.thead-custom th {
+  border-top: none; 
+  border-bottom: none;
+  padding: 10px;
+}
+
+.page-link {
+  cursor: pointer;
+}

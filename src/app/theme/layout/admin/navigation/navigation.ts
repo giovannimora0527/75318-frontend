@@ -84,7 +84,16 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/especializacion',
         icon: 'feather icon-user-check',
         classes: 'nav-item'
+      },
+      {
+        id: 'auditlogs',
+        title: 'Gestión de Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-activity',
+        classes: 'nav-item'
       }
+
     ]
   },
   /* ---------- Nuevos menus aqui -------------  */

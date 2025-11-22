@@ -93,6 +93,27 @@ export class BackendService {
       withCredentials: true,
     });
   }
+  getConParams<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    params: any
+  ): Observable<T> {
+
+    const token = localStorage.getItem('token') || '';
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : ''
+    });
+
+    return this.http.get<T>(`${urlApi}/${endpoint}/${service}`, {
+      params: params,
+      headers: headers,
+      withCredentials: true
+    });
+  }
+
 
   /**
    * Metodo generico POST
@@ -102,7 +123,7 @@ export class BackendService {
    * @param data Datos a enviar en el cuerpo de la petición
    * @returns Observable<T> respuesta del servidor
    */
-  
+
   post<T>(
     urlApi: string,
     endpoint: string,
@@ -165,4 +186,28 @@ export class BackendService {
       withCredentials: true,
     });
   }
+  /**
+ * POST con token explícito
+ * Para casos como cambio de contraseña, donde la URL no sigue el patrón normal
+ */
+  postWithToken<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    data: any
+  ): Observable<T> {
+
+    const tokenRecuperado = localStorage.getItem('token') || '';
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+    });
+
+    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+      headers: headers,
+      withCredentials: true,
+    });
+  }
+
 }

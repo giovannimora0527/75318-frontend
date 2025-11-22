@@ -5,6 +5,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
 import { Router } from '@angular/router';
+import { TokenService } from 'src/app/services/token.service';
+
 
 @Component({
   selector: 'app-login',
@@ -22,7 +24,8 @@ export class LoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly tokenService: TokenService
   ) {
     this.inicializarFormulario();
   }
@@ -59,30 +62,54 @@ export class LoginComponent {
       this.loginService.loginUsuario(loginData).subscribe({
         next: (response) => {
           console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
-          this.isLoading = false;
+          localStorage.setItem("token", response.token);
+
+          // Revisar cambio de contraseña
+          const requireChange = response.requiereCambioPassword;
+
+          // Ocultar spinner antes de mostrar alert
           this.spinner.hide();
+          this.isLoading = false;
+
+          if (requireChange) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Contraseña temporal usada',
+              text: 'Debes cambiar tu contraseña antes de continuar.',
+            }).then(() => {
+              this.router.navigate(['/change-password']);
+            });
+            return;
+          }
+
           Swal.fire({
             title: 'Éxito',
             text: 'Inicio de sesión exitoso',
             icon: 'success'
           }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
-            this.isLoading = false;
             this.router.navigate(['/inicio']);
           });
-        },
+        }
+        ,
         error: (error) => {
           this.spinner.hide();
           this.isLoading = false;
+
           console.error('Error en la autenticación:', error);
+
+          // Obtener mensaje del backend
+          const backendMessage =
+            error?.error?.message ||
+            error?.error?.error ||
+            "Ups! Algo salió mal durante el inicio de sesión.";
+
           Swal.fire({
-            title: 'Erro',
-            text: 'Ups! Algo salió mal durante el inicio de sesión.',
-            icon: 'error'
+            title: 'Error',
+            text: backendMessage,
+            icon: 'error',
           });
         }
+
       });
     } else {
       this.spinner.hide();
@@ -102,36 +129,33 @@ export class LoginComponent {
 
     Swal.fire({
       title: 'Recuperar contraseña',
-      text: 'Ingrese su correo electrónico para recuperar su contraseña',
-      input: 'email',
+      text: 'Ingrese su nombre de usuario para enviar una contraseña temporal',
+      input: 'text',
       inputAttributes: {
         autocapitalize: 'off',
-        placeholder: 'correo@ejemplo.com'
+        placeholder: 'nombre de usuario'
       },
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar',
       showLoaderOnConfirm: true,
-      preConfirm: (email) => {
-        if (!email) {
-          Swal.showValidationMessage('El correo electrónico es requerido');
+      preConfirm: (username) => {
+        if (!username) {
+          Swal.showValidationMessage('El nombre de usuario es requerido');
           return false;
         }
 
-        // Simular envío de email de recuperación
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => {
-            console.log('Enviar email de recuperación a:', email);
-            resolve(true);
-          }, 1000);
-        });
+        return this.loginService.recoverPassword(username).toPromise()
+          .catch(() => {
+            Swal.showValidationMessage('Error enviando la solicitud.');
+          });
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: 'Email enviado',
-          text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
+          title: 'Solicitud enviada',
+          text: 'Si el usuario existe, recibirá una contraseña temporal.',
           icon: 'success'
         });
       }

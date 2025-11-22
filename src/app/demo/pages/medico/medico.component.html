@@ -49,6 +49,13 @@
               </td>
             </tr>
           </tbody>
+          <tbody *ngIf="filteredMedico && filteredMedico.length === 0">
+            <tr>
+              <td colspan="10" class="text-center text-muted">
+                No hay medicos disponibles.
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

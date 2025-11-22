@@ -34,6 +34,7 @@ export class MedicoComponent {
    */
   medicoList: Medico[] = [];
   especializacionList: Especializacion[] = [];
+  filteredMedico: Medico[] = [];
 
   form: FormGroup;
 
