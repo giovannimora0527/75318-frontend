@@ -1,6 +1,11 @@
+
+
 export class Especializacion {
-    id!: number;
+    
+    id?: number; 
+    
+    
     nombre!: string;
     descripcion!: string;
-    codigoEspecializacion!: string;
+    codigoEspecializacion!: string; 
 }

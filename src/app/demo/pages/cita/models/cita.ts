@@ -8,4 +8,5 @@ export class Cita {
     motivo!: string;
     paciente!: Paciente;
     medico!: Medico;
+
 }

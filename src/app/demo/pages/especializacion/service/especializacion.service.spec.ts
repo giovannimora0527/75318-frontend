@@ -4,6 +4,7 @@ import { EspecializacionService } from './especializacion.service';
 import { Especializacion } from '../models/especializacion';
 import { RespuestaRs } from 'src/app/demo/pages/usuario/models/respuesta-rs';
 
+
 describe('EspecializacionService', () => {
   let service: EspecializacionService;
   let httpMock: HttpTestingController;
@@ -76,4 +77,6 @@ describe('EspecializacionService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockEspecializacion);
   });
+
 });
+

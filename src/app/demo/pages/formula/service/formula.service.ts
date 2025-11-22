@@ -5,10 +5,12 @@ import { environment } from 'src/environments/environment';
 import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 import { Formula } from '../models/formula';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class FormulaService {
+
   urlBase = environment.apiUrl;
   endpoint: string = 'receta';
 
@@ -26,3 +28,4 @@ export class FormulaService {
     return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', formula);
   }
 }
+

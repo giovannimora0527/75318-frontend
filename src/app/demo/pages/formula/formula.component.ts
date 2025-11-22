@@ -21,6 +21,7 @@ import { Medicamento } from '../medicamento/models/medicamento';
 @Component({
   selector: 'app-formula',
   imports: [CommonModule, NgxSpinnerModule, FormsModule, ReactiveFormsModule],
+
   templateUrl: './formula.component.html',
   styleUrl: './formula.component.scss'
 })

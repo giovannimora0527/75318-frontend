@@ -5,6 +5,7 @@ import { Especializacion } from '../models/especializacion';
 import { Observable } from 'rxjs';
 import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +13,7 @@ export class EspecializacionService {
   urlBase = environment.apiUrl;
   endpoint: string = 'especializacion';
 
-  constructor(private readonly backendService: BackendService) { }
+constructor(private readonly backendService: BackendService) { }
 
   listarEspecializaciones(): Observable<Especializacion[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');
@@ -30,4 +31,6 @@ export class EspecializacionService {
     const urlConCodigo = `buscar-por-codigo?codigo=${codigo}`;
     return this.backendService.get(this.urlBase, this.endpoint, urlConCodigo);
   }
+
 }
+
