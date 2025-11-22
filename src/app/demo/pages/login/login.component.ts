@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
 import { Router } from '@angular/router';
 
+import { RecuperarPasswordRq } from './models/recuperar-password-rq';
+
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
@@ -102,39 +104,41 @@ export class LoginComponent {
 
     Swal.fire({
       title: 'Recuperar contraseña',
-      text: 'Ingrese su correo electrónico para recuperar su contraseña',
-      input: 'email',
+      text: 'Ingrese su nombre de usuario para recuperar su contraseña',
+      input: 'text',
       inputAttributes: {
         autocapitalize: 'off',
-        placeholder: 'correo@ejemplo.com'
+        placeholder: 'nombre de usuario'
       },
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar',
       showLoaderOnConfirm: true,
-      preConfirm: (email) => {
-        if (!email) {
-          Swal.showValidationMessage('El correo electrónico es requerido');
+      preConfirm: (username) => {
+        if (!username || username.trim().length < 3) {
+          Swal.showValidationMessage('El nombre de usuario es requerido (mín. 3 caracteres)');
           return false;
         }
 
-        // Simular envío de email de recuperación
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => {
-            console.log('Enviar email de recuperación a:', email);
-            resolve(true);
-          }, 1000);
-        });
+        const request: RecuperarPasswordRq = { username: username.trim() };
+
+        return this.loginService.recuperarPassword(request).toPromise()
+          .catch((error) => {
+            Swal.showValidationMessage(`Error al enviar: ${error.error?.mensaje || 'Error desconocido'}`);
+            return false;
+          });
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: 'Email enviado',
-          text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
+          title: '¡Listo!',
+          text: 'Si el usuario existe, se ha enviado una contraseña temporal a su correo.',
           icon: 'success'
         });
       }
     });
   }
+
+
 }

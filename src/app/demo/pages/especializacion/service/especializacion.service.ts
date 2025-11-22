@@ -12,7 +12,7 @@ export class EspecializacionService {
   urlBase = environment.apiUrl;
   endpoint: string = 'especializacion';
 
-  constructor(private readonly backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) { }
 
   listarEspecializaciones(): Observable<Especializacion[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');
@@ -24,5 +24,10 @@ export class EspecializacionService {
 
   actualizarEspecializacion(especializacion: Especializacion): Observable<RespuestaRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', especializacion);
+  }
+
+  buscarPorCodigo(codigo: string): Observable<Especializacion> {
+    const urlConCodigo = `buscar-por-codigo?codigo=${codigo}`;
+    return this.backendService.get(this.urlBase, this.endpoint, urlConCodigo);
   }
 }

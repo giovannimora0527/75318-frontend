@@ -3,8 +3,8 @@ export class Medicamento {
     nombre!: string;
     descripcion!: string;
     presentacion!: string;
-    fechaCompra!: string;
-    fechaVence!: string;
-    fechaCreacionRegistro!: string;
-    fechaModificacionRegistro!: string;
+  fechaCompra!: string | Date;
+  fechaVence!: string | Date;
+  fechaCreacionRegistro?: string | Date;
+  fechaModificacionRegistro?: string | Date;
 }

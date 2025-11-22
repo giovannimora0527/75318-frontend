@@ -7,7 +7,7 @@
     <div class="card-header">
       <div class="d-flex justify-content-between align-items-center">
         <h3 class="mb-0">
-            <i class="fa fa-truck"></i>
+          <i class="fa fa-truck"></i>
           &nbsp;Lista de formulas
         </h3>
         <button class="btn btn-outline-primary" (click)="abrirNuevoFormula()">
@@ -19,12 +19,8 @@
     <div class="card-body">
       <div class="row">
         <div class="col">
-          <input
-            class="form-control"
-            placeholder="Filtre por el valor que desee de la tabla"
-            [(ngModel)]="busqueda"
-            (keyup)="filtrarFormula()"
-          />
+          <input class="form-control" placeholder="Filtre por el valor que desee de la tabla" [(ngModel)]="busqueda"
+            (keyup)="filtrarFormula()" />
         </div>
       </div>
       <br />
@@ -52,7 +48,8 @@
                   <td>{{ formula.dosis }}</td>
                   <td>{{ formula.indicaciones }}</td>
                   <td>
-                    <button type="button" class="btn btn btn-outline-primary" title="Editar formula" (click)="abrirEditarFormula(formula)">
+                    <button type="button" class="btn btn btn-outline-primary" title="Editar formula"
+                      (click)="abrirEditarFormula(formula)">
                       <i class="fa fa-edit"></i>
                     </button>
                   </td>
@@ -71,7 +68,8 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaLabel" aria-hidden="true">
+<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
@@ -85,8 +83,8 @@
           <div class="col col-md-6">
             <div class="row">
               <div class="col">
-                <input class="form-control" type="text" placeholder="Busque por el documento del paciente" 
-                       [(ngModel)]="documentoPacienteBuscar">
+                <input class="form-control" type="text" placeholder="Busque por el documento del paciente"
+                  [(ngModel)]="documentoPacienteBuscar">
               </div>
               <div class="col-auto">
                 <button class="btn btn-outline-primary" (click)="buscarPacientePorDocumento()">Buscar</button>
@@ -95,46 +93,40 @@
           </div>
         </div>
 
-        <form [formGroup]="form">          
+        <form [formGroup]="form">
           <div class="row mt-3">
             <div class="col col-md-6">
               <label for="citasPaciente">Citas del paciente</label>
-              <select 
-                id="citasPaciente" 
-                class="form-select"
-                formControlName="citaId"
+              <select id="citasPaciente" class="form-select" formControlName="citaId"
                 [class.is-invalid]="f['citaId'].invalid && (f['citaId'].dirty || f['citaId'].touched)">
                 <option disabled selected>Seleccione de la cita</option>
-                <option *ngFor="let cita of citasPaciente" [value]="cita.id">{{cita.fechaHora}}: {{cita.paciente.nombres}} {{cita.paciente.apellidos}}</option>
+                <option *ngFor="let cita of citasPaciente" [value]="cita.id">{{cita.fechaHora}}:
+                  {{cita.paciente.nombres}} {{cita.paciente.apellidos}}</option>
               </select>
               <div *ngIf="f['citaId'].invalid && (f['citaId'].dirty || f['citaId'].touched)" class="invalid-feedback">
                 <div *ngIf="f['citaId'].errors?.['required']">La cita es requerida.</div>
               </div>
             </div>
-          </div>          
-          
+          </div>
+
           <div class="row mt-3">
             <div class="col col-md-6">
               <label for="medicamentos">Listado de medicamentos</label>
-              <select 
-                id="medicamentos" 
-                class="form-select"
-                formControlName="medicamentoId"
+              <select id="medicamentos" class="form-select" formControlName="medicamentoId"
                 [class.is-invalid]="f['medicamentoId'].invalid && (f['medicamentoId'].dirty || f['medicamentoId'].touched)">
-                <option disabled selected>Seleccione el medicamento</option>
+                <option disabled selected value="">Seleccione el medicamento</option>
+                <option *ngFor="let medicamento of medicamentosList" [value]="medicamento.id">
+                  {{ medicamento.nombre }} ({{ medicamento.presentacion }})
+                </option>
               </select>
-              <div *ngIf="f['medicamentoId'].invalid && (f['medicamentoId'].dirty || f['medicamentoId'].touched)" class="invalid-feedback">
+              <div *ngIf="f['medicamentoId'].invalid && (f['medicamentoId'].dirty || f['medicamentoId'].touched)"
+                class="invalid-feedback">
                 <div *ngIf="f['medicamentoId'].errors?.['required']">El medicamento es requerido.</div>
               </div>
             </div>
             <div class="col col-md-6">
               <label for="dosis">Dosis</label>
-              <input 
-                class="form-control" 
-                type="text" 
-                id="dosis" 
-                placeholder="Ingrese la dosis"
-                formControlName="dosis"
+              <input class="form-control" type="text" id="dosis" placeholder="Ingrese la dosis" formControlName="dosis"
                 [class.is-invalid]="f['dosis'].invalid && (f['dosis'].dirty || f['dosis'].touched)">
               <div *ngIf="f['dosis'].invalid && (f['dosis'].dirty || f['dosis'].touched)" class="invalid-feedback">
                 <div *ngIf="f['dosis'].errors?.['required']">La dosis es requerida.</div>
@@ -144,27 +136,22 @@
           <div class="row mt-3">
             <div class="col">
               <label for="indicaciones">Indicaciones</label>
-              <textarea 
-                class="form-control" 
-                id="indicaciones" 
-                rows="3" 
-                placeholder="Ingrese las indicaciones"
-                formControlName="indicaciones"
-                maxlength="500"
-                (input)="onIndicacionesChange($event)"
-                (keyup)="onIndicacionesChange($event)"
-                (paste)="onIndicacionesChange($event)"
+              <textarea class="form-control" id="indicaciones" rows="3" placeholder="Ingrese las indicaciones"
+                formControlName="indicaciones" maxlength="500" (input)="onIndicacionesChange($event)"
+                (keyup)="onIndicacionesChange($event)" (paste)="onIndicacionesChange($event)"
                 [class.is-invalid]="f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)">
               </textarea>
               <div class="d-flex justify-content-between mt-1">
                 <small class="form-text text-muted">
                   Máximo 500 caracteres
                 </small>
-                <small class="form-text" [ngClass]="{'text-danger': contadorIndicaciones > maxCaracteresIndicaciones, 'text-muted': contadorIndicaciones <= maxCaracteresIndicaciones}">
+                <small class="form-text"
+                  [ngClass]="{'text-danger': contadorIndicaciones > maxCaracteresIndicaciones, 'text-muted': contadorIndicaciones <= maxCaracteresIndicaciones}">
                   {{ contadorIndicaciones }}/{{ maxCaracteresIndicaciones }}
                 </small>
               </div>
-              <div *ngIf="f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)" class="invalid-feedback">
+              <div *ngIf="f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)"
+                class="invalid-feedback">
                 <div *ngIf="f['indicaciones'].errors?.['required']">Las indicaciones son requeridas.</div>
                 <div *ngIf="f['indicaciones'].errors?.['maxlength']">
                   Las indicaciones no pueden exceder {{ maxCaracteresIndicaciones }} caracteres.
