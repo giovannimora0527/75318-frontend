@@ -1,0 +1,92 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Logs de Auditoría</h5>
+  </div>
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Usuario" [formControl]="usuarioControl" />
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [formControl]="exitoControl">
+          <option value="">Todos</option>
+          <option value="true">Éxitos</option>
+          <option value="false">Fallidos</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="datetime-local" class="form-control" [formControl]="startControl" />
+      </div>
+      <div class="col-md-2">
+        <input type="datetime-local" class="form-control" [formControl]="endControl" />
+      </div>
+      <div class="col-md-1 d-flex align-items-center">
+        <button class="btn btn-primary" (click)="buscar()" [disabled]="fechaError">Buscar</button>
+      </div>
+      <div class="col-md-2 d-flex align-items-center">
+        <label class="me-2">Tamaño</label>
+        <select class="form-select form-select-sm" [value]="size" (change)="setPageSize($any($event.target).value)">
+          <option *ngFor="let s of pageSizes" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="fechaError" class="row mb-2">
+      <div class="col-12">
+        <div class="alert alert-danger p-2">{{ fechaError }}</div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center mb-2">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+
+    <ng-container *ngIf="resultados && resultados.length > 0; else noResults">
+      <div class="mat-table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" style="width:100%;">
+
+          <!-- Usuario Column -->
+          <ng-container matColumnDef="usuario">
+            <th mat-header-cell *matHeaderCellDef> Usuario </th>
+            <td mat-cell *matCellDef="let r">{{ r.usuario }}</td>
+          </ng-container>
+
+          <!-- Fecha Column -->
+          <ng-container matColumnDef="fechaHora">
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let r">{{ r.fechaHora | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          </ng-container>
+
+          <!-- IP Column -->
+          <ng-container matColumnDef="ip">
+            <th mat-header-cell *matHeaderCellDef> IP </th>
+            <td mat-cell *matCellDef="let r">{{ r.ip }}</td>
+          </ng-container>
+
+          <!-- Resultado Column -->
+          <ng-container matColumnDef="resultado">
+            <th mat-header-cell *matHeaderCellDef> Resultado </th>
+            <td mat-cell *matCellDef="let r">{{ r.exito ? 'OK' : 'FAIL' }}</td>
+          </ng-container>
+
+          <!-- Motivo Column -->
+          <ng-container matColumnDef="motivo">
+            <th mat-header-cell *matHeaderCellDef> Motivo </th>
+            <td mat-cell *matCellDef="let r">{{ r.motivo }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <mat-paginator [length]="totalElements" [pageSize]="size" [pageSizeOptions]="pageSizes" (page)="onPageEvent($event)">
+      </mat-paginator>
+    </ng-container>
+
+    <ng-template #noResults>
+      <div *ngIf="!loading" class="alert alert-info">No hay resultados que coincidan con los filtros.</div>
+    </ng-template>
+  </div>
+</div>
