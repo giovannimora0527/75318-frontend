@@ -1,7 +1,5 @@
-import packageInfo from '../../package.json';
-
 export const environment = {
-  appVersion: packageInfo.version,
-  production: false,  
+  production: false,
+  appVersion: 'v1.0.0',
   apiUrl: 'http://localhost:8081/clinica/v1'
 };

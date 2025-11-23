@@ -1,0 +1,43 @@
+// Copiar en login.component.scss y recuperar-password.component.scss
+
+.bg-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.card {
+  backdrop-filter: blur(10px);
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+.btn-primary:hover {
+  background-color: #5568d3;
+  border-color: #5568d3;
+}
+
+.alert {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -8,13 +8,26 @@ import { MedicamentosComponent } from './pages/medicamentos/medicamentos.compone
 import { CitasComponent } from './pages/citas/citas.component';
 import { FormulasMedicasComponent } from './pages/formulas-medicas/formulas-medicas.component';
 import { HistoriasMedicasComponent } from './pages/historias-medicas/historias-medicas.component';
-import { GestionEspecializacionesComponent } from './pages/gestion-especializaciones/gestion-especializaciones.component';
+import { EspecializacionComponent } from './demo/especializacion/especializacion.component';
+import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
+import { LoginComponent } from './demo/pages/auth/login/login.component';
+import { RecuperarPasswordComponent } from './demo/pages/auth/recuperar-password/recuperar-password.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: { title: 'Login' }
+  },
+  {
+    path: 'recuperar-password',
+    component: RecuperarPasswordComponent,
+    data: { title: 'Recuperar Contraseña' }
   },
   {
     path: 'inicio',
@@ -28,10 +41,11 @@ export const routes: Routes = [
       { path: 'citas', component: CitasComponent, data: { title: 'Citas' } },
       { path: 'formulas-medicas', component: FormulasMedicasComponent, data: { title: 'Fórmulas Médicas' } },
       { path: 'historias-medicas', component: HistoriasMedicasComponent, data: { title: 'Historias Médicas' } },
-      { path: 'gestion-especializaciones', component: GestionEspecializacionesComponent, data: { title: 'Gestión de Especializaciones' } }
+      { path: 'gestion-especializaciones', component: EspecializacionComponent, data: { title: 'Gestión de Especializaciones' } },
+      { path: 'auditoria', component: AuditoriaComponent, data: { title: 'Logs de Auditoría' } }
     ]
   },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
