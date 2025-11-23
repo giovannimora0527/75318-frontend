@@ -76,28 +76,64 @@ export class LoginComponent {
           });
         },
         error: (error) => {
-          this.spinner.hide();
-          this.isLoading = false;
-          console.error('Error en la autenticación:', error);
+        this.spinner.hide();
+        this.isLoading = false;
+        
+        console.log('🔴 ERROR EN COMPONENTE:', error);
+        console.log('🔴 error.message:', error.message);
+        console.log('🔴 error.status:', error.status);
+        console.log('🔴 error.error:', error.error);
+        
+        // Verificar si es el error de bloqueo
+        if (error.message === 'BLOCKED_ACCOUNT') {
+          console.log('✅ Error de bloqueo detectado en componente');
+          this.loginForm.get('password')?.reset();
+          return;
+        } 
+        
+        // Verificar si el mensaje contiene palabras de bloqueo
+        const errorMessage = error.error?.message || error.message || '';
+        if (errorMessage.includes('bloqueada') || errorMessage.includes('minutos')) {
+          console.log('✅ Mensaje de bloqueo detectado directamente');
           Swal.fire({
-            title: 'Erro',
-            text: 'Ups! Algo salió mal durante el inicio de sesión.',
-            icon: 'error'
+            title: '🔒 Cuenta Bloqueada',
+            html: `
+              <div class="text-start">
+                <p class="mb-3 fw-bold">${errorMessage}</p>
+                <div class="alert alert-warning mt-3" role="alert">
+                  <i class="fa fa-exclamation-triangle me-2"></i>
+                  <strong>Por seguridad</strong>, su cuenta ha sido bloqueada temporalmente.
+                </div>
+              </div>
+            `,
+            icon: 'warning',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#ffc107'
           });
+          this.loginForm.get('password')?.reset();
+          return;
         }
-      });
-    } else {
-      this.spinner.hide();
-      this.isLoading = false;
-      // Marcar todos los campos como tocados para mostrar errores
-      this.loginForm.markAllAsTouched();
-      Swal.fire({
-        title: 'Error',
-        text: 'Por favor complete todos los campos requeridos',
-        icon: 'error'
-      });
-    }
+        
+        // Si no es bloqueo, mostrar error genérico
+        Swal.fire({
+          title: 'Erro',
+          text: 'Ups! Algo salió mal durante el inicio de sesión.',
+          icon: 'error'
+        });
+      }
+    });
+  } else {
+    this.spinner.hide();
+    this.isLoading = false;
+    // Marcar todos los campos como tocados para mostrar errores
+    this.loginForm.markAllAsTouched();
+    Swal.fire({
+      title: 'Error',
+      text: 'Por favor complete todos los campos requeridos',
+      icon: 'error'
+    });
   }
+}
 
   onForgotPassword(event: Event) {
     event.preventDefault();
