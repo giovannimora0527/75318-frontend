@@ -8,14 +8,21 @@ import { CitaComponent } from './demo/pages/cita/cita.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
 import { FormulaComponent } from './demo/pages/formula/formula.component';
 import { HistoriaComponent } from './demo/pages/historia/historia.component';
-import { MedicamentosComponent } from './demo/pages/medicamento/medicamento.component';
+import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
+import { LoginComponent } from './demo/pages/login/login.component';
+import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'login',
     pathMatch: 'full'
   },  
+  {
+    path: 'login',
+    data: { title: 'Login' },
+    component: LoginComponent,
+  },
   {
     path: 'inicio',
     component: AdminComponent,
@@ -25,14 +32,15 @@ export const routes: Routes = [
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
        { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},
-       { path: 'medicamento', component: MedicamentosComponent, data: { title: 'Medicamento' }},
+       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},
        { path: 'formula-medica', component: FormulaComponent, data: { title: 'Formula' }},
        { path: 'historia-clinica', component: HistoriaComponent, data: { title: 'Historia' }},
-       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
+       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},
+       { path: 'auditoria', component: AuditoriaComponent, data: { title: 'Auditoria' }}
 
     ]
   },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
