@@ -2,27 +2,29 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
-import { Receta } from '../models/formula';
 import { RespuestaRs } from '../../usuario/models/respuesta-rs';
+import { Formula } from '../models/formula';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class RecetaService {
+export class FormulaService {
+
   urlBase = environment.apiUrl;
   endpoint: string = 'receta';
 
   constructor(private readonly backendService: BackendService) {}
 
-  listarRecetas(): Observable<Receta[]> {
+  listarFormulas(): Observable<Formula[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
 
-  guardarReceta(receta: Receta): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', receta);
+  guardarFormula(formula: Formula): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', formula);
   }
 
-  actualizarReceta(receta: Receta): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', receta);
+  actualizarFormula(formula: Formula): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', formula);
   }
 }
