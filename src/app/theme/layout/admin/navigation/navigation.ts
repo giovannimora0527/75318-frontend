@@ -14,7 +14,6 @@ export interface NavigationItem {
 
   children?: NavigationItem[];
 }
-
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
@@ -32,10 +31,10 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'medico',
-        title: 'Gestión de Médicos',
+        title: 'Gestión de Medicos',
         type: 'item',
         url: '/inicio/medico',
-        icon: 'feather icon-users',
+        icon: 'feather icon-activity',
         classes: 'nav-item'
       },
       {
@@ -43,42 +42,59 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-user-plus',
         classes: 'nav-item'
       },
       {
-        id: 'medicamentos',
-        title: 'Gestión de Medicamentos',
+        id: 'medicamento',
+        title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/medicamentos',
-        icon: 'feather icon-clipboard',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-package',
         classes: 'nav-item'
       },
       {
-        id: 'citas',
-        title: 'Gestión de Citas',
+        id: 'cita',
+        title: 'Gestión de citas',
         type: 'item',
-        url: '/inicio/citas',
+        url: '/inicio/cita',
         icon: 'feather icon-calendar',
         classes: 'nav-item'
       },
       {
-        id: 'formulas-medicas',
-        title: 'Fórmulas Médicas',
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
         type: 'item',
-        url: '/inicio/formulas-medicas',
+        url: '/inicio/formula-medica',
         icon: 'feather icon-file-text',
         classes: 'nav-item'
       },
       {
-        id: 'especializaciones',
-        title: 'Gestión de Especializaciones',
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
         type: 'item',
-        url: '/inicio/especializaciones',
+        url: '/inicio/historia-clinica',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
+      },
+      {
+        id: 'especializacion',
+        title: 'Gestión de especializaciones',
+        type: 'item',
+        url: '/inicio/especializacion',
         icon: 'feather icon-award',
         classes: 'nav-item'
-      }
+      },
+      /* ---------- Nuevos menus aqui -------------  */
+      {
+        id: 'auditoria',
+        title: 'Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-shield',
+        classes: 'nav-item'
+      },
     ]
-  }
-  /* ---------- Nuevos menus aqui -------------  */
+  },
+
 ];
