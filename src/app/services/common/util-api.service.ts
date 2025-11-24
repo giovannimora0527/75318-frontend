@@ -13,6 +13,6 @@ export class UtilApiService {
   constructor(private readonly backendService: BackendService) {}
 
   listarEspecializaciones(): Observable<Especializacion[]> {
-    return this.backendService.get(this.urlBase, 'especializacion', 'listar');
+    return this.backendService.get('especializacion', 'listar');
   }
 }

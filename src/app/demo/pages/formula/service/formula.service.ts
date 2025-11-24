@@ -1,28 +1,44 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BackendService } from 'src/app/services/backend.service';
-import { environment } from 'src/environments/environment';
-import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 import { Formula } from '../models/formula';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormulaService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'receta';
 
-  constructor(private readonly backendService: BackendService) {}
+  private apiUrl = 'http://localhost:8000/clinica/v1/receta';
 
+  constructor(private http: HttpClient) {}
+
+  // Crear una nueva fórmula
+  crearFormula(formula: Formula): Observable<Formula> {
+    return this.http.post<Formula>(`${this.apiUrl}/crear`, formula);
+  }
+
+  // Listar todas las fórmulas
   listarFormulas(): Observable<Formula[]> {
-    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
+    return this.http.get<Formula[]>(`${this.apiUrl}/listar`);
   }
 
-  guardarFormula(formula: Formula): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', formula);
+  // Listar fórmulas por fecha de creación descendente
+  listarFormulasPorFechaDesc(): Observable<Formula[]> {
+    return this.http.get<Formula[]>(`${this.apiUrl}/listar-desc`);
   }
 
-  actualizarFormula(formula: Formula): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', formula);
+  // Buscar fórmulas por id de cita
+  buscarFormulasPorCitaId(citaId: number): Observable<Formula[]> {
+    return this.http.get<Formula[]>(`${this.apiUrl}/cita/${citaId}`);
+  }
+
+  // Actualizar fórmula existente
+  actualizarFormula(formula: Formula): Observable<Formula> {
+    return this.http.put<Formula>(`${this.apiUrl}/actualizar/${formula.id}`, formula);
+  }
+
+  // Eliminar fórmula por id
+  eliminarFormula(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`);
   }
 }

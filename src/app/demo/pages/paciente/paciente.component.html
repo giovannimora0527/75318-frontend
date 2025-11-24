@@ -1,1 +1,147 @@
-<p>paciente works!</p>
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{titleSpinner}}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+          <i class="fa fa-users"></i>
+          &nbsp;Lista de pacientes
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoPaciente()">
+          <i class="fa fa-plus"></i>
+          Nuevo paciente
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Tipo de documento</th>
+              <th>Número de documento</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Fecha nacimiento</th>
+              <th>Género</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Edad</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody *ngIf="pacientes?.length > 0">
+            <tr *ngFor="let paciente of pacientes">
+              <td>{{ paciente.id }}</td>
+              <td>{{ paciente.tipo_documento }}</td>
+              <td>{{ paciente.numero_documento }}</td>
+              <td>{{ paciente.nombres }}</td>
+              <td>{{ paciente.apellidos }}</td>
+              <td>{{ paciente.fecha_nacimiento | date: 'yyyy-MM-dd' }}</td>
+              <td>{{ paciente.genero }}</td>
+              <td>{{ paciente.telefono }}</td>
+              <td>{{ paciente.direccion }}</td>
+              <td>{{ paciente.edad }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  title="Editar paciente"
+                  (click)="abrirEditarPaciente(paciente)"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="pacientes?.length === 0">
+            <tr>
+              <td colspan="11" class="text-center">No hay pacientes disponibles.</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================
+     MODAL CREAR / EDITAR PACIENTE
+     ============================== -->
+<div class="modal fade" id="modalCrearPaciente" tabindex="-1" aria-labelledby="modalCrearPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearPacienteLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del paciente</label>
+            <input
+              type="text"
+              id="nombre"
+              class="form-control"
+              placeholder="Ingrese el nombre del paciente"
+              formControlName="nombre"
+            />
+            <div *ngIf="form.get('nombre')?.touched && form.get('nombre')?.hasError('required')" class="text-danger">
+              El nombre es obligatorio.
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              placeholder="correo@ejemplo.com"
+              formControlName="email"
+            />
+            <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')" class="text-danger">
+              El correo es obligatorio.
+            </div>
+            <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')" class="text-danger">
+              Debe ingresar un correo válido.
+            </div>
+          </div>
+
+          <!-- Estado (solo en edición) -->
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="activo" class="form-label">Estado</label>
+            <select id="activo" formControlName="activo" class="form-control">
+              <option [ngValue]="true">Activo</option>
+              <option [ngValue]="false">Inactivo</option>
+            </select>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarUsuario()">
+          {{ titleBoton }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

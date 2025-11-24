@@ -9,12 +9,13 @@ import { LoginRq } from '../models/login-rq';
   providedIn: 'root'
 })
 export class LoginService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'auth';
+  endpoint: string = 'api/usuarios';
+  service: string = 'login';
 
   constructor(private readonly backendService: BackendService) {}
 
   loginUsuario(loginForm: LoginRq): Observable<LoginRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'login', loginForm);
+    return this.backendService.post(this.endpoint, this.service, loginForm);
   }
 }
+

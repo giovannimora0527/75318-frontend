@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BackendService } from 'src/app/services/backend.service';
-import { environment } from 'src/environments/environment';
-import { Paciente } from '../models/paciente';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class PacienteService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'paciente';
 
-  constructor(private readonly backendService: BackendService) {}
+  private apiUrl = 'http://localhost:8000/clinica/v1/paciente';
 
-  buscarPacientePorDocumento(documento: string): Observable<Paciente> {
-    return this.backendService.get(this.urlBase, this.endpoint, `buscar-paciente-documento?numeroDocumento=${documento}`);
+  constructor(private http: HttpClient) {}
+
+  listarPacientes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/listar`);
+  }
+
+  buscarPorDocumento(numeroDocumento: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/buscar`, {
+      params: { numeroDocumento }
+    });
+  }
+
+  listarPorFechaNacimiento(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/fechaNacimiento`);
   }
 }

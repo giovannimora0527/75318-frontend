@@ -5,12 +5,14 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
 import { Router } from '@angular/router';
+import { LoginRq } from './models/login-rq';
+import { LoginRs } from './models/login-rs';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -48,28 +50,23 @@ export class LoginComponent {
       this.isLoading = true;
       this.spinner.show();
 
-      // Simular llamada al servicio de autenticación
-      const loginData = {
+      const loginData: LoginRq = {
         username: this.f['username'].value,
-        password: this.f['password'].value,
-        recordarSesion: this.f['recordarSesion'].value
+        password: this.f['password'].value
       };
 
-      console.log('Datos de login:', loginData);
       this.loginService.loginUsuario(loginData).subscribe({
-        next: (response) => {
-          console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
+        next: (response: LoginRs) => {
+          localStorage.setItem("token", response.token);
+
           this.isLoading = false;
           this.spinner.hide();
+
           Swal.fire({
             title: 'Éxito',
             text: 'Inicio de sesión exitoso',
             icon: 'success'
           }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
-            this.isLoading = false;
             this.router.navigate(['/inicio']);
           });
         },
@@ -78,7 +75,7 @@ export class LoginComponent {
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
           Swal.fire({
-            title: 'Erro',
+            title: 'Error',
             text: 'Ups! Algo salió mal durante el inicio de sesión.',
             icon: 'error'
           });
@@ -87,7 +84,6 @@ export class LoginComponent {
     } else {
       this.spinner.hide();
       this.isLoading = false;
-      // Marcar todos los campos como tocados para mostrar errores
       this.loginForm.markAllAsTouched();
       Swal.fire({
         title: 'Error',
@@ -99,7 +95,6 @@ export class LoginComponent {
 
   onForgotPassword(event: Event) {
     event.preventDefault();
-
     Swal.fire({
       title: 'Recuperar contraseña',
       text: 'Ingrese su correo electrónico para recuperar su contraseña',
@@ -117,8 +112,6 @@ export class LoginComponent {
           Swal.showValidationMessage('El correo electrónico es requerido');
           return false;
         }
-
-        // Simular envío de email de recuperación
         return new Promise<boolean>((resolve) => {
           setTimeout(() => {
             console.log('Enviar email de recuperación a:', email);

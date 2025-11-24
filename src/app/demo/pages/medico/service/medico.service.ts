@@ -15,14 +15,14 @@ export class MedicoService {
   constructor(private readonly backendService: BackendService) {}
 
   listarMedicos(): Observable<Medico[]> {
-    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
+    return this.backendService.get(this.endpoint, 'listar');
   }
 
   guardarMedico(medico: Medico): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', medico);
+    return this.backendService.post(this.endpoint, 'guardar', medico);
   }
 
   actualizarMedico(medico: Medico): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', medico);
+    return this.backendService.post(this.endpoint, 'actualizar', medico);
   }
 }

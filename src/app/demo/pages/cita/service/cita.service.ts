@@ -1,21 +1,34 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BackendService } from 'src/app/services/backend.service';
-import { environment } from 'src/environments/environment';
 import { Cita } from '../models/cita';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CitaService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'cita';
 
-  constructor(private readonly backendService: BackendService) {}
+  private apiUrl = 'http://localhost:8000/clinica/v1/citas';
 
-  buscarCitaPorPacienteId(pacienteId: number): Observable<Cita[]> {
-    const params: HttpParams = new HttpParams().set('pacienteIds', pacienteId.toString());
-    return this.backendService.get(this.urlBase, this.endpoint, 'listar-citas-paciente', params);
+  constructor(private http: HttpClient) {}
+
+  // Crear una nueva cita
+  crearCita(cita: Cita): Observable<Cita> {
+    return this.http.post<Cita>(`${this.apiUrl}/crear`, cita);
+  }
+
+  // Listar todas las citas
+  listarCitas(): Observable<Cita[]> {
+    return this.http.get<Cita[]>(`${this.apiUrl}/listar`);
+  }
+
+  // Listar citas por fechaHora descendente
+  listarCitasPorFechaHoraDesc(): Observable<Cita[]> {
+    return this.http.get<Cita[]>(`${this.apiUrl}/listar-desc`);
+  }
+
+  // Buscar citas por id de paciente
+  buscarCitasPorPacienteId(pacienteId: number): Observable<Cita[]> {
+    return this.http.get<Cita[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
 }

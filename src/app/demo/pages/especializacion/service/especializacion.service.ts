@@ -1,28 +1,33 @@
 import { Injectable } from '@angular/core';
-import { BackendService } from 'src/app/services/backend.service';
-import { environment } from 'src/environments/environment';
-import { Especializacion } from '../models/especializacion';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RespuestaRs } from '../../usuario/models/respuesta-rs';
+import { Especializacion } from '../models/especializacion';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EspecializacionService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'especializacion';
+  private apiUrl = 'http://localhost:8000/clinica/v1/especializacion';
 
-  constructor(private readonly backendService: BackendService) {}
+  constructor(private http: HttpClient) {}
 
+  // Listar todas las especializaciones
   listarEspecializaciones(): Observable<Especializacion[]> {
-    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
+    return this.http.get<Especializacion[]>(`${this.apiUrl}/listar`);
   }
 
-  guardarEspecializacion(especializacion: Especializacion): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', especializacion);
+  // Crear especialización
+  crearEspecializacion(especializacion: Especializacion): Observable<Especializacion> {
+    return this.http.post<Especializacion>(`${this.apiUrl}/crear`, especializacion);
   }
 
-  actualizarEspecializacion(especializacion: Especializacion): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', especializacion);
+  // Actualizar especialización
+  actualizarEspecializacion(id: number, especializacion: Especializacion): Observable<Especializacion> {
+    return this.http.put<Especializacion>(`${this.apiUrl}/actualizar/${id}`, especializacion);
+  }
+
+  // Buscar por código
+  buscarPorCodigo(codigo: string): Observable<Especializacion> {
+    return this.http.get<Especializacion>(`${this.apiUrl}/buscar-por-codigo?codigo=${codigo}`);
   }
 }
