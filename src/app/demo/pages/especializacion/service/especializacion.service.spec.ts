@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { EspecializacionService } from './especializacion.service';
 import { Especializacion } from '../models/especializacion';
-import { RespuestaRs } from '../models/respuesta-rs';
+import { RespuestaRs } from 'src/app/demo/pages/usuario/models/respuesta-rs';
+
 
 describe('EspecializacionService', () => {
   let service: EspecializacionService;
@@ -76,4 +77,5 @@ describe('EspecializacionService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockEspecializacion);
   });
+
 });
