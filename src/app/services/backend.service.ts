@@ -102,7 +102,7 @@ export class BackendService {
    * @param data Datos a enviar en el cuerpo de la petición
    * @returns Observable<T> respuesta del servidor
    */
-  
+
   post<T>(
     urlApi: string,
     endpoint: string,
@@ -165,4 +165,33 @@ export class BackendService {
       withCredentials: true,
     });
   }
+
+  getWithParams<T>(
+    baseUrl: string,
+    endpoint: string,
+    path: string,
+    params: Record<string, string | number | boolean | undefined>
+  ): Observable<T> {
+    // Filtrar parámetros undefined/null y convertir todo a string
+    const cleanParams: Record<string, string> = {};
+    Object.keys(params).forEach(key => {
+      const value = params[key];
+      if (value !== undefined && value !== null) {
+        cleanParams[key] = String(value); // Angular requiere strings
+      }
+    });
+
+    const tokenRecuperado = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+    });
+
+    return this.http.get<T>(`${baseUrl}/${endpoint}/${path}`, {
+      headers,
+      params: cleanParams, // 👈 Ya es un Record<string, string>, ¡sin "any"!
+      withCredentials: true,
+    });
+  }
+
 }
