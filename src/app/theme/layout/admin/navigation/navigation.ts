@@ -46,35 +46,43 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'citas',
-        title: 'Citas',
+        id: 'medicamento',
+        title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/citas',
-        icon: 'feather icon-users',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'medicamentos',
-        title: 'Medicamentos',
+        id: 'cita',
+        title: 'Gestión de citas',
         type: 'item',
-        url: '/inicio/medicamentos',
-        icon: 'feather icon-users',
+        url: '/inicio/cita',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'formulas-medicas',
-        title: 'Formulas Medicas',
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
         type: 'item',
-        url: '/inicio/formulas-medicas',
-        icon: 'feather icon-users',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'historias-medicas',
-        title: 'Historias Medicas',
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
         type: 'item',
-        url: '/inicio/historias-medicas',
-        icon: 'feather icon-users',
+        url: '/inicio/historia-clinica',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'auditoria',
+        title: 'Visualización de Logs de Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
@@ -82,10 +90,10 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       }
     ]
-  },
+  }
   /* ---------- Nuevos menus aqui -------------  */
 ];
