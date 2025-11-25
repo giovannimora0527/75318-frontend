@@ -1,10 +1,7 @@
-import { Medico } from "../../medico/models/medico";
-import { Paciente } from "../../paciente/models/paciente";
-
-export class Cita {
+export class CitaRespDTO {
   id!: number;
-  pacienteId!: number;
-  medicoId!: number;
+  pacienteNombre!: string;
+  medicoNombre!: string;
   motivo!: string;
   fechaHora!: string;
   estado!: string;

@@ -36,8 +36,8 @@
           <tbody *ngIf="citas?.length > 0">
             <tr *ngFor="let cita of citas">
               <td>{{ cita.id }}</td>
-              <td>{{ cita.pacienteId }}</td>
-              <td>{{ cita.medicoId }}</td>
+              <td>{{ cita.pacienteNombre }}</td>
+              <td>{{ cita.medicoNombre }}</td>
               <td>{{ cita.motivo }}</td>
               <td>{{ cita.fechaHora | date: 'yyyy-MM-dd' }}</td>
               <td>{{ cita.estado }}</td>

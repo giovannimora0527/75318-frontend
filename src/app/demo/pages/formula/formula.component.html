@@ -35,7 +35,7 @@
           <tbody *ngIf="formulaFiltered?.length > 0">
             <tr *ngFor="let formula of formulaFiltered">
               <td>{{ formula.id }}</td>
-              <td>{{ formula.citaId }}</td>
+              <td>{{ getCitaLabel(formula.citaId) }}</td>
               <td>{{ getNombreMedicamento(formula) }}</td>
               <td>{{ formula.dosis }}</td>
               <td>{{ formula.indicaciones }}</td>

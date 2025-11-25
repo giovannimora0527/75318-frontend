@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Cita } from '../models/cita';
+import { CitaRespDTO } from '../models/cita';
 
 @Injectable({
   providedIn: 'root'
@@ -13,22 +13,22 @@ export class CitaService {
   constructor(private http: HttpClient) {}
 
   // Crear una nueva cita
-  crearCita(cita: Cita): Observable<Cita> {
-    return this.http.post<Cita>(`${this.apiUrl}/crear`, cita);
+  crearCita(cita: CitaRespDTO): Observable<CitaRespDTO> {
+    return this.http.post<CitaRespDTO>(`${this.apiUrl}/crear`, cita);
   }
 
   // Listar todas las citas
-  listarCitas(): Observable<Cita[]> {
-    return this.http.get<Cita[]>(`${this.apiUrl}/listar`);
+  listarCitas(): Observable<CitaRespDTO[]> {
+    return this.http.get<CitaRespDTO[]>(`${this.apiUrl}/listar`);
   }
 
   // Listar citas por fechaHora descendente
-  listarCitasPorFechaHoraDesc(): Observable<Cita[]> {
-    return this.http.get<Cita[]>(`${this.apiUrl}/listar-desc`);
+  listarCitasPorFechaHoraDesc(): Observable<CitaRespDTO[]> {
+    return this.http.get<CitaRespDTO[]>(`${this.apiUrl}/listar-desc`);
   }
 
   // Buscar citas por id de paciente
-  buscarCitasPorPacienteId(pacienteId: number): Observable<Cita[]> {
-    return this.http.get<Cita[]>(`${this.apiUrl}/paciente/${pacienteId}`);
+  buscarCitasPorPacienteId(pacienteId: number): Observable<CitaRespDTO[]> {
+    return this.http.get<CitaRespDTO[]>(`${this.apiUrl}/paciente/${pacienteId}`);
   }
 }

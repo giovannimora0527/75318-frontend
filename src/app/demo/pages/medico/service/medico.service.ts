@@ -23,6 +23,6 @@ export class MedicoService {
   }
 
   actualizarMedico(medico: Medico): Observable<RespuestaRs> {
-    return this.backendService.post(this.endpoint, 'actualizar', medico);
+    return this.backendService.put(this.endpoint, 'actualizar', medico);
   }
 }

@@ -33,7 +33,7 @@
           <tbody *ngIf="historias?.length > 0">
             <tr *ngFor="let historia of historias">
               <td>{{ historia.id }}</td>
-              <td>{{ historia.PacienteId }}</td>
+              <td>{{ getNombrePaciente(historia.PacienteId) }}</td>
               <td>{{ historia.fechaCreacion | date:'yyyy-MM-dd' }}</td>
               <td>
                 <button

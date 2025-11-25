@@ -10,7 +10,7 @@ import { FormulaService } from './service/formula.service';
 import { PacienteService } from '../paciente/service/paciente.service';
 import { Paciente } from '../paciente/models/paciente';
 import { CitaService } from '../cita/service/cita.service';
-import { Cita } from '../cita/models/cita';
+import { CitaRespDTO } from '../cita/models/cita';
 import { MedicoService } from '../medico/service/medico.service';
 import { Medico } from '../medico/models/medico';
 import { MedicamentoService } from '../medicamento/service/medicamento.service';
@@ -37,7 +37,7 @@ export class FormulaComponent {
 
   formulaList: Formula[] = [];
   formulaFiltered: Formula[] = [];
-  citasPaciente: Cita[] = [];
+  citasPaciente: CitaRespDTO[] = [];
   medicamentos: Medicamento[] = [];
 
   pacientesMap: Map<number, Paciente> = new Map();
@@ -65,9 +65,6 @@ export class FormulaComponent {
     this.cargarMedicamentos();
   }
 
-  // -----------------------
-  // Funciones de inicialización
-  // -----------------------
   inicializarFormulario() {
     this.form = this.formBuilder.group({
       citaId: ['', [Validators.required]],
@@ -125,16 +122,12 @@ export class FormulaComponent {
   // -----------------------
   getNombrePaciente(citaId: number): string {
     const cita = this.citasPaciente.find(c => c.id === citaId);
-    if (!cita) return '';
-    const paciente = this.pacientesMap.get(cita.pacienteId);
-    return paciente ? `${paciente.nombres} ${paciente.apellidos}` : '';
+    return cita ? cita.pacienteNombre : '';
   }
 
   getNombreMedico(citaId: number): string {
     const cita = this.citasPaciente.find(c => c.id === citaId);
-    if (!cita) return '';
-    const medico = this.medicosMap.get(cita.medicoId);
-    return medico ? `${medico.nombres} ${medico.apellidos}` : '';
+    return cita ? cita.medicoNombre : '';
   }
 
   getNombreMedicamento(formula: Formula): string {
@@ -142,7 +135,7 @@ export class FormulaComponent {
   }
 
   // -----------------------
-  // Formularios y modales
+  // Modales y formularios
   // -----------------------
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
@@ -207,19 +200,11 @@ export class FormulaComponent {
       const indicacionesCumple = formula.indicaciones?.toLowerCase().includes(busquedaLower);
 
       const cita = this.citasPaciente.find(c => c.id === formula.citaId);
-      const paciente = cita ? this.pacientesMap.get(cita.pacienteId) : null;
-      const medico = cita ? this.medicosMap.get(cita.medicoId) : null;
 
       const fechaCumple = cita?.fechaHora?.toLowerCase().includes(busquedaLower) || false;
 
-      const pacienteCumple = paciente &&
-        (paciente.nombres.toLowerCase().includes(busquedaLower) ||
-         paciente.apellidos.toLowerCase().includes(busquedaLower) ||
-         paciente.numero_documento.toLowerCase().includes(busquedaLower));
-
-      const medicoCumple = medico &&
-        (medico.nombres.toLowerCase().includes(busquedaLower) ||
-         medico.apellidos.toLowerCase().includes(busquedaLower));
+      const pacienteCumple = cita?.pacienteNombre.toLowerCase().includes(busquedaLower) || false;
+      const medicoCumple = cita?.medicoNombre.toLowerCase().includes(busquedaLower) || false;
 
       return dosisCumple || indicacionesCumple || fechaCumple || pacienteCumple || medicoCumple;
     });
@@ -231,8 +216,8 @@ export class FormulaComponent {
         this.pacienteEncontrado = data;
         this.citaService.buscarCitasPorPacienteId(this.pacienteEncontrado.id).subscribe({
           next: (data) => {
-            this.citasPaciente = data;
-            Swal.fire("Citas cargadas correctamente","Citas del paciente encontradas", "success");
+            this.citasPaciente = data; // Ahora es CitaRespDTO[]
+            Swal.fire("Citas cargadas correctamente", "Citas del paciente encontradas", "success");
           },
           error: (error) => Swal.fire('Error', error.error.message, 'error')
         });
@@ -247,6 +232,12 @@ export class FormulaComponent {
       this.contadorIndicaciones = target.value.length;
     }, 0);
   }
+
+  getCitaLabel(citaId: number): string {
+  const cita = this.citasPaciente.find(c => c.id === citaId);
+  if (!cita) return `Cita ${citaId}`;
+  return `${cita.pacienteNombre} - ${cita.medicoNombre} - ${new Date(cita.fechaHora).toLocaleDateString()}`;
+}
 
   guardarFormula() {
     if (this.form.invalid) {

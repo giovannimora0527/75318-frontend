@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { CitaService } from './service/cita.service';
-import { Cita } from './models/cita';
+import { CitaRespDTO } from './models/cita';
 
 @Component({
   selector: 'app-cita',
@@ -18,7 +18,7 @@ import { Cita } from './models/cita';
 })
 export class CitaComponent implements OnInit {
 
-  citas: Cita[] = [];
+  citas: CitaRespDTO[] = [];
   form!: FormGroup;
 
   titleSpinner = 'Cargando...';
@@ -26,7 +26,7 @@ export class CitaComponent implements OnInit {
   titleBoton = 'Guardar';
 
   modoFormulario = 'N';
-  citaSelected: Cita | null = null;
+  citaSelected: CitaRespDTO | null = null;
 
   constructor(
     private citaService: CitaService,
@@ -65,15 +65,15 @@ export class CitaComponent implements OnInit {
     this.form.reset();
   }
 
-  abrirEditarCita(cita: Cita) {
+  abrirEditarCita(cita: CitaRespDTO) {
     this.modoFormulario = 'E';
     this.titleModal = 'Editar Cita';
     this.titleBoton = 'Actualizar';
     this.citaSelected = cita;
 
     this.form.patchValue({
-      pacienteId: cita.pacienteId,
-      medicoId: cita.medicoId,
+      pacienteNombre: cita.pacienteNombre,
+      medicoNombre: cita.medicoNombre,
       motivo: cita.motivo,
       fechaHora: cita.fechaHora,
       estado: cita.estado
@@ -83,10 +83,10 @@ export class CitaComponent implements OnInit {
   guardarCita() {
     if (this.form.invalid) return;
 
-    const citaData: Cita = {
+    const citaData: CitaRespDTO = {
       id: this.citaSelected?.id || 0,
-      pacienteId: this.form.value.pacienteId,
-      medicoId: this.form.value.medicoId,
+      pacienteNombre: this.form.value.pacienteId,
+      medicoNombre: this.form.value.medicoId,
       motivo: this.form.value.motivo,
       fechaHora: this.form.value.fechaHora,
       estado: this.form.value.estado

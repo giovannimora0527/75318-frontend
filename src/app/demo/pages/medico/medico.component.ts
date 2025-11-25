@@ -117,55 +117,55 @@ export class MedicoComponent {
   }
 
   guardarMedico() {
-    this.titleSpinner = this.modoFormulario === 'C' ? 'Creando médico...' : 'Actualizando médico...';
-    this.spinner.show();
-    if (this.form.invalid) {
-      // Manejar el formulario inválido
-      this.spinner.hide();
-      Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
-      return;
-    }
+  this.titleSpinner = this.modoFormulario === 'C' ? 'Creando médico...' : 'Actualizando médico...';
+  this.spinner.show();
 
-    if (this.modoFormulario === 'C') {
-      // Crear     
-      this.medicoService.guardarMedico(this.form.getRawValue()).subscribe({
-        next: (data) => {
-          if (data.status === 200) {
-            this.spinner.hide();
-            Swal.fire('Éxito', data.mensaje, 'success');
-            this.closeModal();
-            this.listarMedicos();
-          } else {
-            this.spinner.hide();
-            Swal.fire('Error', data.mensaje, 'error');
-          }
-        },
-        error: (error) => {
-          this.spinner.hide();
-          Swal.fire('Error', error.error.message, 'error');
-        }
-      });
-    } else {
-      // Actualizar      
-      const usuarioActualizado: Medico = this.form.getRawValue();
-      usuarioActualizado.id = this.medicoSelected.id;
-      this.medicoService.actualizarMedico(usuarioActualizado).subscribe({
-        next: (data) => {
-          if (data.status === 200) {
-            this.spinner.hide();
-            Swal.fire('Éxito', data.mensaje, 'success');
-            this.closeModal();
-            this.listarMedicos();
-          } else {
-            this.spinner.hide();
-            Swal.fire('Error', data.mensaje, 'error');
-          }
-        },
-        error: (error) => {
-          this.spinner.hide();
-          Swal.fire('Error', error.error.message, 'error');
-        }
-      });
-    }
+  if (this.form.invalid) {
+    this.spinner.hide();
+    Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
+    return;
   }
+
+  // Tomamos valores del formulario
+  const medico = this.form.getRawValue();
+
+  // Convertimos el ID de especialización a objeto
+  medico.especializacion = { id: medico.especializacion };
+
+  if (this.modoFormulario === 'C') {
+    // Crear
+    this.medicoService.guardarMedico(medico).subscribe({
+      next: (data) => {
+        this.spinner.hide();
+        Swal.fire('Éxito', data.mensaje, 'success');
+        this.closeModal();
+        this.listarMedicos();
+      },
+      error: (error) => {
+        this.spinner.hide();
+        Swal.fire('Error', error.error.message, 'error');
+      }
+    });
+
+  } else {
+    // Actualizar
+    medico.id = this.medicoSelected.id;
+
+    this.medicoService.actualizarMedico(medico).subscribe({
+      next: (data) => {
+        this.spinner.hide();
+        Swal.fire('Éxito', data.mensaje, 'success');
+        this.closeModal();
+        this.listarMedicos();
+      },
+      error: (error) => {
+  this.spinner.hide();
+  const msg = error.error?.message || 'Ocurrió un error inesperado';
+  Swal.fire('Error', error.error.mensaje || 'Error inesperado', 'error');
+
+}
+
+    });
+  }
+}
 }
