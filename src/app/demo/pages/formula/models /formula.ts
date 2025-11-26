@@ -1,11 +1,13 @@
-import { Cita } from 'src/app/demo/pages/cita/models/cita';
-import { Medicamento } from 'src/app/demo/pages/medicamento/models/medicamento';
+import { Cita } from "../../cita/models/cita";
+import { Medicamento } from "../../medicamento/models/medicamento";
 
-export class Receta {
+export class Formula {
     id!: number;
+    indicaciones!: string;
+    dosis!: string;
+    fechaCreacionRegistro!: Date;
+    fechaActualizacionRegistro!: Date;
     cita!: Cita;
     medicamento!: Medicamento;
-    dosis!: string;
-    indicaciones!: string;
-    fechaCreacionRegistro!: Date;
+
 }
