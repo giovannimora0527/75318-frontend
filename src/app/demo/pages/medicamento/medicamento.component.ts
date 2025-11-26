@@ -23,7 +23,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
   templateUrl: './medicamento.component.html',
   styleUrl: './medicamento.component.scss'
 })
-export class MedicamentosComponent {
+export class MedicamentoComponent {
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   medicamentos: Medicamento[] = [];
