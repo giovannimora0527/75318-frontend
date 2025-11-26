@@ -1,1 +1,91 @@
-<p>historia works!</p>
+<div class="container mt-4">
+
+  <h2>Historias Clínicas</h2>
+
+  <!-- FORM SOLO ADMIN + MEDICO -->
+  <form *ngIf="isAdminOrMedico"
+        [formGroup]="form"
+        (ngSubmit)="guardar()"
+        class="card p-3 mt-3">
+
+    <div class="row">
+
+      <div class="col-md-4">
+        <label>Paciente</label>
+        <select class="form-control" formControlName="paciente">
+          <option [ngValue]="null">Seleccione</option>
+          <option *ngFor="let p of pacientes" [ngValue]="p">
+            {{ p.nombres }} {{ p.apellidos }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Fecha</label>
+        <input type="date" class="form-control" formControlName="fecha">
+      </div>
+
+      <div class="col-md-4">
+        <label>Descripción</label>
+        <input type="text" class="form-control" formControlName="descripcion">
+      </div>
+
+    </div>
+
+    <button class="btn btn-primary mt-3" [disabled]="form.invalid">
+      {{ editando ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </form>
+
+  <!-- MENSAJE PARA PACIENTES -->
+  <div *ngIf="!isAdminOrMedico" class="alert alert-info mt-3">
+    Puedes ver las historias, pero no tienes permisos para crear o modificar.
+  </div>
+
+  <hr>
+
+  <!-- LISTA DE HISTORIAS -->
+  <table class="table table-striped mt-3" *ngIf="historias.length">
+
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Descripción</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let historia of historias">
+        <td>{{ historia.id }}</td>
+        <td>{{ historia.paciente.nombres }} {{ historia.paciente.apellidos }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.fecha }}</td>
+
+        <td>
+          <!-- EDITAR y ELIMINAR solo ADMIN + MEDICO -->
+          <button *ngIf="isAdminOrMedico"
+                  class="btn btn-warning btn-sm"
+                  (click)="editar(historia)">
+            Editar
+          </button>
+
+          <button *ngIf="isAdminOrMedico"
+                  class="btn btn-danger btn-sm ms-2"
+                  (click)="eliminar(historia.id!)">
+            Eliminar
+          </button>
+
+          <!-- PACIENTE -->
+          <span *ngIf="!isAdminOrMedico" class="text-muted">
+            Solo lectura
+          </span>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>

@@ -10,10 +10,13 @@
           <i class="fa fa-user-pa"></i>
           &nbsp;Lista de pacientes
         </h3>
-        <button class="btn btn-outline-primary" (click)="abrirNuevoPaciente()">
+        <button 
+          *ngIf="rol === 'ADMIN'"
+          class="btn btn-outline-primary" 
+          (click)="abrirNuevoPaciente()">
           <i class="fa fa-plus"></i>
-          Nuevo paciente
-        </button>
+        Nuevo paciente
+      </button>
       </div>
     </div>
     <div class="card-body">
@@ -47,7 +50,12 @@
               <td>{{ paciente.fechaNacimiento }}</td>
               <td>{{ paciente.direccion }}</td>
               <td>
-                <button type="button" class="btn btn btn-outline-primary" title="Editar paciente" (click)="editarModalPaciente(paciente)">
+                <button 
+                  *ngIf="rol === 'ADMIN'"
+                  type="button" 
+                  class="btn btn-outline-primary" 
+                  title="Editar paciente"
+                  (click)="editarModalPaciente(paciente)">
                   <i class="fa fa-edit"></i>
                 </button>
               </td>
@@ -208,7 +216,13 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarPaciente()">{{ titleBoton }}</button>
+        <button 
+          *ngIf="rol === 'ADMIN'"
+          type="button" 
+          class="btn btn-primary" 
+          (click)="guardarPaciente()">
+          {{ titleBoton }}
+        </button>
       </div>
     </div>
   </div>

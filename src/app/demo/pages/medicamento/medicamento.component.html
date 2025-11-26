@@ -1,1 +1,91 @@
-<p>medicamento works!</p>
+<div class="container mt-4">
+
+  <h2 class="mb-3">Gestión de Medicamentos</h2>
+
+  <!-- SOLO ADMIN Y MEDICO pueden crear/editar -->
+  <form *ngIf="isAdminOrMedico" [formGroup]="medicamentoForm" (ngSubmit)="guardar()">
+
+    <div class="row">
+
+      <div class="col-md-6">
+        <label>Nombre</label>
+        <input type="text" class="form-control" formControlName="nombre">
+      </div>
+
+      <div class="col-md-6">
+        <label>Presentación</label>
+        <input type="text" class="form-control" formControlName="presentacion">
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <label>Descripción</label>
+        <textarea class="form-control" formControlName="descripcion"></textarea>
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Fecha Compra</label>
+        <input type="date" class="form-control" formControlName="fechaCompra">
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Fecha Vencimiento</label>
+        <input type="date" class="form-control" formControlName="fechaVence">
+      </div>
+
+    </div>
+
+    <button class="btn btn-primary mt-3" type="submit">
+      {{ editando ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </form>
+
+  <!-- SI NO ES ADMIN/MEDICO: mensaje de solo lectura -->
+  <div *ngIf="!isAdminOrMedico" class="alert alert-info">
+    Puedes ver los medicamentos, pero no tienes permisos para crear o editar.
+  </div>
+
+  <hr>
+
+  <h3>Lista de Medicamentos</h3>
+
+  <table class="table table-bordered table-striped mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Presentación</th>
+        <th>Compra</th>
+        <th>Vence</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let m of medicamentos">
+        <td>{{ m.id }}</td>
+        <td>{{ m.nombre }}</td>
+        <td>{{ m.descripcion }}</td>
+        <td>{{ m.presentacion }}</td>
+        <td>{{ m.fechaCompra }}</td>
+        <td>{{ m.fechaVence }}</td>
+        <td>
+
+          <!-- SOLO ADMIN/MEDICO pueden editar y eliminar -->
+          <button *ngIf="isAdminOrMedico" class="btn btn-warning btn-sm" (click)="editar(m)">
+            Editar
+          </button>
+
+          <button *ngIf="isAdminOrMedico" class="btn btn-danger btn-sm" (click)="eliminar(m.id)">
+            Eliminar
+          </button>
+
+          <!-- Usuarios Pacientes → sin permisos -->
+          <span *ngIf="!isAdminOrMedico" class="text-muted">Solo lectura</span>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

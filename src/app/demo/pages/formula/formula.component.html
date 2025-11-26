@@ -1,1 +1,89 @@
-<p>formula works!</p>
+<div class="container mt-4">
+  <h2>Gestión de Fórmulas</h2>
+
+  <!-- FORMULARIO SOLO ADMIN Y MEDICO -->
+  <form [formGroup]="formulaForm"
+        (ngSubmit)="guardar()"
+        class="card p-3"
+        *ngIf="isAdminOrMedico">
+
+    <div class="mb-3">
+      <label>Cita</label>
+      <select class="form-control" formControlName="cita">
+        <option value="">Seleccione...</option>
+        <option *ngFor="let c of citas" [ngValue]="c.id">
+          {{ c.descripcion }}
+        </option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Medicamento</label>
+      <select class="form-control" formControlName="medicamento">
+        <option value="">Seleccione...</option>
+        <option *ngFor="let m of medicamentos" [ngValue]="m.id">
+          {{ m.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Dosis</label>
+      <input type="text" formControlName="dosis" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label>Indicaciones</label>
+      <textarea formControlName="indicaciones" class="form-control"></textarea>
+    </div>
+
+    <!-- BOTON SOLO ADMIN / MEDICO -->
+    <button class="btn btn-primary" type="submit">
+      Guardar
+    </button>
+  </form>
+
+  <!-- LISTADO -->
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cita</th>
+        <th>Medicamento</th>
+        <th>Dosis</th>
+        <th>Indicaciones</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let f of formulas">
+        <td>{{ f.id }}</td>
+        <td>{{ f.cita }}</td>
+        <td>{{ f.medicamento }}</td>
+        <td>{{ f.dosis }}</td>
+        <td>{{ f.indicaciones }}</td>
+
+        <td>
+          <!-- SOLO ADMIN O MEDICO -->
+          <button class="btn btn-warning btn-sm"
+                  *ngIf="isAdminOrMedico"
+                  (click)="editar(f)">
+            Editar
+          </button>
+
+          <button class="btn btn-danger btn-sm"
+                  *ngIf="isAdminOrMedico"
+                  (click)="eliminar(f.id!)">
+            Eliminar
+          </button>
+
+          <!-- PARA PACIENTE solo texto -->
+          <span *ngIf="!isAdminOrMedico" class="text-muted">
+            Solo lectura
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

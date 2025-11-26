@@ -31,14 +31,21 @@ export class UsuarioComponent {
 
   form: FormGroup;
 
+    isAdmin: boolean = false;
+
   constructor(
-    private readonly usuarioService: UsuarioService,
-    private readonly formBuilder: FormBuilder,
-    private readonly spinner: NgxSpinnerService
-  ) {    
-    this.listarUsuarios();
-    this.inicializarFormulario();    
-  }
+  private readonly usuarioService: UsuarioService,
+  private readonly formBuilder: FormBuilder,
+  private readonly spinner: NgxSpinnerService
+) {    
+
+  const rol = localStorage.getItem('rol');  
+  this.isAdmin = rol === 'ADMIN';   // 🔥 CORRECTO
+
+  this.listarUsuarios();
+  this.inicializarFormulario();    
+}
+
 
   inicializarFormulario() {
     this.form = this.formBuilder.group({

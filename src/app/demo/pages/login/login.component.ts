@@ -1,54 +1,40 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  username: string = '';
+  password: string = '';
+  error: string = '';
 
-  username = '';
-  password = '';
-  error: string | null = null;
-  loading = false;
-
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login() {
-    this.error = null;
-    this.loading = true;
+    if (!this.username || !this.password) {
+      this.error = 'Usuario y contraseña son obligatorios';
+      return;
+    }
 
-    this.authService.login(this.username, this.password).subscribe({
-      next: (res) => {
-        this.loading = false;
-
-        // Respuesta del backend
-        const rol = res.rol;
-
-        // --- Redirecciones por rol ---
-        switch (rol) {
-          case 'ADMIN':
-            this.router.navigate(['/admin']);
-            break;
-
-          case 'USER':
-            this.router.navigate(['/inicio']);
-            break;
-
-          default:
-            this.router.navigate(['/inicio']);
-            break;
-        }
+    this.http.post<any>('http://localhost:8000/clinica/v1/api/auth/login', {
+      username: this.username,
+      password: this.password
+    }).subscribe({
+      next: res => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('rol', res.rol);
+        this.router.navigate(['/dashboard']);
       },
       error: () => {
-        this.loading = false;
-        this.error = 'Usuario o contraseña incorrecta';
+        this.error = 'Usuario o contraseña incorrectos';
       }
     });
   }

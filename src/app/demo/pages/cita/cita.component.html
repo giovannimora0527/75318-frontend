@@ -1,1 +1,73 @@
-<p>cita works!</p>
+<div class="container mt-4">
+  <h2>Citas</h2>
+
+  <div *ngIf="loading">Cargando citas...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- Formulario -->
+  <form [formGroup]="formCita" (ngSubmit)="guardarCita()" class="mb-3">
+    <input formControlName="id" type="hidden">
+
+    <div class="row mb-2">
+      <div class="col">
+        <select formControlName="paciente" class="form-control">
+          <option [ngValue]="null">Seleccione Paciente</option>
+          <option *ngFor="let p of pacientes" [ngValue]="p">{{ p.nombres }} {{ p.apellidos }}</option>
+        </select>
+      </div>
+      <div class="col">
+        <select formControlName="medico" class="form-control">
+          <option [ngValue]="null">Seleccione Médico</option>
+          <option *ngFor="let m of medicos" [ngValue]="m">{{ m.nombres }} {{ m.apellidos }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row mb-2">
+      <div class="col">
+        <input type="text" formControlName="fechaHora" placeholder="Fecha Hora (yyyy-MM-dd HH:mm:ss)" class="form-control">
+      </div>
+      <div class="col">
+        <input type="text" formControlName="estado" placeholder="Estado" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <input type="text" formControlName="motivo" placeholder="Motivo" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ editMode ? 'Actualizar' : 'Guardar' }}</button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="formCita.reset(); editMode=false;">Cancelar</button>
+  </form>
+
+  <!-- Tabla de citas -->
+  <table *ngIf="citas.length" class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Fecha Hora</th>
+        <th>Estado</th>
+        <th>Motivo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cita of citas">
+        <td>{{ cita.id }}</td>
+        <td>{{ cita.paciente.nombres }} {{ cita.paciente.apellidos }}</td>
+        <td>{{ cita.medico.nombres }} {{ cita.medico.apellidos }}</td>
+        <td>{{ cita.fechaHora }}</td>
+        <td>{{ cita.estado }}</td>
+        <td>{{ cita.motivo }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-1" (click)="editarCita(cita)">Editar</button>
+          <button class="btn btn-sm btn-danger" (click)="eliminarCita(cita.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !citas.length">No hay citas disponibles.</div>
+</div>

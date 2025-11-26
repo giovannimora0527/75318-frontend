@@ -10,7 +10,10 @@
           <i class="fa fa-user-md"></i>
           &nbsp;Lista de médicos
         </h3>
-        <button class="btn btn-outline-primary" (click)="abrirNuevoMedico()">
+        <button 
+          *ngIf="rol === 'ADMIN'"
+          class="btn btn-outline-primary" 
+          (click)="abrirNuevoMedico()">
           <i class="fa fa-plus"></i>
           Nuevo medico
         </button>
@@ -43,7 +46,12 @@
               <td>{{ medico.registroProfesional }}</td>
               <td>{{ medico.especializacion.nombre }}</td>
               <td>
-                <button type="button" class="btn btn btn-outline-primary" title="Editar médico" (click)="editarModalMedico(medico)">
+                <button 
+                  *ngIf="rol === 'ADMIN'"
+                  type="button" 
+                  class="btn btn-outline-primary" 
+                  title="Editar paciente"
+                  (click)="editarModalMedico(medico)">
                   <i class="fa fa-edit"></i>
                 </button>
               </td>
@@ -181,7 +189,13 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarMedico()">{{ titleBoton }}</button>
+        <button 
+          *ngIf="rol === 'ADMIN'"
+          type="button" 
+          class="btn btn-primary" 
+          (click)="guardarMedico()">
+          {{ titleBoton }}
+        </button>
       </div>
     </div>
   </div>

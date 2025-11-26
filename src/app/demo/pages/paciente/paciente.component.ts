@@ -36,17 +36,29 @@ import { PacienteService } from './service/paciente.service';
     usuarioList: Usuario[] = [];
 
     form: FormGroup;
+    
+    rol: string = '';
+    isAdmin: boolean = false;
+
 
     constructor(
-      private readonly pacienteService: PacienteService,
-      private readonly formBuilder: FormBuilder,
-      private readonly utilApiService: UtilApiService,
-      private readonly spinner: NgxSpinnerService
-    ) {
-      this.listarPacientes();
-      this.listarUsuarios();
-      this.inicializarFormulario();
-    }
+  private readonly pacienteService: PacienteService,
+  private readonly formBuilder: FormBuilder,
+  private readonly utilApiService: UtilApiService,
+  private readonly spinner: NgxSpinnerService
+) {
+
+  // Leer el rol real guardado en el login
+  this.rol = localStorage.getItem('rol') || '';
+
+  // Solo ADMIN puede crear/editar/eliminar
+  this.isAdmin = this.rol === 'ADMIN';
+
+  this.listarPacientes();
+  this.listarUsuarios();
+  this.inicializarFormulario();
+}
+
 
     inicializarFormulario() {
       this.form = this.formBuilder.group({

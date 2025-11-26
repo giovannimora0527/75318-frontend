@@ -1,40 +1,31 @@
-<div class="auditoria-container">
-  <h2>Auditoría</h2>
+<div class="container mt-4">
+  <h2>Auditoría de Recuperación de Contraseñas</h2>
 
-  <form [formGroup]="filterForm" (ngSubmit)="filtrar()" class="filter-form">
-    <input type="text" placeholder="Usuario" formControlName="usuario" />
-    <input type="text" placeholder="Tipo Evento" formControlName="tipoEvento" />
-    <input type="date" placeholder="Fecha" formControlName="fecha" />
-    <button type="submit">Filtrar</button>
-    <button type="button" (click)="limpiarFiltros()">Limpiar</button>
-  </form>
+  <div *ngIf="loading">Cargando registros...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <table>
+  <table *ngIf="!loading && registros.length" class="table table-striped">
     <thead>
       <tr>
-        <th>Fecha/Hora</th>
+        <th>ID</th>
         <th>Usuario</th>
-        <th>Tabla</th>
-        <th>ID Registro</th>
-        <th>Evento</th>
-        <th>Valores Antes</th>
-        <th>Valores Después</th>
+        <th>Acción</th>
         <th>Descripción</th>
-        <th>IP Origen</th>
+        <th>IP</th>
+        <th>Fecha y Hora</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let a of auditorias">
-        <td>{{ a.fechaHora | date: 'short' }}</td>
-        <td>{{ a.nombreUsuario }}</td>
-        <td>{{ a.tablaAfectada }}</td>
-        <td>{{ a.idRegistroAfectado }}</td>
-        <td>{{ a.tipoEvento }}</td>
-        <td>{{ a.valoresAntes }}</td>
-        <td>{{ a.valoresDespues }}</td>
-        <td>{{ a.descripcion }}</td>
-        <td>{{ a.ipOrigen }}</td>
+      <tr *ngFor="let reg of registros">
+        <td>{{ reg.id }}</td>
+        <td>{{ reg.usuario }}</td>
+        <td>{{ reg.accion }}</td>
+        <td>{{ reg.descripcion }}</td>
+        <td>{{ reg.ip }}</td>
+        <td>{{ reg.fechaHora | date:'short' }}</td>
       </tr>
     </tbody>
   </table>
+
+  <div *ngIf="!loading && !registros.length">No hay registros disponibles.</div>
 </div>

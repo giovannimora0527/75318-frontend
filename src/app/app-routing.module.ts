@@ -1,11 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
-// Componentes standalone
+// Componentes
 import { LoginComponent } from './demo/pages/login/login.component';
-import { AdminComponent } from './theme/layout/admin/admin.component';
-
-// Rutas de secciones
+import { DashboardComponent } from './demo/pages/dashboard/dashboard.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
@@ -16,43 +13,29 @@ import { HistoriaComponent } from './demo/pages/historia/historia.component';
 import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
 import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
 
-// Guard
+// Guards
 import { AuthGuard } from './demo/pages/guards/auth.guard';
+import { RoleGuard } from './demo/pages/guards/role.guard';
 
-export const routes: Routes = [
-
-  // Login
+export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
 
-  // Redirección por defecto
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-
-  // Zona protegida
   {
-    path: 'inicio',
-    component: AdminComponent,
+    path: 'dashboard',
+    component: DashboardComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['ADMIN', 'MEDICO', 'PACIENTE'] },
-
     children: [
-      { path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard], data: { title: 'Usuario', roles: ['ADMIN'] }},
-      { path: 'medico', component: MedicoComponent, canActivate: [AuthGuard], data: { title: 'Medico', roles: ['ADMIN','MEDICO','PACIENTE'] }},
-      { path: 'paciente', component: PacienteComponent, canActivate: [AuthGuard], data: { title: 'Paciente', roles: ['ADMIN','MEDICO','PACIENTE'] }},
-      { path: 'cita', component: CitaComponent, canActivate: [AuthGuard], data: { title: 'Cita', roles: ['ADMIN','MEDICO'] }},
-      { path: 'medicamento', component: MedicamentoComponent, canActivate: [AuthGuard], data: { title: 'Medicamento', roles: ['ADMIN','MEDICO'] }},
-      { path: 'formula-medica', component: FormulaComponent, canActivate: [AuthGuard], data: { title: 'Formula', roles: ['ADMIN','MEDICO'] }},
-      { path: 'historia-clinica', component: HistoriaComponent, canActivate: [AuthGuard], data: { title: 'Historia', roles: ['ADMIN','MEDICO'] }},
-      { path: 'especializacion', component: EspecializacionComponent, canActivate: [AuthGuard], data: { title: 'Especialización', roles: ['ADMIN'] }},
-      { path: 'auditoria', component: AuditoriaComponent, canActivate: [AuthGuard], data: { title: 'Auditoría', roles: ['ADMIN'] }},
+      { path: 'usuario', component: UsuarioComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN'] } },
+      { path: 'medico', component: MedicoComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
+      { path: 'paciente', component: PacienteComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
+      { path: 'cita', component: CitaComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
+      { path: 'medicamento', component: MedicamentoComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
+      { path: 'formula-medica', component: FormulaComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
+      { path: 'historia-clinica', component: HistoriaComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
+      { path: 'auditoria', component: AuditoriaComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN'] } },
+      { path: 'especializacion', component: EspecializacionComponent, canActivate: [RoleGuard], data: { roles: ['ADMIN','MEDICO','PACIENTE'] } },
     ]
   },
 
-  // Cualquier ruta desconocida → inicio
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}

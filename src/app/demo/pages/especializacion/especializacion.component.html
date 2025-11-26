@@ -1,1 +1,71 @@
-<p>especializacion works!</p>
+<div class="container mt-4">
+
+  <h2>Gestión de Especializaciones</h2>
+
+  <div *ngIf="message" class="alert alert-info mt-2">{{ message }}</div>
+
+  <!-- FORMULARIO (solo admin) -->
+  <form [formGroup]="form" class="card p-3 mt-3" *ngIf="puedeCrear()">
+
+    <input type="hidden" formControlName="id">
+
+    <div class="mb-3">
+      <label>Nombre</label>
+      <input type="text" formControlName="nombre" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label>Descripción</label>
+      <input type="text" formControlName="descripcion" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label>Código Especialización</label>
+      <input type="text" formControlName="codigoEspecializacion" class="form-control">
+    </div>
+
+    <button class="btn btn-primary" (click)="guardar()" *ngIf="puedeCrear()">Guardar</button>
+
+  </form>
+
+  <!-- TABLA -->
+  <table class="table table-striped mt-4" *ngIf="especializaciones.length">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Código</th>
+        <th *ngIf="puedeEditar() || puedeEliminar()">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let esp of especializaciones">
+        <td>{{ esp.id }}</td>
+        <td>{{ esp.nombre }}</td>
+        <td>{{ esp.descripcion }}</td>
+        <td>{{ esp.codigoEspecializacion }}</td>
+
+        <td *ngIf="puedeEditar() || puedeEliminar()">
+          
+          <!-- EDITAR SOLO ADMIN -->
+          <button class="btn btn-warning btn-sm"
+                  (click)="editar(esp)"
+                  *ngIf="puedeEditar()">
+            Editar
+          </button>
+
+          <!-- ELIMINAR SOLO ADMIN -->
+          <button class="btn btn-danger btn-sm ms-2"
+                  (click)="eliminar(esp.id)"
+                  *ngIf="puedeEliminar()">
+            Eliminar
+          </button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

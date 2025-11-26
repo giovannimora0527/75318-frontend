@@ -1,16 +1,17 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core';
-
-import { environment } from './environments/environment';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
-
-import { AppRoutingModule } from './app/app-routing.module';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app/app.component';
-import { appConfig } from './app/app-config';
+import { appRoutes } from './app/app-routing.module';
+import { AuthInterceptor } from './app/interceptors/auth.interceptor';
+import { importProvidersFrom } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-if (environment.production) {
-  enableProdMode();
-}
-
-bootstrapApplication(AppComponent, appConfig)
-.catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(appRoutes),
+    provideHttpClient(), 
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    importProvidersFrom(FormsModule) // necesario para ngModel y ngForm
+  ]
+}).catch(err => console.error(err));

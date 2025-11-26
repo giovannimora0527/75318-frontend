@@ -1,0 +1,46 @@
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <h3 class="mt-3 text-white text-center">CLÍNICA</h3>
+
+    <p class="user-info">
+      <strong>{{ username }}</strong><br>
+      <span>{{ rol }}</span>
+    </p>
+
+    <!-- MENU ADMIN -->
+    <ng-container *ngIf="rol === 'ADMIN'">
+      <a routerLink="/usuario">Usuarios</a>
+      <a routerLink="/medico">Médicos</a>
+      <a routerLink="/paciente">Pacientes</a>
+      <a routerLink="/cita">Citas</a>
+      <a routerLink="/medicamento">Medicamentos</a>
+      <a routerLink="/formula-medica">Fórmulas</a>
+      <a routerLink="/historia-clinica">Historias Clínicas</a>
+      <a routerLink="/especializacion">Especializaciones</a>
+      <a routerLink="/auditoria">Auditoría</a>
+    </ng-container>
+
+    <!-- MENU MÉDICO -->
+    <ng-container *ngIf="rol === 'MEDICO'">
+      <a routerLink="/cita">Citas</a>
+      <a routerLink="/formula-medica">Fórmulas</a>
+      <a routerLink="/historia-clinica">Historias Clínicas</a>
+      <a routerLink="/medicamento">Medicamentos</a>
+          </ng-container>
+
+    <!-- BOTÓN LOGOUT -->
+    <button class="btn btn-danger w-100 mt-3" (click)="logout()">
+      Cerrar Sesión
+    </button>
+
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>
