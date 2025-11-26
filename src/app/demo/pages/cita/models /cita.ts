@@ -1,11 +1,12 @@
-import { Medico } from 'src/app/demo/pages/medico/models/medico';
-import { Paciente } from 'src/app/demo/pages/paciente/models/paciente';
+import { Medico } from "../../medico/models/medico";
+import { Paciente } from "../../paciente/models/paciente";
 
 export class Cita {
     id!: number;
+    fechaHora!: string;
+    estado!: string;
+    motivo!: string;
     paciente!: Paciente;
     medico!: Medico;
-    motivo!: string;
-    estado!: string;
-    fechaHora!: Date;
+
 }
