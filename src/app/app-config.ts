@@ -1,32 +1,19 @@
-import { HTTP_INTERCEPTORS, provideHttpClient } from "@angular/common/http";
-import { ApplicationConfig } from "@angular/core";
-import { provideClientHydration } from "@angular/platform-browser";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { provideRouter, withEnabledBlockingInitialNavigation, withHashLocation, withInMemoryScrolling, withRouterConfig, withViewTransitions } from "@angular/router";
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { routes } from './app-routing.module';
-import { HeadersInterceptor } from "./interceptors/headers.interceptor";
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HeadersInterceptor } from './interceptors/headers.interceptor';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
-    providers: [
-      provideRouter(routes,
-        withRouterConfig({
-          onSameUrlNavigation: 'reload'
-        }),
-        withInMemoryScrolling({
-          scrollPositionRestoration: 'top',
-          anchorScrolling: 'enabled'
-        }),
-        withEnabledBlockingInitialNavigation(),
-        withViewTransitions(),
-        withHashLocation()
-      ),
-      provideHttpClient(),     
-      provideAnimations(),
-      provideClientHydration(),
-      {
-        provide: HTTP_INTERCEPTORS,
-        useClass: HeadersInterceptor,
-        multi: true, // Permite múltiples interceptores
-      }
-    ]
-  };
+  providers: [
+    provideRouter(routes),
+
+    provideHttpClient(withInterceptorsFromDi()),
+
+    // Registrar interceptores con DI
+    { provide: HTTP_INTERCEPTORS, useClass: HeadersInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ]
+};

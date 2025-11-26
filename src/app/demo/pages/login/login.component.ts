@@ -10,22 +10,44 @@ import { AuthService } from '../../../services/auth.service';
   imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
-
 })
 export class LoginComponent {
+
   username = '';
   password = '';
-  error: string;
+  error: string | null = null;
+  loading = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   login() {
+    this.error = null;
+    this.loading = true;
+
     this.authService.login(this.username, this.password).subscribe({
       next: (res) => {
-        const role = res.rol;
-        this.router.navigate(['/inicio']); // Redirige al inicio
+        this.loading = false;
+
+        // Respuesta del backend
+        const rol = res.rol;
+
+        // --- Redirecciones por rol ---
+        switch (rol) {
+          case 'ADMIN':
+            this.router.navigate(['/admin']);
+            break;
+
+          case 'USER':
+            this.router.navigate(['/inicio']);
+            break;
+
+          default:
+            this.router.navigate(['/inicio']);
+            break;
+        }
       },
       error: () => {
+        this.loading = false;
         this.error = 'Usuario o contraseña incorrecta';
       }
     });
